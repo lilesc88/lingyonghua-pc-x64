@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+ï»¿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -61,12 +61,12 @@ public class PostCall
             try
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requstUrl);
-                //PostÇëÇó·½Ê½
+                //Postè¯·æ±‚æ–¹å¼
                 request.Method = "POST";
                 request.Timeout = outTime;
                 request.ReadWriteTimeout = outTime;
 
-                // ÄÚÈİÀàĞÍ
+                // å†…å®¹ç±»å‹
                 request.ContentType = "application/x-www-form-urlencoded";
                 if (!UIUtils.IsNull(requestParams))
                 {
@@ -81,8 +81,8 @@ public class PostCall
                     }
                 }
 
-                LogUtils.Log("http-postÇëÇó£º" + requstUrl + "?" + requestParams);
-                // »ñµÃÏìÓ¦Á÷
+                LogUtils.Log("http-postè¯·æ±‚ï¼š" + requstUrl + "?" + requestParams);
+                // è·å¾—å“åº”æµ
                 HttpWebResponse response = (System.Net.HttpWebResponse)request.GetResponse();
                 StreamReader myreader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
 
@@ -92,16 +92,16 @@ public class PostCall
                     myreader.Close();
                     return;
                 }
-                // »ñµÃÊı¾İ
+                // è·å¾—æ•°æ®
                 string responseText = myreader.ReadToEnd();
 
-                // ´¦ÀíÊı¾İºó»Øµ÷»ØÈ¥
+                // å¤„ç†æ•°æ®åå›è°ƒå›å»
                 HandleResponseData(responseText, false, callback);
             }
             catch (Exception)
             {
-                OnError("ÍøÂç²»Í¨£¬Çë¼ì²éÏßÂ·»òÍø¿¨", callback, -1);
-                LogHelper.LogInfo("ÍøÂç²»Í¨  requst :" + requstUrl);
+                OnError("ç½‘ç»œä¸é€šï¼Œè¯·æ£€æŸ¥çº¿è·¯æˆ–ç½‘å¡", callback, -1);
+                LogHelper.LogInfo("ç½‘ç»œä¸é€š  requst :" + requstUrl);
             }
         });
     }
@@ -114,11 +114,11 @@ public class PostCall
             try
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requstUrl);
-                //PostÇëÇó·½Ê½
+                //Postè¯·æ±‚æ–¹å¼
                 request.Method = "POST";
                 request.Timeout = outTime;
                 request.ReadWriteTimeout = outTime;
-                // ÄÚÈİÀàĞÍ
+                // å†…å®¹ç±»å‹
                 request.ContentType = "application/x-www-form-urlencoded";
                 if (!UIUtils.IsNull(requestParams))
                 {
@@ -133,8 +133,8 @@ public class PostCall
                     }
                 }
 
-                LogUtils.Log("http-postÇëÇó£º" + requstUrl + "?" + requestParams);
-                // »ñµÃÏìÓ¦Á÷
+                LogUtils.Log("http-postè¯·æ±‚ï¼š" + requstUrl + "?" + requestParams);
+                // è·å¾—å“åº”æµ
                 HttpWebResponse response = (System.Net.HttpWebResponse)request.GetResponse();
                 StreamReader myreader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
 
@@ -144,15 +144,15 @@ public class PostCall
                     myreader.Close();
                     return;
                 }
-                // »ñµÃÊı¾İ
+                // è·å¾—æ•°æ®
                 string responseText = myreader.ReadToEnd();
 
                 HandleResponseData(responseText, true, callback, true);
             }
             catch (Exception)
             {
-                OnError("ÍøÂç²»Í¨£¬Çë¼ì²éÏßÂ·»òÍø¿¨", callback, -1);
-                LogHelper.LogInfo("ÍøÂç²»Í¨  requst :" + requstUrl);
+                OnError("ç½‘ç»œä¸é€šï¼Œè¯·æ£€æŸ¥çº¿è·¯æˆ–ç½‘å¡", callback, -1);
+                LogHelper.LogInfo("ç½‘ç»œä¸é€š  requst :" + requstUrl);
             }
         });
 
@@ -166,11 +166,11 @@ public class PostCall
             try
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requstUrl);
-                //PostÇëÇó·½Ê½
+                //Postè¯·æ±‚æ–¹å¼
                 request.Method = "POST";
                 request.Timeout = outTime;
                 request.ReadWriteTimeout = outTime;
-                // ÄÚÈİÀàĞÍ
+                // å†…å®¹ç±»å‹
                 request.ContentType = "application/x-www-form-urlencoded";
                 if (!UIUtils.IsNull(requestParams))
                 {
@@ -185,12 +185,12 @@ public class PostCall
                     }
                 }
 
-                LogUtils.Log("http-postÇëÇó£º" + requstUrl + "?" + requestParams);
+                LogUtils.Log("http-postè¯·æ±‚ï¼š" + requstUrl + "?" + requestParams);
 
-                // »ñµÃÏìÓ¦Á÷
+                // è·å¾—å“åº”æµ
                 HttpWebResponse response = (System.Net.HttpWebResponse)request.GetResponse();
                 StreamReader myreader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
-                // »ñµÃÊı¾İ
+                // è·å¾—æ•°æ®
 
                 if (IsCancelRequest())
                 {
@@ -200,30 +200,30 @@ public class PostCall
                 }
                 string responseText = myreader.ReadToEnd();
 
-                // ´¦ÀíÊı¾İºó»Øµ÷»ØÈ¥
+                // å¤„ç†æ•°æ®åå›è°ƒå›å»
                 HandleResponseData(responseText, true, callback);
 
 
                 if (TimeUtils.SyncTimeDiff() == 0)
                 {
-                    // ÏÈÈ¥½âÎöµÚÒ»²ã£¬»ñµÃ·şÎñÆ÷µÄresultCode
+                    // å…ˆå»è§£æç¬¬ä¸€å±‚ï¼Œè·å¾—æœåŠ¡å™¨çš„resultCode
                     JObject jo = JsonConvert.DeserializeObject<JObject>(responseText);
-                    long sTime = jo.Value<long>("currentTime"); // ÕâÀïÓĞ¸ö¿Ó£¬ÓĞĞ©·şÎñÆ÷»á·µ»ØÃëµÄÊ±¼ä´Á
+                    long sTime = jo.Value<long>("currentTime"); // è¿™é‡Œæœ‰ä¸ªå‘ï¼Œæœ‰äº›æœåŠ¡å™¨ä¼šè¿”å›ç§’çš„æ—¶é—´æˆ³
                     TimeUtils.SetTimeDiff(sTime);
                 }
 
             }
             catch (Exception)
             {
-                OnError("ÍøÂç²»Í¨£¬Çë¼ì²éÏßÂ·»òÍø¿¨", callback, -1);
-                LogHelper.LogInfo("ÍøÂç²»Í¨  requst :" + requstUrl);
+                OnError("ç½‘ç»œä¸é€šï¼Œè¯·æ£€æŸ¥çº¿è·¯æˆ–ç½‘å¡", callback, -1);
+                LogHelper.LogInfo("ç½‘ç»œä¸é€š  requst :" + requstUrl);
             }
         });
     }
 
 
     /// <summary>
-    /// /µÃµ½·şÎñÆ÷Êı¾İºóµÄºóĞøÊı¾İ´¦Àí
+    /// /å¾—åˆ°æœåŠ¡å™¨æ•°æ®åçš„åç»­æ•°æ®å¤„ç†
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="responseText"></param>
@@ -237,14 +237,14 @@ public class PostCall
             return;
         }
 
-        LogUtils.Log("http ·şÎñÆ÷ÏìÓ¦Êı¾İ£º " + responseText);
+        LogUtils.Log("http æœåŠ¡å™¨å“åº”æ•°æ®ï¼š " + responseText);
 
         if (callback == null && mErrListener == null)
-        {    // »Øµ÷º¯ÊıÎª¿Õ£¬²»×öÈÎºÎ´¦Àí
+        {    // å›è°ƒå‡½æ•°ä¸ºç©ºï¼Œä¸åšä»»ä½•å¤„ç†
             return;
         }
 
-        // ÏÈÈ¥½âÎöµÚÒ»²ã£¬»ñµÃ·şÎñÆ÷µÄresultCode
+        // å…ˆå»è§£æç¬¬ä¸€å±‚ï¼Œè·å¾—æœåŠ¡å™¨çš„resultCode
         JObject jo = JsonConvert.DeserializeObject<JObject>(responseText);
         int code = jo.Value<int>("resultCode");
 
@@ -252,15 +252,15 @@ public class PostCall
         {
             try
             {
-                // Ã»ÓĞdataµÄÇé¿ö
+                // æ²¡æœ‰dataçš„æƒ…å†µ
                 if (!jo.ContainsKey("data") || jo["data"] == null)
                 {
                     var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseText);
-                    // ²»ĞèÒª½âÎöjson, Ö±½Ó·µ»Ø
+                    // ä¸éœ€è¦è§£æjson, ç›´æ¥è¿”å›
                     if (list)
                     {
 
-                        OnError("½Ó¿ÚÊı¾İ½âÎö³ö´í", callback, code);
+                        OnError("æ¥å£æ•°æ®è§£æå‡ºé”™", callback, code);
                     }
                     else
                     {
@@ -270,19 +270,19 @@ public class PostCall
                     return;
                 }
 
-                // data Îª¿ÕµÄÇé¿ö
+                // data ä¸ºç©ºçš„æƒ…å†µ
                 string beanJson = jo["data"].ToString();
                 if (string.IsNullOrEmpty(beanJson))
                 {
                     if (isResolve)
                     {
-                        OnError("½Ó¿ÚÊı¾İ½âÎö³ö´í", callback, code);
-                        LogHelper.LogInfo("½Ó¿ÚÊı¾İ½âÎö³ö´í  requst :" + requstUrl + "  \n response :" + responseText);
+                        OnError("æ¥å£æ•°æ®è§£æå‡ºé”™", callback, code);
+                        LogHelper.LogInfo("æ¥å£æ•°æ®è§£æå‡ºé”™  requst :" + requstUrl + "  \n response :" + responseText);
                     }
                     else
                     {
                         var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseText);
-                        // ²»ĞèÒª½âÎöjson, Ö±½Ó·µ»Ø
+                        // ä¸éœ€è¦è§£æjson, ç›´æ¥è¿”å›
                         OnSuccess(data, callback);
                     }
                     return;
@@ -290,7 +290,7 @@ public class PostCall
 
                 if (isResolve)
                 {
-                    // ĞèÒª½âÎö
+                    // éœ€è¦è§£æ
                     if (list)
                     {
                         T bean = JsonConvert.DeserializeObject<T>(responseText);
@@ -304,7 +304,7 @@ public class PostCall
                 }
                 else
                 {
-                    // ²»ĞèÒª½âÎöjson·ÖÁ½¸öÇé¿ö£¬Èç¹ûÈ·¶¨ÁËdataÊÇÒ»¸ö¶ÔÏó¾ÍÖ±½Ó½âÎöÀïÃæµÄÊı¾İ
+                    // ä¸éœ€è¦è§£æjsonåˆ†ä¸¤ä¸ªæƒ…å†µï¼Œå¦‚æœç¡®å®šäº†dataæ˜¯ä¸€ä¸ªå¯¹è±¡å°±ç›´æ¥è§£æé‡Œé¢çš„æ•°æ®
                     if (jo["data"].GetType() == typeof(JObject))
                     {
                         var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(beanJson);
@@ -320,57 +320,57 @@ public class PostCall
             }
             catch (Exception)
             {
-                OnError("½Ó¿ÚÊı¾İ½âÎö³ö´í", callback, code);
-                LogHelper.LogInfo("½Ó¿ÚÊı¾İ½âÎö³ö´í  requst :" + requstUrl + "  \n response :" + responseText);
+                OnError("æ¥å£æ•°æ®è§£æå‡ºé”™", callback, code);
+                LogHelper.LogInfo("æ¥å£æ•°æ®è§£æå‡ºé”™  requst :" + requstUrl + "  \n response :" + responseText);
             }
         }
         else if (code == CODE_TRANSFER_RECEIVED)
         {
             var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseText);
-            // ²»ĞèÒª½âÎöjson, Ö±½Ó·µ»Ø
+            // ä¸éœ€è¦è§£æjson, ç›´æ¥è¿”å›
             OnSuccess(data, callback);
         }
         else if (code == CODE_TRANSFER_OUTTIME)
         {
             var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseText);
-            // ²»ĞèÒª½âÎöjson, Ö±½Ó·µ»Ø
+            // ä¸éœ€è¦è§£æjson, ç›´æ¥è¿”å›
             OnSuccess(data, callback);
         }
         else if (code == CODE_READ_OUTTIME)
         {
             var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseText);
-            // ²»ĞèÒª½âÎöjson, Ö±½Ó·µ»Ø
+            // ä¸éœ€è¦è§£æjson, ç›´æ¥è¿”å›
             OnSuccess(data, callback);
         }
         else if (code == CODE_READ_HAVERECEIVED)
         {
             var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseText);
-            // ²»ĞèÒª½âÎöjson, Ö±½Ó·µ»Ø
+            // ä¸éœ€è¦è§£æjson, ç›´æ¥è¿”å›
             OnSuccess(data, callback);
         }
         else if (code == CODE_READ_ROOMrECEIVED)
         {
             var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseText);
-            // ²»ĞèÒª½âÎöjson, Ö±½Ó·µ»Ø
+            // ä¸éœ€è¦è§£æjson, ç›´æ¥è¿”å›
             OnSuccess(data, callback);
         }
         else if (code == CODE_READ_HAVEOPEN)
         {
             var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseText);
-            // ²»ĞèÒª½âÎöjson, Ö±½Ó·µ»Ø
+            // ä¸éœ€è¦è§£æjson, ç›´æ¥è¿”å›
             OnSuccess(data, callback);
         }
         else if (code == CODE_READ_PACKED)
         {
 
             var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseText);
-            // ²»ĞèÒª½âÎöjson, Ö±½Ó·µ»Ø
+            // ä¸éœ€è¦è§£æjson, ç›´æ¥è¿”å›
             OnSuccess(data, callback);
 
         }
         else if (code == CODE_NO_TOKEN || code == CODE_TOKEN_ERROR)
         {
-            // ÖØÆô³ÌĞò
+            // é‡å¯ç¨‹åº
             LogUtils.Error("PostCall TOKEN_ERROR -> RESTART_APP, url=" + requstUrl); Messenger.Default.Send("1030102", MessageActions.RESTART_APP);
         }
         else
@@ -380,11 +380,11 @@ public class PostCall
 
             if (UIUtils.IsNull(errmsg))
             {
-                errmsg = "²Ù×÷´íÎó";
+                errmsg = "æ“ä½œé”™è¯¯";
             }
 
-            OnError("µ÷ÓÃ·şÎñÆ÷½Ó¿ÚÊ§°Ü,Ô­Òò:" + errmsg, callback, code);
-            LogHelper.LogInfo("µ÷ÓÃ·şÎñÆ÷½Ó¿ÚÊ§°Ü  requst :" + requstUrl + "  \n response :" + responseText);
+            OnError("è°ƒç”¨æœåŠ¡å™¨æ¥å£å¤±è´¥,åŸå› :" + errmsg, callback, code);
+            LogHelper.LogInfo("è°ƒç”¨æœåŠ¡å™¨æ¥å£å¤±è´¥  requst :" + requstUrl + "  \n response :" + responseText);
         }
     }
 
@@ -439,7 +439,7 @@ public class PostCall
             }
             catch (Exception ex)
             {
-                LogUtils.Log("´°¿Ú¾ä±ú³ö´í£¬ÎŞ·¨»Øµ½Ö÷Ïß³Ì" + ex.Message);
+                LogUtils.Log("çª—å£å¥æŸ„å‡ºé”™ï¼Œæ— æ³•å›åˆ°ä¸»çº¿ç¨‹" + ex.Message);
                 //callback(true, data);
                 throw;
             }
@@ -457,7 +457,7 @@ public class PostCall
         {
             if (HttpUtils.Instance.CancelPool(tag, requestTime))
             {
-                Console.WriteLine("½Ó¿ÚÇëÇó±»È¡Ïû£º " + tag);
+                Console.WriteLine("æ¥å£è¯·æ±‚è¢«å–æ¶ˆï¼š " + tag);
                 return true;
             }
         }
@@ -466,7 +466,7 @@ public class PostCall
     }
     private void ShowErrBox(string err)
     {
-        //Messenger.Default.Send(err, FrmMain.NOTIFY_NOTICE);//Í¨Öª¸÷Ò³ÃæÊÕµ½ÏûÏ¢
+        //Messenger.Default.Send(err, FrmMain.NOTIFY_NOTICE);//é€šçŸ¥å„é¡µé¢æ”¶åˆ°æ¶ˆæ¯
 
         HttpUtils.Instance.ShowTip(err);
 
@@ -482,73 +482,73 @@ public class PostCall
         //SnackBar.Enqueue(err);
     }
 
-    // ´íÎóÂë×ªÏûÏ¢
+    // é”™è¯¯ç è½¬æ¶ˆæ¯
     private string ErrCodeToMsg(int code)
     {
         string errmsg = "";
         switch (code)
         {
             case -2:
-                errmsg = "½âÎöÒì³£";
+                errmsg = "è§£æå¼‚å¸¸";
                 break;
             case CODE_NET_ERROE:
-                errmsg = "ÍøÂç´íÎó";
+                errmsg = "ç½‘ç»œé”™è¯¯";
                 break;
             case CODE_ARGUMENT_ERROR1:
             case CODE_ARGUMENT_ERROR2:
-                errmsg = "È±ÉÙ±ØÌî²ÎÊı»ò²ÎÊı´íÎó";
+                errmsg = "ç¼ºå°‘å¿…å¡«å‚æ•°æˆ–å‚æ•°é”™è¯¯";
                 break;
             case CODE_INTERNAL_ERROR:
-                errmsg = "½Ó¿ÚÄÚ²¿Òì³£";
+                errmsg = "æ¥å£å†…éƒ¨å¼‚å¸¸";
                 break;
             case CODE_NO_TOKEN:
-                errmsg = "È±ÉÙ·ÃÎÊÁîÅÆ";
+                errmsg = "ç¼ºå°‘è®¿é—®ä»¤ç‰Œ";
                 break;
             case CODE_TOKEN_ERROR:
-                errmsg = "·ÃÎÊÁîÅÆ¹ıÆÚ»òÎŞĞ§";
+                errmsg = "è®¿é—®ä»¤ç‰Œè¿‡æœŸæˆ–æ— æ•ˆ";
                 break;
             case CODE_ACCOUNT_INEXISTENCE:
-                errmsg = "ÕÊºÅ²»´æÔÚ";
+                errmsg = "å¸å·ä¸å­˜åœ¨";
                 break;
             case CODE_ACCOUNT_ERROE:
-                errmsg = "ÕÊºÅ»òÃÜÂë´íÎó";
+                errmsg = "å¸å·æˆ–å¯†ç é”™è¯¯";
                 break;
             case CODE_THIRD_NO_PHONE:
-                errmsg = "µÚÈı·½µÇÂ¼Î´°ó¶¨ÊÖ»úºÅÂë";
+                errmsg = "ç¬¬ä¸‰æ–¹ç™»å½•æœªç»‘å®šæ‰‹æœºå·ç ";
                 break;
             case CODE_THIRD_NO_EXISTS:
-                errmsg = "µÚÈı·½µÇÂ¼Ê±ÕËºÅ²»´æÔÚ";
+                errmsg = "ç¬¬ä¸‰æ–¹ç™»å½•æ—¶è´¦å·ä¸å­˜åœ¨";
                 break;
         }
 
         return errmsg;
     }
 
-    public const int CODE_NET_ERROE = -1;// ÍøÂçÁ¬½Ó´íÎó
-    public const int CODE_ERROE = 0;// Î´ÖªµÄ´íÎó »òÕßÏµÍ³ÄÚ²¿´íÎó
-    public const int CODE_SUCCESS = 1;// ÕıÈ·µÄHttpÇëÇó·µ»Ø×´Ì¬Âë
-    public const int CODE_ARGUMENT_ERROR1 = 1010101;// ÇëÇó²ÎÊıÑéÖ¤Ê§°Ü£¬È±ÉÙ±ØÌî²ÎÊı»ò²ÎÊı´íÎó
-    public const int CODE_ARGUMENT_ERROR2 = 1010102;// È±ÉÙÇëÇó²ÎÊı£º%1$s
+    public const int CODE_NET_ERROE = -1;// ç½‘ç»œè¿æ¥é”™è¯¯
+    public const int CODE_ERROE = 0;// æœªçŸ¥çš„é”™è¯¯ æˆ–è€…ç³»ç»Ÿå†…éƒ¨é”™è¯¯
+    public const int CODE_SUCCESS = 1;// æ­£ç¡®çš„Httpè¯·æ±‚è¿”å›çŠ¶æ€ç 
+    public const int CODE_ARGUMENT_ERROR1 = 1010101;// è¯·æ±‚å‚æ•°éªŒè¯å¤±è´¥ï¼Œç¼ºå°‘å¿…å¡«å‚æ•°æˆ–å‚æ•°é”™è¯¯
+    public const int CODE_ARGUMENT_ERROR2 = 1010102;// ç¼ºå°‘è¯·æ±‚å‚æ•°ï¼š%1$s
 
-    public const int CODE_INTERNAL_ERROR = 1020101;// ½Ó¿ÚÄÚ²¿Òì³£
-    public const int CODE_NO_TOKEN = 1030101;// È±ÉÙ·ÃÎÊÁîÅÆ
-    public const int CODE_TOKEN_ERROR = 1030102;// ·ÃÎÊÁîÅÆ¹ıÆÚ»òÎŞĞ§
+    public const int CODE_INTERNAL_ERROR = 1020101;// æ¥å£å†…éƒ¨å¼‚å¸¸
+    public const int CODE_NO_TOKEN = 1030101;// ç¼ºå°‘è®¿é—®ä»¤ç‰Œ
+    public const int CODE_TOKEN_ERROR = 1030102;// è®¿é—®ä»¤ç‰Œè¿‡æœŸæˆ–æ— æ•ˆ
 
-    /* µÇÂ½½Ó¿ÚµÄHttp Result Code */
-    public const int CODE_ACCOUNT_INEXISTENCE = 1040101;// ÕÊºÅ²»´æÔÚ
-    public const int CODE_ACCOUNT_ERROE = 1040102;// ÕÊºÅ»òÃÜÂë´íÎó
+    /* ç™»é™†æ¥å£çš„Http Result Code */
+    public const int CODE_ACCOUNT_INEXISTENCE = 1040101;// å¸å·ä¸å­˜åœ¨
+    public const int CODE_ACCOUNT_ERROE = 1040102;// å¸å·æˆ–å¯†ç é”™è¯¯
 
-    // Õâ¸öÊÇµÚÈı·½µÇÂ¼Ê±³ö´íÕâ¸öµÚÈı·½ÕËºÅÃ»ÓĞ°ó¶¨µ½ÒÑÓĞÕËºÅ£¬
-    public const int CODE_THIRD_NO_PHONE = 1040305;// µÚÈı·½µÇÂ¼Î´°ó¶¨ÊÖ»úºÅÂë
-    // Õâ¸öÊÇ°ó¶¨ÒÑÓĞÕËºÅÊ±³ö´íÕâ¸öIMÕËºÅ²»´æÔÚ£¬
-    public const int CODE_THIRD_NO_EXISTS = 1040306;// µÚÈı·½µÇÂ¼Ê±ÕËºÅ²»´æÔÚ
+    // è¿™ä¸ªæ˜¯ç¬¬ä¸‰æ–¹ç™»å½•æ—¶å‡ºé”™è¿™ä¸ªç¬¬ä¸‰æ–¹è´¦å·æ²¡æœ‰ç»‘å®šåˆ°å·²æœ‰è´¦å·ï¼Œ
+    public const int CODE_THIRD_NO_PHONE = 1040305;// ç¬¬ä¸‰æ–¹ç™»å½•æœªç»‘å®šæ‰‹æœºå·ç 
+    // è¿™ä¸ªæ˜¯ç»‘å®šå·²æœ‰è´¦å·æ—¶å‡ºé”™è¿™ä¸ªIMè´¦å·ä¸å­˜åœ¨ï¼Œ
+    public const int CODE_THIRD_NO_EXISTS = 1040306;// ç¬¬ä¸‰æ–¹ç™»å½•æ—¶è´¦å·ä¸å­˜åœ¨
 
-    public const int CODE_READ_OUTTIME = 100101;// ºì°ü¹ıÆÚ
-    public const int CODE_READ_HAVERECEIVED = 101204;// Èººì°üÒÑ¾­ÁìÈ¡
-    public const int CODE_READ_ROOMrECEIVED = 104103;//ºì°üÒÑ±»ÁìÈ¡
-    public const int CODE_READ_HAVEOPEN = 1;// Èººì°üÈÔ¿ÉÒÔÁìÈ¡
-    public const int CODE_READ_PACKED = 100102;// µÚÈı·½µÇÂ¼Ê±ÕËºÅ²»´æÔÚ
-    public const int CODE_TRANSFER_RECEIVED = 100302;// µÚÈı·½µÇÂ¼Ê±ÕËºÅ²»´æÔÚ
-    public const int CODE_TRANSFER_OUTTIME = 100301;// ×ªÕË³¬Ê±
+    public const int CODE_READ_OUTTIME = 100101;// çº¢åŒ…è¿‡æœŸ
+    public const int CODE_READ_HAVERECEIVED = 101204;// ç¾¤çº¢åŒ…å·²ç»é¢†å–
+    public const int CODE_READ_ROOMrECEIVED = 104103;//çº¢åŒ…å·²è¢«é¢†å–
+    public const int CODE_READ_HAVEOPEN = 1;// ç¾¤çº¢åŒ…ä»å¯ä»¥é¢†å–
+    public const int CODE_READ_PACKED = 100102;// ç¬¬ä¸‰æ–¹ç™»å½•æ—¶è´¦å·ä¸å­˜åœ¨
+    public const int CODE_TRANSFER_RECEIVED = 100302;// ç¬¬ä¸‰æ–¹ç™»å½•æ—¶è´¦å·ä¸å­˜åœ¨
+    public const int CODE_TRANSFER_OUTTIME = 100301;// è½¬è´¦è¶…æ—¶
 
 }

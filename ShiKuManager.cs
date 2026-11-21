@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+ï»¿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -13,12 +13,12 @@ using WinFrmTalk.socket;
 namespace WinFrmTalk
 {
     /// <summary>
-    /// ´ËÀàÊÇ¹ØÓÚIMµÄÒ»ÏµÁĞÒµÎñ²Ù×÷
+    /// æ­¤ç±»æ˜¯å…³äºIMçš„ä¸€ç³»åˆ—ä¸šåŠ¡æ“ä½œ
     /// </summary>
     internal static class ShiKuManager
     {
         /// <summary>
-        /// Xmpp¹ÜÀíÀà
+        /// Xmppç®¡ç†ç±»
         /// </summary>
         public static XmppManager mSocketCore;
 
@@ -26,23 +26,23 @@ namespace WinFrmTalk
 
         private static long lastInput;
 
-        #region ³õÊ¼»¯XMPPÁ¬½Ó
+        #region åˆå§‹åŒ–XMPPè¿æ¥
         /// <summary>
-        /// ³õÊ¼»¯XMPPÁ¬½Ó¶ÔÏó
+        /// åˆå§‹åŒ–XMPPè¿æ¥å¯¹è±¡
         /// </summary>
-        /// <param name="curruser">µ±Ç°µÄÓÃ»§¶ÔÏó</param>
-        /// <param name="Pwd">ÓÃ»§ÃÜÂë</param>
+        /// <param name="curruser">å½“å‰çš„ç”¨æˆ·å¯¹è±¡</param>
+        /// <param name="Pwd">ç”¨æˆ·å¯†ç </param>
         public static void InitialXmpp()
         {
-            Resource = MultiDeviceManager.Instance.IsEnable ? "pc_" + UIUtils.Getpcid() : "youjob";
-            //ÊµÀı»¯XmppManagerÀà
+            Resource = MultiDeviceManager.Instance.IsEnable ? "pc_" + UIUtils.Getpcid() + "_" + System.Diagnostics.Process.GetCurrentProcess().Id : "youjob";
+            //å®ä¾‹åŒ–XmppManagerç±»
             mSocketCore = new XmppManager();
         }
         #endregion
 
-        #region »ñÈ¡xmppµ±Ç°×´Ì¬
+        #region è·å–xmppå½“å‰çŠ¶æ€
         /// <summary>
-        /// »ñÈ¡xmpp×´Ì¬
+        /// è·å–xmppçŠ¶æ€
         /// </summary>
         /// <returns></returns>
         public static SocketConnectionState GetXmppState()
@@ -57,7 +57,7 @@ namespace WinFrmTalk
 
 
         /// <summary>
-        /// ÅĞ¶Ïµ±Ç°xmppÊÇ·ñÔÚÏß
+        /// åˆ¤æ–­å½“å‰xmppæ˜¯å¦åœ¨çº¿
         /// </summary>
         /// <returns></returns>
         public static bool IsAuthenticated()
@@ -66,31 +66,31 @@ namespace WinFrmTalk
         }
         #endregion
 
-        #region ÍË³ö³ÌĞò
+        #region é€€å‡ºç¨‹åº
         /// <summary>
-        /// ÍË³ö³ÌĞò
+        /// é€€å‡ºç¨‹åº
         /// </summary>
         internal static void ApplicationExit()
         {
             try
             {
-                //Í£Ö¹xmppÁ¬½Ó
+                                //åœæ­¢xmppè¿æ¥
                 Applicate.IsAccountVerified = false;
-                //½Ó¿ÚÍË³öµÇÂ½
+                //æ¥å£é€€å‡ºç™»é™†
                 UserHttpLoginout(Applicate.MyAccount.userId);
-                //ÊÍ·Åä¯ÀÀÆ÷
-                //ÊÍ·Å²¥·ÅÆ÷
+                //é‡Šæ”¾æµè§ˆå™¨
+                //é‡Šæ”¾æ’­æ”¾å™¨
                 mSocketCore.Disconnect();
 
             }
             catch (Exception ex)
             {
-                ConsoleLog.Output("ÍË³öÊ±³ö´í" + ex.Message);
+                ConsoleLog.Output("é€€å‡ºæ—¶å‡ºé”™" + ex.Message);
             }
         }
         #endregion
 
-        // xmpp·¢ËÍÏûÏ¢
+        // xmppå‘é€æ¶ˆæ¯
         public static void SendMessage(MessageObject messageObject)
         {
             SnedMessageObject(messageObject);
@@ -101,152 +101,152 @@ namespace WinFrmTalk
             mSocketCore.SendMessage(messageObject);
         }
 
-        #region =========================·¢ËÍºÃÓÑÑéÖ¤ÏûÏ¢=================================
+        #region =========================å‘é€å¥½å‹éªŒè¯æ¶ˆæ¯=================================
 
-        // ´òÕĞºô
+        // æ‰“æ‹›å‘¼
         internal static void SendHelloFriendMsg(Friend toFriend)
         {
             MessageObject message = new MessageObject();
             message.ToId = toFriend.UserId;
             message.FromId = Applicate.MyAccount.userId;
-            message.toUserId = toFriend.UserId;//½ÓÊÕÕß
+            message.toUserId = toFriend.UserId;//æ¥æ”¶è€…
             message.toUserName = toFriend.NickName;
             message.fromUserId = Applicate.MyAccount.userId;
-            message.fromUserName = Applicate.MyAccount.nickname;//ÕâÀï·Å×Ô¼ºµÄêÇ³Æ
+            message.fromUserName = Applicate.MyAccount.nickname;//è¿™é‡Œæ”¾è‡ªå·±çš„æ˜µç§°
             message.type = kWCMessageType.FriendRequest;
             message.timeSend = TimeUtils.CurrentTimeDouble();
-            message.messageId = Guid.NewGuid().ToString("N");//Éú³ÉGuid
-            message.content = "ÄúºÃ";
+            message.messageId = Guid.NewGuid().ToString("N");//ç”ŸæˆGuid
+            message.content = "æ‚¨å¥½";
             message.reSendCount = 3;
-            SnedMessageObject(message);//Ö¸¶¨·¢ËÍµÄUserId
+            SnedMessageObject(message);//æŒ‡å®šå‘é€çš„UserId
         }
 
 
-        #region ºÃÓÑÑéÖ¤Ê±»Ø»°
+        #region å¥½å‹éªŒè¯æ—¶å›è¯
         /// <summary>
-        /// ºÃÓÑÑéÖ¤Ê±»Ø»°
+        /// å¥½å‹éªŒè¯æ—¶å›è¯
         /// </summary>
-        /// <param name="target">Ğè»Ø»°µÄUserId</param>
+        /// <param name="target">éœ€å›è¯çš„UserId</param>
         internal static void SendAnswerBack(string content, Friend target)
         {
             MessageObject jsonMsg = new MessageObject();
             jsonMsg.FromId = Applicate.MyAccount.userId;
             jsonMsg.ToId = target.UserId;
             jsonMsg.fromUserId = Applicate.MyAccount.userId;//UserId
-            jsonMsg.fromUserName = Applicate.MyAccount.nickname;//×Ô¼ºµÄêÇ³Æ
-            jsonMsg.toUserId = target.UserId;//Ö¸¶¨½ÓÊÕÕß
-            jsonMsg.toUserName = target.NickName;//½ÓÊÕÕßÃû³Æ
-            jsonMsg.content = content;//ÄÚÈİ
-            jsonMsg.type = kWCMessageType.RequestRefuse;//»Ø»°ÏûÏ¢
+            jsonMsg.fromUserName = Applicate.MyAccount.nickname;//è‡ªå·±çš„æ˜µç§°
+            jsonMsg.toUserId = target.UserId;//æŒ‡å®šæ¥æ”¶è€…
+            jsonMsg.toUserName = target.NickName;//æ¥æ”¶è€…åç§°
+            jsonMsg.content = content;//å†…å®¹
+            jsonMsg.type = kWCMessageType.RequestRefuse;//å›è¯æ¶ˆæ¯
             jsonMsg.messageId = Guid.NewGuid().ToString("N");//MessageId
             jsonMsg.timeSend = TimeUtils.CurrentTimeDouble();
-            //jsonMsg.Insert();//´æÈëÊı¾İ¿â
+            //jsonMsg.Insert();//å­˜å…¥æ•°æ®åº“
             SnedMessageObject(jsonMsg);
         }
         #endregion
 
-        // »Ø»°
+        // å›è¯
         internal static void SendReplyFriendMsg(Friend toFriend, string content)
         {
             MessageObject message = new MessageObject();
             message.ToId = toFriend.UserId;
             message.FromId = Applicate.MyAccount.userId;
-            message.toUserId = toFriend.UserId;//½ÓÊÕÕß
+            message.toUserId = toFriend.UserId;//æ¥æ”¶è€…
             message.toUserName = toFriend.NickName;
             message.fromUserId = Applicate.MyAccount.userId;
-            message.fromUserName = Applicate.MyAccount.nickname;//ÕâÀï·Å×Ô¼ºµÄêÇ³Æ
+            message.fromUserName = Applicate.MyAccount.nickname;//è¿™é‡Œæ”¾è‡ªå·±çš„æ˜µç§°
             message.type = kWCMessageType.RequestAgree;
             message.timeSend = TimeUtils.CurrentTimeDouble();
-            message.messageId = Guid.NewGuid().ToString("N");//Éú³ÉGuid
+            message.messageId = Guid.NewGuid().ToString("N");//ç”ŸæˆGuid
             message.content = content;
-            SnedMessageObject(message);//Ö¸¶¨·¢ËÍµÄUserId
+            SnedMessageObject(message);//æŒ‡å®šå‘é€çš„UserId
         }
 
-        // Í¨¹ıÑéÖ¤
+        // é€šè¿‡éªŒè¯
         internal static void SendAgreeFriendMsg(Friend toFriend)
         {
             MessageObject message = new MessageObject();
             message.ToId = toFriend.UserId;
             message.FromId = Applicate.MyAccount.userId;
-            message.toUserId = toFriend.UserId;//½ÓÊÕÕß
+            message.toUserId = toFriend.UserId;//æ¥æ”¶è€…
             message.toUserName = toFriend.NickName;
             message.fromUserId = Applicate.MyAccount.userId;
-            message.fromUserName = Applicate.MyAccount.nickname;//ÕâÀï·Å×Ô¼ºµÄêÇ³Æ
+            message.fromUserName = Applicate.MyAccount.nickname;//è¿™é‡Œæ”¾è‡ªå·±çš„æ˜µç§°
             message.type = kWCMessageType.RequestAgree;
             message.timeSend = TimeUtils.CurrentTimeDouble();
-            message.messageId = Guid.NewGuid().ToString("N");//Éú³ÉGuid
-            SnedMessageObject(message);//Ö¸¶¨·¢ËÍµÄUserId
+            message.messageId = Guid.NewGuid().ToString("N");//ç”ŸæˆGuid
+            SnedMessageObject(message);//æŒ‡å®šå‘é€çš„UserId
         }
 
-        // Ö±½Ó³ÉÎªºÃÓÑ£¨¶Ô·½Ã»ÓĞ¿ªÆôºÃÓÑÑéÖ¤£©    
+        // ç›´æ¥æˆä¸ºå¥½å‹ï¼ˆå¯¹æ–¹æ²¡æœ‰å¼€å¯å¥½å‹éªŒè¯ï¼‰    
         internal static void SendBecomeFriendMsg(Friend toFriend)
         {
             MessageObject message = new MessageObject();
             message.ToId = toFriend.UserId;
             message.FromId = Applicate.MyAccount.userId;
-            message.toUserId = toFriend.UserId;//½ÓÊÕÕß
+            message.toUserId = toFriend.UserId;//æ¥æ”¶è€…
             message.toUserName = toFriend.NickName;
             message.fromUserId = Applicate.MyAccount.userId;
-            message.fromUserName = Applicate.MyAccount.nickname;//ÕâÀï·Å×Ô¼ºµÄêÇ³Æ
+            message.fromUserName = Applicate.MyAccount.nickname;//è¿™é‡Œæ”¾è‡ªå·±çš„æ˜µç§°
             message.type = kWCMessageType.RequestFriendDirectly;
             message.timeSend = TimeUtils.CurrentTimeDouble();
-            message.messageId = Guid.NewGuid().ToString("N");//Éú³ÉGuid
-            SnedMessageObject(message);//Ö¸¶¨·¢ËÍµÄUserId
+            message.messageId = Guid.NewGuid().ToString("N");//ç”ŸæˆGuid
+            SnedMessageObject(message);//æŒ‡å®šå‘é€çš„UserId
         }
 
-        // É¾³ıºÃÓÑ    
+        // åˆ é™¤å¥½å‹    
         internal static void SendDelFriendMsg(Friend toFriend)
         {
             MessageObject message = new MessageObject();
             message.ToId = toFriend.UserId;
             message.FromId = Applicate.MyAccount.userId;
-            message.toUserId = toFriend.UserId;//½ÓÊÕÕß
+            message.toUserId = toFriend.UserId;//æ¥æ”¶è€…
             message.toUserName = toFriend.NickName;
             message.fromUserId = Applicate.MyAccount.userId;
-            message.fromUserName = Applicate.MyAccount.nickname;//ÕâÀï·Å×Ô¼ºµÄêÇ³Æ
+            message.fromUserName = Applicate.MyAccount.nickname;//è¿™é‡Œæ”¾è‡ªå·±çš„æ˜µç§°
             message.type = kWCMessageType.DeleteFriend;
             message.timeSend = TimeUtils.CurrentTimeDouble();
-            message.messageId = Guid.NewGuid().ToString("N");//Éú³ÉGuid
-            SnedMessageObject(message);//Ö¸¶¨·¢ËÍµÄUserId
+            message.messageId = Guid.NewGuid().ToString("N");//ç”ŸæˆGuid
+            SnedMessageObject(message);//æŒ‡å®šå‘é€çš„UserId
         }
 
-        // À­ºÚºÃÓÑ  
+        // æ‹‰é»‘å¥½å‹  
         internal static void SendBlockfriend(Friend toFriend)
         {
             MessageObject message = new MessageObject();
             message.ToId = toFriend.UserId;
             message.FromId = Applicate.MyAccount.userId;
-            message.toUserId = toFriend.UserId;//½ÓÊÕÕß
+            message.toUserId = toFriend.UserId;//æ¥æ”¶è€…
             message.toUserName = toFriend.NickName;
             message.fromUserId = Applicate.MyAccount.userId;
-            message.fromUserName = Applicate.MyAccount.nickname;//ÕâÀï·Å×Ô¼ºµÄêÇ³Æ
+            message.fromUserName = Applicate.MyAccount.nickname;//è¿™é‡Œæ”¾è‡ªå·±çš„æ˜µç§°
             message.type = kWCMessageType.BlackFriend;
             message.timeSend = TimeUtils.CurrentTimeDouble();
-            message.messageId = Guid.NewGuid().ToString("N");//Éú³ÉGuid
-            SnedMessageObject(message);//Ö¸¶¨·¢ËÍµÄUserId
+            message.messageId = Guid.NewGuid().ToString("N");//ç”ŸæˆGuid
+            SnedMessageObject(message);//æŒ‡å®šå‘é€çš„UserId
         }
-        // È¡ÏûÀ­ºÚºÃÓÑ    
+        // å–æ¶ˆæ‹‰é»‘å¥½å‹    
         internal static void SendCancelBlockFriendMsg(Friend toFriend)
         {
             MessageObject message = new MessageObject();
             message.ToId = toFriend.UserId;
             message.FromId = Applicate.MyAccount.userId;
-            message.toUserId = toFriend.UserId;//½ÓÊÕÕß
+            message.toUserId = toFriend.UserId;//æ¥æ”¶è€…
             message.toUserName = toFriend.NickName;
             message.fromUserId = Applicate.MyAccount.userId;
-            message.fromUserName = Applicate.MyAccount.nickname;//ÕâÀï·Å×Ô¼ºµÄêÇ³Æ
+            message.fromUserName = Applicate.MyAccount.nickname;//è¿™é‡Œæ”¾è‡ªå·±çš„æ˜µç§°
             message.type = kWCMessageType.CancelBlackFriend;
             message.timeSend = TimeUtils.CurrentTimeDouble();
-            message.messageId = Guid.NewGuid().ToString("N");//Éú³ÉGuid
-            SnedMessageObject(message);//Ö¸¶¨·¢ËÍµÄUserId
+            message.messageId = Guid.NewGuid().ToString("N");//ç”ŸæˆGuid
+            SnedMessageObject(message);//æŒ‡å®šå‘é€çš„UserId
         }
 
         #endregion
 
 
-        #region =========================·¢ËÍ¿É¼ûÀàĞÍµÄÏûÏ¢=================================
+        #region =========================å‘é€å¯è§ç±»å‹çš„æ¶ˆæ¯=================================
 
-        // ·¢ËÍÎÄ×ÖÏûÏ¢ | ·¢ËÍEmoji±íÇé
+        // å‘é€æ–‡å­—æ¶ˆæ¯ | å‘é€Emojiè¡¨æƒ…
         internal static MessageObject SendTextMessage(Friend toFriend, string content, bool sendmsg = true, bool insertMsg = true)
         {
             MessageObject message = GetMessageObject(toFriend);
@@ -256,20 +256,20 @@ namespace WinFrmTalk
             if (toFriend.IsGroup == 0 && toFriend.IsOpenReadDel == 1)
             {
                 message.isReadDel = 1;
-                Console.WriteLine("·¢ËÍÁËÒ»ÌõÔÄºó¼´·ÙÏûÏ¢ £º " + content);
+                Console.WriteLine("å‘é€äº†ä¸€æ¡é˜…åå³ç„šæ¶ˆæ¯ ï¼š " + content);
             }
 
             if (insertMsg)
-                message.InsertData();//´æ¿â
+                message.InsertData();//å­˜åº“
 
             if (sendmsg)
             {
-                SnedMessageObject(message);//Ö¸¶¨·¢ËÍµÄUserId
+                SnedMessageObject(message);//æŒ‡å®šå‘é€çš„UserId
             }
             return message;
         }
 
-        // ·¢ËÍÍ¼Æ¬ÏûÏ¢
+        // å‘é€å›¾ç‰‡æ¶ˆæ¯
         internal static MessageObject SendImageMessage(Friend toFriend, string url, string path, int size, bool sendmsg = true, bool insertMsg = true)
         {
             MessageObject message = GetMessageObject(toFriend);
@@ -277,7 +277,7 @@ namespace WinFrmTalk
             message.content = url;
             message.fileName = path;
             message.fileSize = size;
-            //»ñÈ¡ÏñËØ
+            //è·å–åƒç´ 
             if (File.Exists(path))
             {
                 Bitmap bmp = FileUtils.FileToBitmap(path);
@@ -294,20 +294,20 @@ namespace WinFrmTalk
             if (toFriend.IsGroup == 0 && toFriend.IsOpenReadDel == 1)
             {
                 message.isReadDel = 1;
-                Console.WriteLine("·¢ËÍÁËÒ»ÌõÔÄºó¼´·ÙÍ¼Æ¬");
+                Console.WriteLine("å‘é€äº†ä¸€æ¡é˜…åå³ç„šå›¾ç‰‡");
             }
 
             if (insertMsg)
-                message.InsertData();//´æ¿â           
+                message.InsertData();//å­˜åº“           
             if (sendmsg)
             {
-                SnedMessageObject(message);//Ö¸¶¨·¢ËÍµÄUserId
+                SnedMessageObject(message);//æŒ‡å®šå‘é€çš„UserId
             }
             return message;
         }
 
 
-        // ·¢ËÍÊÓÆµÏûÏ¢
+        // å‘é€è§†é¢‘æ¶ˆæ¯
         internal static MessageObject SendVideoMessage(Friend toFriend, string url, string path, long size, bool sendmsg = true, bool insertMsg = true)
         {
             MessageObject message = GetMessageObject(toFriend);
@@ -319,19 +319,19 @@ namespace WinFrmTalk
             if (toFriend.IsGroup == 0 && toFriend.IsOpenReadDel == 1)
             {
                 message.isReadDel = 1;
-                Console.WriteLine("·¢ËÍÁËÒ»ÌõÔÄºó¼´·ÙÊÓÆµ");
+                Console.WriteLine("å‘é€äº†ä¸€æ¡é˜…åå³ç„šè§†é¢‘");
             }
 
             if (insertMsg)
-                message.InsertData();//´æ¿â
+                message.InsertData();//å­˜åº“
             if (sendmsg)
             {
-                SnedMessageObject(message);//Ö¸¶¨·¢ËÍµÄUserId
+                SnedMessageObject(message);//æŒ‡å®šå‘é€çš„UserId
             }
             return message;
         }
         /// <summary>
-        /// ·¢ËÍÓïÒôÏûÏ¢
+        /// å‘é€è¯­éŸ³æ¶ˆæ¯
         /// </summary>
         /// <param name="toFriend"></param>
         /// <param name="url"></param>
@@ -351,20 +351,20 @@ namespace WinFrmTalk
             if (toFriend.IsGroup == 0 && toFriend.IsOpenReadDel == 1)
             {
                 message.isReadDel = 1;
-                Console.WriteLine("·¢ËÍÁËÒ»ÌõÔÄºó¼´·ÙÂ¼Òô");
+                Console.WriteLine("å‘é€äº†ä¸€æ¡é˜…åå³ç„šå½•éŸ³");
             }
 
             if (insertMsg)
-                message.InsertData();//´æ¿â
+                message.InsertData();//å­˜åº“
             if (sendmsg)
             {
-                SnedMessageObject(message);//Ö¸¶¨·¢ËÍµÄUserId
+                SnedMessageObject(message);//æŒ‡å®šå‘é€çš„UserId
             }
             return message;
         }
 
 
-        // ·¢ËÍÎÄ¼şÏûÏ¢
+        // å‘é€æ–‡ä»¶æ¶ˆæ¯
         internal static MessageObject SendFileMessage(Friend toFriend, string url, string path, long size, bool sendmsg = true, bool insertMsg = true)
         {
             MessageObject message = GetMessageObject(toFriend);
@@ -374,30 +374,30 @@ namespace WinFrmTalk
             message.fileName = path;
             message.fileSize = size;
             if (insertMsg)
-                message.InsertData();//´æ¿â
+                message.InsertData();//å­˜åº“
             if (sendmsg)
             {
-                SnedMessageObject(message);//Ö¸¶¨·¢ËÍµÄUserId
+                SnedMessageObject(message);//æŒ‡å®šå‘é€çš„UserId
             }
             return message;
         }
 
-        // ·¢ËÍGIF±íÇé£¨ÆäËûµÄGifÒ»ÂÉÊ¹ÓÃÍ¼Æ¬ÏûÏ¢·¢ËÍ£©
+        // å‘é€GIFè¡¨æƒ…ï¼ˆå…¶ä»–çš„Gifä¸€å¾‹ä½¿ç”¨å›¾ç‰‡æ¶ˆæ¯å‘é€ï¼‰
         internal static MessageObject SendGifMessage(Friend toFriend, string content, bool sendmsg = true, bool insertMsg = true)
         {
             MessageObject message = GetMessageObject(toFriend);
             message.type = kWCMessageType.Gif;
             message.content = content;
             if (insertMsg)
-                message.InsertData();//´æ¿â
+                message.InsertData();//å­˜åº“
             if (sendmsg)
             {
-                SnedMessageObject(message);//Ö¸¶¨·¢ËÍµÄUserId
+                SnedMessageObject(message);//æŒ‡å®šå‘é€çš„UserId
             }
             return message;
         }
 
-        // ·¢ËÍ÷»×Ó±íÇé
+        // å‘é€éª°å­è¡¨æƒ…
         internal static MessageObject SendDiceMessage(Friend toFriend, bool sendmsg = true, bool insertMsg = true)
         {
             MessageObject message = GetMessageObject(toFriend);
@@ -406,15 +406,15 @@ namespace WinFrmTalk
             string content = random.Next(1, 6).ToString();
             message.content = content;
             if (insertMsg)
-                message.InsertData();//´æ¿â
+                message.InsertData();//å­˜åº“
             if (sendmsg)
             {
-                SendMessage(message);//Ö¸¶¨·¢ËÍµÄUserId
+                SendMessage(message);//æŒ‡å®šå‘é€çš„UserId
             }
             return message;
         }
 
-        // ·¢ËÍ÷»×Ó±íÇé
+        // å‘é€éª°å­è¡¨æƒ…
         internal static MessageObject SendJsbMessage(Friend toFriend, bool sendmsg = true, bool insertMsg = true)
         {
             MessageObject message = GetMessageObject(toFriend);
@@ -423,25 +423,25 @@ namespace WinFrmTalk
             string content = random.Next(1, 3).ToString();
             message.content = content;
             if (insertMsg)
-                message.InsertData();//´æ¿â
+                message.InsertData();//å­˜åº“
             if (sendmsg)
             {
-                SendMessage(message);//Ö¸¶¨·¢ËÍµÄUserId
+                SendMessage(message);//æŒ‡å®šå‘é€çš„UserId
             }
             return message;
         }
 
-        // ·¢ËÍºÃÓÑÃûÆ¬
+        // å‘é€å¥½å‹åç‰‡
         internal static MessageObject SendCardMessage(Friend toFriend, Friend friend, bool sendmsg = true)
         {
             MessageObject message = GetMessageObject(toFriend);
             message.type = kWCMessageType.Card;
             message.content = friend.NickName;
             message.objectId = friend.UserId;
-            message.InsertData();//´æ¿â
+            message.InsertData();//å­˜åº“
             if (sendmsg)
             {
-                SnedMessageObject(message);//Ö¸¶¨·¢ËÍµÄUserId
+                SnedMessageObject(message);//æŒ‡å®šå‘é€çš„UserId
             }
             return message;
 
@@ -449,10 +449,10 @@ namespace WinFrmTalk
 
 
         /**
-         * ·¢ËÍÈºÏûÏ¢Ç°ÑéÖ¤
-         * 1.È«Ìå½ûÑÔ
-         * 2.ÎÒ±»½ûÑÔ
-         * return true ²»ÔÊĞí·¢ËÍÏûÏ¢
+         * å‘é€ç¾¤æ¶ˆæ¯å‰éªŒè¯
+         * 1.å…¨ä½“ç¦è¨€
+         * 2.æˆ‘è¢«ç¦è¨€
+         * return true ä¸å…è®¸å‘é€æ¶ˆæ¯
          **/
 
         public static bool SendRoomMsgVerify(Friend toFriend)
@@ -467,18 +467,18 @@ namespace WinFrmTalk
                 return false;
             }
 
-            // »ñÈ¡ÎÒÔÚÈºÀï±ßµÄÉí·İ
+            // è·å–æˆ‘åœ¨ç¾¤é‡Œè¾¹çš„èº«ä»½
             var member = RoomMemberDao.Instance.GetRoomMemberById(toFriend.RoomId, Applicate.MyAccount.userId);
-            //¹ÜÀíÔ±ºÍÈºÖ÷³ıÍâ
+            //ç®¡ç†å‘˜å’Œç¾¤ä¸»é™¤å¤–
             if (member.role > 2)
             {
-                // »ñÈ¡È«Ìå½ûÑÔÇé¿ö
+                // è·å–å…¨ä½“ç¦è¨€æƒ…å†µ
                 if (toFriend.AllBannedTalk != 0)
                 {
                     return true;
                 }
 
-                //ÊÇ·ñµ¥¸ö½ûÑÔ
+                //æ˜¯å¦å•ä¸ªç¦è¨€
                 if (member.talkTime > TimeUtils.CurrentTime())
                 {
                     return true;
@@ -494,20 +494,20 @@ namespace WinFrmTalk
 
 
 
-        // ·¢ËÍAtÏûÏ¢
+        // å‘é€Atæ¶ˆæ¯
         internal static MessageObject SendAtMessage(Friend toFriend, List<Friend> atUsers, string content, bool sendmsg = true)
         {
             MessageObject message = GetMessageObject(toFriend);
 
             string objectId = "";
-            if (UIUtils.IsNull(atUsers) && content.Contains("È«Ìå³ÉÔ±"))
+            if (UIUtils.IsNull(atUsers) && content.Contains("å…¨ä½“æˆå‘˜"))
             {
-                // @È«Ìå³ÉÔ±
+                // @å…¨ä½“æˆå‘˜
                 objectId = toFriend.UserId;
             }
             else
             {
-                // @Ä³³ÉÔ±
+                // @æŸæˆå‘˜
                 StringBuilder sb = new StringBuilder();
                 foreach (var item in atUsers)
                 {
@@ -521,15 +521,15 @@ namespace WinFrmTalk
             message.content = content;
             message.objectId = objectId;
             message.type = kWCMessageType.Text;
-            message.InsertData();//´æ¿â
+            message.InsertData();//å­˜åº“
             if (sendmsg)
             {
-                SnedMessageObject(message);//Ö¸¶¨·¢ËÍµÄUserId
+                SnedMessageObject(message);//æŒ‡å®šå‘é€çš„UserId
             }
             return message;
         }
 
-        // ·¢ËÍÇëÇóÃÜÔ¿µÄÈºÏûÏ¢
+        // å‘é€è¯·æ±‚å¯†é’¥çš„ç¾¤æ¶ˆæ¯
         internal static void SendRequstChatKeyMessage(Friend toFriend)
         {
             string signature = RSA.SignBase64(toFriend.UserId, Applicate.MyAccount.rsaPrivateKey);
@@ -538,12 +538,12 @@ namespace WinFrmTalk
             message.content = signature;
             message.objectId = toFriend.UserId;
             message.type = kWCMessageType.TYPE_SECURE_LOST_KEY;
-            message.InsertData();//´æ¿â
-            SendMessage(message);//Ö¸¶¨·¢ËÍµÄUserId
+            message.InsertData();//å­˜åº“
+            SendMessage(message);//æŒ‡å®šå‘é€çš„UserId
         }
 
 
-        // ·¢ËÍ»Ø¸´ÏûÏ¢
+        // å‘é€å›å¤æ¶ˆæ¯
         internal static MessageObject SendReplayMessage(Friend toFriend, MessageObject replayMsg, string content, bool sendmsg = true)
         {
             MessageObject message = GetMessageObject(toFriend);
@@ -554,18 +554,18 @@ namespace WinFrmTalk
             if (toFriend.IsGroup == 0 && toFriend.IsOpenReadDel == 1)
             {
                 message.isReadDel = 1;
-                LogUtils.Log("·¢ËÍÁËÒ»ÌõÔÄºó¼´·ÙÂ¼Òô");
+                LogUtils.Log("å‘é€äº†ä¸€æ¡é˜…åå³ç„šå½•éŸ³");
             }
 
-            message.InsertData();//´æ¿â
+            message.InsertData();//å­˜åº“
             if (sendmsg)
             {
-                SnedMessageObject(message);//Ö¸¶¨·¢ËÍµÄUserId
+                SnedMessageObject(message);//æŒ‡å®šå‘é€çš„UserId
             }
             return message;
         }
 
-        // ·¢ËÍÎ»ÖÃÏûÏ¢
+        // å‘é€ä½ç½®æ¶ˆæ¯
         internal static MessageObject SendLocationMessage(Friend toFriend, double latitude, double longitude, string address, bool sendmsg = true, bool insertMsg = true)
         {
             MessageObject message = GetMessageObject(toFriend);
@@ -575,10 +575,10 @@ namespace WinFrmTalk
             message.content = ("https://api.map.baidu.com/staticimage?width=400&height=140&&zoom=18&markers=" + latitude + "," + longitude);
             message.type = kWCMessageType.Location;
             if (insertMsg)
-                message.InsertData();//´æ¿â
+                message.InsertData();//å­˜åº“
             if (sendmsg)
             {
-                SnedMessageObject(message);//Ö¸¶¨·¢ËÍµÄUserId
+                SnedMessageObject(message);//æŒ‡å®šå‘é€çš„UserId
             }
             return message;
         }
@@ -587,101 +587,101 @@ namespace WinFrmTalk
         #endregion
 
 
-        #region =========================·¢ËÍÒôÊÓÆµÏûÏ¢=================================
+        #region =========================å‘é€éŸ³è§†é¢‘æ¶ˆæ¯=================================
 
 
-        // ·¢ÆğÒôÊÓÆµÁÄÌì
+        // å‘èµ·éŸ³è§†é¢‘èŠå¤©
         internal static void SendAskMeetMessage(Friend toFriend, bool video)
         {
             var message = GetMessageObject(toFriend);
             if (video)
             {
                 message.type = kWCMessageType.VideoChatAsk;
-                message.content = "ÑûÇëÄúÊÓÆµÍ¨»°";
+                message.content = "é‚€è¯·æ‚¨è§†é¢‘é€šè¯";
             }
             else
             {
                 message.type = kWCMessageType.AudioChatAsk;
-                message.content = "ÑûÇëÄúÓïÒôÍ¨»°";
+                message.content = "é‚€è¯·æ‚¨è¯­éŸ³é€šè¯";
             }
             message.fileName = Applicate.URLDATA.data.jitsiServer;
-            SnedMessageObject(message);//·¢ÏûÏ¢
+            SnedMessageObject(message);//å‘æ¶ˆæ¯
         }
 
-        // ½ÓÌıÒôÊÓÆµÁÄÌì
+        // æ¥å¬éŸ³è§†é¢‘èŠå¤©
         internal static void SendAgreeMeetMessage(Friend toFriend, bool video)
         {
             var message = GetMessageObject(toFriend);
             message.type = video ? kWCMessageType.VideoChatAccept : kWCMessageType.AudioChatAccept;
-            SnedMessageObject(message);//·¢ÏûÏ¢
+            SnedMessageObject(message);//å‘æ¶ˆæ¯
         }
 
-        // ¾Ü¾øÒôÊÓÆµÁÄÌì - ½ÓÌı»ò²¦ºÅ½çÃæ ·¢ËÍ È¡Ïû
+        // æ‹’ç»éŸ³è§†é¢‘èŠå¤© - æ¥å¬æˆ–æ‹¨å·ç•Œé¢ å‘é€ å–æ¶ˆ
         internal static void SendCancelMeetMessage(Friend toFriend, bool video)
         {
             var message = GetMessageObject(toFriend);
             message.type = video ? kWCMessageType.VideoChatCancel : kWCMessageType.AudioChatCancel;
-            SnedMessageObject(message);//·¢ÏûÏ¢
+            SnedMessageObject(message);//å‘æ¶ˆæ¯
         }
 
-        // ¹Ò¶ÏÒôÊÓÆµÁÄÌì - Ö»ÓĞÔÚÒôÊÓÆµ½çÃæÔÚ²Å»áÓĞ¹Ò¶Ï
+        // æŒ‚æ–­éŸ³è§†é¢‘èŠå¤© - åªæœ‰åœ¨éŸ³è§†é¢‘ç•Œé¢åœ¨æ‰ä¼šæœ‰æŒ‚æ–­
         internal static void SendEndMeetMessage(Friend toFriend, bool video, int timelen)
         {
             var message = GetMessageObject(toFriend);
             message.type = video ? kWCMessageType.VideoChatEnd : kWCMessageType.AudioChatEnd;
             message.timeLen = timelen;
-            SnedMessageObject(message);//·¢ÏûÏ¢
+            SnedMessageObject(message);//å‘æ¶ˆæ¯
         }
 
-        // Í¨»°ping, ·ÀÖ¹ÓĞÒ»·½¶ÏÍø£¬×Ô¼º»¹²»ÖªµÀµÄÇé¿ö£¬ Í¨»°³É¹¦ºó·¢3ÃëÒ»´Î£¬ 10´ÎÈİ´í
+        // é€šè¯ping, é˜²æ­¢æœ‰ä¸€æ–¹æ–­ç½‘ï¼Œè‡ªå·±è¿˜ä¸çŸ¥é“çš„æƒ…å†µï¼Œ é€šè¯æˆåŠŸåå‘3ç§’ä¸€æ¬¡ï¼Œ 10æ¬¡å®¹é”™
         internal static void SendMeetPingMessage(Friend toFriend)
         {
             var message = GetMessageObject(toFriend);
             message.type = kWCMessageType.PhoneCalling;
-            SnedMessageObject(message);//·¢ÏûÏ¢
+            SnedMessageObject(message);//å‘æ¶ˆæ¯
         }
 
-        // ·¢ËÍÒôÊÓÆµÃ¦ÏßÏûÏ¢,ÎÒÕıÔÚÒôÊÓÆµÍ¨»°µÄÊ±ºò£¬ÓĞÈË¸øÎÒ·¢ÆğÒôÊÓÆµÎÒ¾Í·¢Ã¦Ïß
+        // å‘é€éŸ³è§†é¢‘å¿™çº¿æ¶ˆæ¯,æˆ‘æ­£åœ¨éŸ³è§†é¢‘é€šè¯çš„æ—¶å€™ï¼Œæœ‰äººç»™æˆ‘å‘èµ·éŸ³è§†é¢‘æˆ‘å°±å‘å¿™çº¿
         internal static void SendBusyMeetMessage(Friend toFriend)
         {
             var message = GetMessageObject(toFriend);
             message.type = kWCMessageType.AudioMeetingSetSpeaker;
-            SnedMessageObject(message);//·¢ÏûÏ¢
+            SnedMessageObject(message);//å‘æ¶ˆæ¯
         }
 
 
-        // ·¢ÆğÈºÁÄÓïÒô»áÒé
+        // å‘èµ·ç¾¤èŠè¯­éŸ³ä¼šè®®
         internal static void SendGroupAudioMeetMsg(List<Friend> toFriends, string roomId, string roomJid)
         {
             foreach (var friend in toFriends)
             {
                 var message = GetMessageObject(friend);
                 message.type = kWCMessageType.AudioMeetingInvite;
-                message.content = "ÑûÇëÄú¼ÓÈëÓïÒô»áÒé";
+                message.content = "é‚€è¯·æ‚¨åŠ å…¥è¯­éŸ³ä¼šè®®";
                 message.fileName = roomId;
                 message.objectId = roomJid;
-                SnedMessageObject(message);//·¢ÏûÏ¢
+                SnedMessageObject(message);//å‘æ¶ˆæ¯
             }
         }
 
-        // ·¢ÆğÈºÁÄÊÓÆµ»áÒé
+        // å‘èµ·ç¾¤èŠè§†é¢‘ä¼šè®®
         internal static void SendGroupVideoMeetMsg(List<Friend> toFriends, string roomId, string roomJid)
         {
             foreach (var friend in toFriends)
             {
                 var message = GetMessageObject(friend);
                 message.type = kWCMessageType.VideoMeetingInvite;
-                message.content = "ÑûÇëÄú¼ÓÈëÊÓÆµ»áÒé";
+                message.content = "é‚€è¯·æ‚¨åŠ å…¥è§†é¢‘ä¼šè®®";
                 message.fileName = roomId;
                 message.objectId = roomJid;
-                SnedMessageObject(message);//·¢ÏûÏ¢
+                SnedMessageObject(message);//å‘æ¶ˆæ¯
             }
         }
 
         #endregion
 
 
-        #region =========================·¢ËÍÈºÑéÖ¤ÏûÏ¢=================================
+        #region =========================å‘é€ç¾¤éªŒè¯æ¶ˆæ¯=================================
         internal static void SendRoomverification(Friend toFriend, List<Friend> InviteFriedLst, string rESON, string jid)
         {
             MessageObject message = GetMessageObject(toFriend);
@@ -693,14 +693,14 @@ namespace WinFrmTalk
             data.Add("isInvite", "0");
             data.Add("reason", rESON);
             message.objectId = data.ToString();
-            SnedMessageObject(message);//·¢ÏûÏ¢
+            SnedMessageObject(message);//å‘æ¶ˆæ¯
         }
         #endregion
 
 
-        #region =========================×ª·¢Ä³ÌõÏûÏ¢=================================
+        #region =========================è½¬å‘æŸæ¡æ¶ˆæ¯=================================
 
-        // ×ª·¢Ä³ÌõÏûÏ¢
+        // è½¬å‘æŸæ¡æ¶ˆæ¯
         internal static MessageObject SendForwardMessage(Friend toFriend, MessageObject oMsg)
         {
             bool isBannedTalk = EQControlManager.JudgeIsBannedTalk(toFriend);
@@ -709,17 +709,17 @@ namespace WinFrmTalk
 
             MessageObject message = oMsg.CopyMessage();
             message.timeSend = TimeUtils.CurrentTimeDouble();
-            message.messageId = Guid.NewGuid().ToString("N");//Éú³ÉGuid
+            message.messageId = Guid.NewGuid().ToString("N");//ç”ŸæˆGuid
             message.FromId = Applicate.MyAccount.userId;
             message.ToId = toFriend.UserId;
-            message.toUserId = toFriend.UserId;//½ÓÊÕÕß
+            message.toUserId = toFriend.UserId;//æ¥æ”¶è€…
             message.fromUserId = Applicate.MyAccount.userId;
             message.fromUserName = Applicate.MyAccount.nickname;
             if (toFriend.IsGroup == 1)
             {
                 message.isGroup = 1;
 
-                // »ñÈ¡ÎÒµÄÈºÃûÆ¬
+                // è·å–æˆ‘çš„ç¾¤åç‰‡
                 string nickName = new RoomMember() { roomId = toFriend.RoomId, userId = message.FromId }.GetNickName();
                 if (!UIUtils.IsNull(nickName))
                 {
@@ -739,20 +739,20 @@ namespace WinFrmTalk
             message.toUserName = toFriend.NickName;
             message.isGroup = toFriend.IsGroup;
 
-            message.InsertData();//´æ¿â
+            message.InsertData();//å­˜åº“
             message.UpdateLastSend();
 
-            SnedMessageObject(message);//·¢ÏûÏ¢
+            SnedMessageObject(message);//å‘æ¶ˆæ¯
             mSocketCore.NotifactionListSingleMessage(message);
 
             return message;
         }
 
 
-        // ºÏ²¢×ª·¢¶àÌõÏûÏ¢- 
+        // åˆå¹¶è½¬å‘å¤šæ¡æ¶ˆæ¯- 
         internal static MessageObject SendForwardMessage(Friend toFriend, List<MessageObject> messages)
         {
-            //ÊÇ·ñ½ûÑÔ 2019-12-16 19:47:40 
+            //æ˜¯å¦ç¦è¨€ 2019-12-16 19:47:40 
             bool isBannedTalk = EQControlManager.JudgeIsBannedTalk(toFriend);
             if (isBannedTalk)
                 return null;
@@ -784,24 +784,24 @@ namespace WinFrmTalk
 
             if (UIUtils.IsNull(history))
             {
-                HttpUtils.Instance.ShowTip("²»ÄÜºÏ²¢×ª·¢ÔÄºó¼´·ÙÏûÏ¢");
+                HttpUtils.Instance.ShowTip("ä¸èƒ½åˆå¹¶è½¬å‘é˜…åå³ç„šæ¶ˆæ¯");
                 return null;
             }
 
             string content = JsonConvert.SerializeObject(history);
             string fromName = EQControlManager.StrAddEllipsis(from, new Font(Applicate.SetFont, 9F), 50);
             string toName = EQControlManager.StrAddEllipsis(to, new Font(Applicate.SetFont, 9F), 50);
-            string objectId = isGroup ? "ÈºÁÄµÄÁÄÌì¼ÇÂ¼" :     //ÈºÁÄ
-                "¡°" + fromName + "¡±ºÍ¡°" + toName + "¡±µÄÁÄÌì¼ÇÂ¼";    //µ¥ÁÄ
+            string objectId = isGroup ? "ç¾¤èŠçš„èŠå¤©è®°å½•" :     //ç¾¤èŠ
+                "â€œ" + fromName + "â€å’Œâ€œ" + toName + "â€çš„èŠå¤©è®°å½•";    //å•èŠ
 
             MessageObject message = GetMessageObject(toFriend);
             message.type = kWCMessageType.History;
             message.content = content;
             message.objectId = objectId;
 
-            message.InsertData();//´æ¿â
+            message.InsertData();//å­˜åº“
             message.UpdateLastSend();
-            SnedMessageObject(message);//·¢ÏûÏ¢
+            SnedMessageObject(message);//å‘æ¶ˆæ¯
 
             return message;
         }
@@ -810,22 +810,22 @@ namespace WinFrmTalk
         #endregion
 
 
-        #region =========================·¢ËÍË«ÏòÇå³ıÏûÏ¢=================================
-        // ·¢ËÍÇå³ıÄ³¸öºÃÓÑÓëÎÒµÄÁÄÌì¼ÇÂ¼
+        #region =========================å‘é€åŒå‘æ¸…é™¤æ¶ˆæ¯=================================
+        // å‘é€æ¸…é™¤æŸä¸ªå¥½å‹ä¸æˆ‘çš„èŠå¤©è®°å½•
         internal static MessageObject SendClearFriendMsg(Friend toFriend)
         {
             MessageObject message = GetMessageObject(toFriend);
             message.type = kWCMessageType.SYNC_CLEAN;
-            SnedMessageObject(message);//·¢ÏûÏ¢
+            SnedMessageObject(message);//å‘æ¶ˆæ¯
             return message;
         }
 
         #endregion
 
 
-        #region =========================·¢ËÍÒÑ¶ÁÏûÏ¢=================================
+        #region =========================å‘é€å·²è¯»æ¶ˆæ¯=================================
 
-        // ¶ÔÄ³ÌõÏûÏ¢½øĞĞÒÑ¶Á
+        // å¯¹æŸæ¡æ¶ˆæ¯è¿›è¡Œå·²è¯»
         internal static void SendReadMessage(Friend toFriend, MessageObject oMsg, int memberRole)
         {
             if (oMsg.isRead == 1 || oMsg.type == kWCMessageType.labMoreMsg)
@@ -833,14 +833,14 @@ namespace WinFrmTalk
                 return;
             }
 
-            // ÒşÉíÈË²»·¢ÒÑ¶Á
+            // éšèº«äººä¸å‘å·²è¯»
             if (memberRole == 4)
             {
                 oMsg.isRead = 1;
                 return;
             }
 
-            // ¹Ø±ÕÏûÏ¢ÒÑ¶Á
+            // å…³é—­æ¶ˆæ¯å·²è¯»
             if (!Applicate.MyAccount.isShowMsgState)
             {
                 return;
@@ -849,18 +849,18 @@ namespace WinFrmTalk
 
             Task.Factory.StartNew(() =>
             {
-                //±ÜÃâ¿Ø¼ş»¹ÔÚÉú³ÉÖĞ£¬¾Í·¢ËÍÁËÒÑ¶Á£¬È»ºóÈºÒÑ¶Á»áÌí¼ÓÒÑ¶ÁÈËÊıÈ¥¸üĞÂ¿Ø¼şµ¼ÖÂ³ö´í
+                //é¿å…æ§ä»¶è¿˜åœ¨ç”Ÿæˆä¸­ï¼Œå°±å‘é€äº†å·²è¯»ï¼Œç„¶åç¾¤å·²è¯»ä¼šæ·»åŠ å·²è¯»äººæ•°å»æ›´æ–°æ§ä»¶å¯¼è‡´å‡ºé”™
                 Thread.Sleep(600);
 
                 if (oMsg.isRead == 1 || oMsg.type == kWCMessageType.labMoreMsg)
                 {
-                    return; // ÒÑ¾­·¢ËÍ¹ıµÄ²»·¢
+                    return; // å·²ç»å‘é€è¿‡çš„ä¸å‘
                 }
 
 
                 if (oMsg.IsMySend())
                 {
-                    return; // ²»¶Ô×Ô¼ºµÄÏûÏ¢·¢ÒÑ¶Á
+                    return; // ä¸å¯¹è‡ªå·±çš„æ¶ˆæ¯å‘å·²è¯»
                 }
 
 
@@ -870,29 +870,29 @@ namespace WinFrmTalk
                     {
                         oMsg.isRead = 1;
                         oMsg.UpdateIsReadPersons(0);
-                        return;// ÈºÏûÏ¢ Ã»ÓĞ¿ªÒÑ¶ÁÈËÊı²»·¢ÒÑ¶Á
+                        return;// ç¾¤æ¶ˆæ¯ æ²¡æœ‰å¼€å·²è¯»äººæ•°ä¸å‘å·²è¯»
                     }
                 }
 
-                oMsg.isRead = 1; // ½«Ô­ÏûÏ¢±äÎªÒÑ¶Á
+                oMsg.isRead = 1; // å°†åŸæ¶ˆæ¯å˜ä¸ºå·²è¯»
                 MessageObject message = GetMessageObject(toFriend);
                 message.type = kWCMessageType.IsRead;
                 message.content = oMsg.messageId;
-                SendMessage(message);//·¢ÏûÏ¢
+                SendMessage(message);//å‘æ¶ˆæ¯
             });
         }
 
         #endregion
 
 
-        #region =========================·¢ËÍÕıÔÚÊäÈëÏûÏ¢=============================
+        #region =========================å‘é€æ­£åœ¨è¾“å…¥æ¶ˆæ¯=============================
 
-        // ·¢ËÍÕıÔÚÊäÈëÏûÏ¢
+        // å‘é€æ­£åœ¨è¾“å…¥æ¶ˆæ¯
         internal static void SendInputMessage(Friend toFriend)
         {
             if (toFriend.IsGroup == 1)
             {
-                return;// ÈºÏûÏ¢²»·¢
+                return;// ç¾¤æ¶ˆæ¯ä¸å‘
             }
 
             if (!Applicate.MyAccount.sendInput)
@@ -910,17 +910,17 @@ namespace WinFrmTalk
 
             MessageObject message = GetMessageObject(toFriend);
             message.type = kWCMessageType.Typing;
-            SnedMessageObject(message);//·¢ÏûÏ¢
-            Console.WriteLine("·¢ËÍÕıÔÚÊäÈë");
+            SnedMessageObject(message);//å‘æ¶ˆæ¯
+            Console.WriteLine("å‘é€æ­£åœ¨è¾“å…¥");
 
         }
 
         #endregion
 
 
-        #region =========================·¢ËÍ³·»ØÏûÏ¢=================================
+        #region =========================å‘é€æ’¤å›æ¶ˆæ¯=================================
 
-        // ¶ÔÄ³ÌõÏûÏ¢½øĞĞ³·»Ø
+        // å¯¹æŸæ¡æ¶ˆæ¯è¿›è¡Œæ’¤å›
         internal static void SendRecallMessage(Friend toFriend, MessageObject oMsg)
         {
             if (oMsg.isSend == 1)
@@ -928,37 +928,55 @@ namespace WinFrmTalk
                 MessageObject message = GetMessageObject(toFriend);
                 message.type = kWCMessageType.Withdraw;
                 message.content = oMsg.messageId;
-                SendMessage(message);//·¢ÏûÏ¢
+                SendMessage(message);//å‘æ¶ˆæ¯
             }
+        }
+        // 2026-11-19 å‘é€"æ¶ˆæ¯è¢«ç¼–è¾‘"é€šçŸ¥ï¼Œè®©å¯¹ç«¯ç§’çº§æ‹¿åˆ°æ–°æ–‡å­—
+        internal static void SendEditMessage(Friend toFriend, MessageObject oMsg, string newContent)
+        {
+            if (oMsg == null || string.IsNullOrEmpty(oMsg.messageId)) return;
+            MessageObject message = GetMessageObject(toFriend);
+            message.type = kWCMessageType.EditMessage;
+            message.content = "{\"action\":\"edit\",\"messageId\":" + Newtonsoft.Json.JsonConvert.ToString(oMsg.messageId) + ",\"content\":" + Newtonsoft.Json.JsonConvert.ToString(newContent) + "}";
+            SendMessage(message);
+        }
+        // 2026-11-19 å‘é€"æ¶ˆæ¯è¢«åˆ é™¤"é€šçŸ¥ï¼Œè®©å¯¹æ–¹ç§’çº§ç§»é™¤è¯¥æ¶ˆæ¯
+        internal static void SendDeleteMessage(Friend toFriend, string messageId)
+        {
+            if (toFriend == null || string.IsNullOrEmpty(messageId)) return;
+            MessageObject message = GetMessageObject(toFriend);
+            message.type = kWCMessageType.EditMessage;
+            message.content = "{\"action\":\"delete\",\"messageId\":" + Newtonsoft.Json.JsonConvert.ToString(messageId) + "}";
+            SendMessage(message);
         }
 
         #endregion
 
-        #region =======================·¢ËÍÒÑÁìÈ¡ºì°üÏûÏ¢===============================
+        #region =======================å‘é€å·²é¢†å–çº¢åŒ…æ¶ˆæ¯===============================
         internal static void ReceivedRedPack(Friend toFriend, string username)
         {
-            string content = username + "ÒÑ¾­ÁìÈ¡ÁË" + toFriend.NickName + "µÄºì°ü";
+            string content = username + "å·²ç»é¢†å–äº†" + toFriend.NickName + "çš„çº¢åŒ…";
             MessageObject message = GetMessageObject(toFriend);
             message.type = kWCMessageType.Remind;
             message.content = content;
-            message.InsertData();//´æ¿â
+            message.InsertData();//å­˜åº“
             toFriend.UpdateLastContent(content, message.timeSend);
-            // ¸üĞÂÁÄÌì¼ÇÂ¼Ò³
+            // æ›´æ–°èŠå¤©è®°å½•é¡µ
             Messenger.Default.Send(message, MessageActions.XMPP_UPDATE_NORMAL_MESSAGE);
             Messenger.Default.Send(message, MessageActions.XMPP_SHOW_SINGLE_MESSAGE);
         }
 
         #endregion
 
-        #region =======================·¢ËÍÇëÇóÈºÁÄÃÜÔ¿ÏûÏ¢===============================
+        #region =======================å‘é€è¯·æ±‚ç¾¤èŠå¯†é’¥æ¶ˆæ¯===============================
         internal static void SendRequestChatKeyMessage(MessageObject oMsg, string chatKeyGroup, string publicKey, bool isGroup)
         {
 
-            // Ò»¹²Òª·¢ËÍÁ½ÌõÏûÏ¢£¬Ò»Ìõ¸øÈº×é½ûÓÃµôÆäËûÈËµÄµã»÷£¬Ò»Ìõ¸ø¸öÈË°üº¬chatkey
+            // ä¸€å…±è¦å‘é€ä¸¤æ¡æ¶ˆæ¯ï¼Œä¸€æ¡ç»™ç¾¤ç»„ç¦ç”¨æ‰å…¶ä»–äººçš„ç‚¹å‡»ï¼Œä¸€æ¡ç»™ä¸ªäººåŒ…å«chatkey
             MessageObject message = new MessageObject();
 
             message.timeSend = TimeUtils.CurrentTimeDouble();//  SyscTimeSend
-            message.messageId = Guid.NewGuid().ToString("N");//Éú³ÉGuid
+            message.messageId = Guid.NewGuid().ToString("N");//ç”ŸæˆGuid
             message.type = kWCMessageType.TYPE_SECURE_SEND_KEY;
 
             message.isGroup = isGroup ? 1 : 0;
@@ -982,38 +1000,38 @@ namespace WinFrmTalk
                 message.toUserId = oMsg.fromUserId;
                 message.toUserName = oMsg.fromUserName;
 
-                // ÇëÇó·Å¹«Ô¿¼ÓÃÜµÄchaKey
+                // è¯·æ±‚æ”¾å…¬é’¥åŠ å¯†çš„chaKey
                 message.content = RSA.EncryptBase64Pk1(chatKeyGroup, publicKey);
             }
 
-            SendMessage(message);//·¢ÏûÏ¢
+            SendMessage(message);//å‘æ¶ˆæ¯
         }
 
         #endregion
 
-        #region ================¸ù¾İfriend¶ÔÏó£¬·µ»ØÒ»¸ö³õÊ¼»¯message¶ÔÏó================
-        // »ñÈ¡Ò»¸ö ÏûÏ¢¶ÔÏó
+        #region ================æ ¹æ®friendå¯¹è±¡ï¼Œè¿”å›ä¸€ä¸ªåˆå§‹åŒ–messageå¯¹è±¡================
+        // è·å–ä¸€ä¸ª æ¶ˆæ¯å¯¹è±¡
         public static MessageObject GetMessageObject(Friend toFriend)
         {
             MessageObject message = new MessageObject();
             message.timeSend = TimeUtils.CurrentTimeDouble();//  SyscTimeSend
-            message.messageId = Guid.NewGuid().ToString("N");//Éú³ÉGuid
+            message.messageId = Guid.NewGuid().ToString("N");//ç”ŸæˆGuid
             message.reSendCount = 3;
             message.FromId = Applicate.MyAccount.userId;
             message.fromUserId = Applicate.MyAccount.userId;
-            message.fromUserName = Applicate.MyAccount.nickname;//ÕâÀï·Å×Ô¼ºµÄêÇ³Æ
+            message.fromUserName = Applicate.MyAccount.nickname;//è¿™é‡Œæ”¾è‡ªå·±çš„æ˜µç§°
 
-            if (toFriend == null || string.IsNullOrEmpty(toFriend.UserId))  //Èº·¢Ê±»á´«µİÎª¿ÕµÄfriend
+            if (toFriend == null || string.IsNullOrEmpty(toFriend.UserId))  //ç¾¤å‘æ—¶ä¼šä¼ é€’ä¸ºç©ºçš„friend
                 return message;
             message.ToId = toFriend.UserId;
-            message.toUserId = toFriend.UserId;//½ÓÊÕÕß
+            message.toUserId = toFriend.UserId;//æ¥æ”¶è€…
             message.toUserName = toFriend.NickName;
 
             if (toFriend.IsGroup == 1)
             {
                 message.isGroup = 1;
 
-                // »ñÈ¡ÎÒµÄÈºÃûÆ¬
+                // è·å–æˆ‘çš„ç¾¤åç‰‡
                 string nickName = new RoomMember() { roomId = toFriend.RoomId, userId = message.FromId }.GetNickName();
                 if (!UIUtils.IsNull(nickName))
                 {
@@ -1021,11 +1039,11 @@ namespace WinFrmTalk
                 }
             }
 
-            // ÏûÏ¢¹ıÆÚÊ±¼ä ºÄÊ± 3s == 300
+            // æ¶ˆæ¯è¿‡æœŸæ—¶é—´ è€—æ—¶ 3s == 300
             double oTime = UIUtils.DoubleParse(LocalDataUtils.GetStringData(toFriend.UserId + "chatRecordTimeOut" + Applicate.MyAccount.userId, "0"));
             if (oTime > 0)
             {
-                // ¶à¶ËĞ­ÉÌÍ³Ò» deleteTime Ãë
+                // å¤šç«¯åå•†ç»Ÿä¸€ deleteTime ç§’
                 double deleteTime = TimeUtils.CurrentIntTime() + (oTime * 24 * 60 * 60);
                 message.deleteTime = deleteTime;
             }
@@ -1039,8 +1057,8 @@ namespace WinFrmTalk
         }
         #endregion
 
-        #region =========================HttpÍË³öµÇÂ¼=================================
-        // HttpÍË³öµÇÂ¼
+        #region =========================Httpé€€å‡ºç™»å½•=================================
+        // Httpé€€å‡ºç™»å½•
         private static void UserHttpLoginout(string userid)
         {
             HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "user/outtime")

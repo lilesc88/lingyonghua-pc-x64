@@ -1,27 +1,27 @@
-using System.Timers;
+ï»¿using System.Timers;
 using WinFrmTalk.Model;
 
 namespace WinFrmTalk
 {
     /// <summary>
-    /// ÖØ·¢ÏûÏ¢×¨ÓÃTimer
+    /// é‡å‘æ¶ˆæ¯ä¸“ç”¨Timer
     /// </summary>
     public class MessageTimer : Timer
     {
-        #region ÎŞ²Î¹¹Ôìº¯Êı
+        #region æ— å‚æ„é€ å‡½æ•°
         /// <summary>
-        /// ÎŞ²Î¹¹Ôìº¯Êı
+        /// æ— å‚æ„é€ å‡½æ•°
         /// </summary>
         public MessageTimer() : base()
         {
-            this.Interval = 2000;//Ä¬ÈÏÎª20Ãë·¢ËÍÊ±¼ä
+            this.Interval = 2000;//é»˜è®¤ä¸º20ç§’å‘é€æ—¶é—´
             ReSendCount = 0;
         }
         #endregion
 
-        #region ¹¹Ôìº¯Êı
+        #region æ„é€ å‡½æ•°
         /// <summary>
-        /// ¿ÉÒÔÉèÖÃIntervalµÄ¹¹Ôìº¯Êı
+        /// å¯ä»¥è®¾ç½®Intervalçš„æ„é€ å‡½æ•°
         /// </summary>
         public MessageTimer(double interval) : base(interval)
         {
@@ -30,17 +30,17 @@ namespace WinFrmTalk
         #endregion
 
         /// <summary>
-        /// XmppÏûÏ¢
+        /// Xmppæ¶ˆæ¯
         /// </summary>
         public MessageObject TmpMsg { get; set; }
 
         /// <summary>
-        /// ¶ÔÓ¦µÄMessageId
+        /// å¯¹åº”çš„MessageId
         /// </summary>
         public string MessageId { get; set; } = "";
 
         /// <summary>
-        /// ÖØ·¢´ÎÊı
+        /// é‡å‘æ¬¡æ•°
         /// </summary>
         public int ReSendCount { get; set; }
 

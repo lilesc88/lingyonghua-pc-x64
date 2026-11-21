@@ -69,6 +69,7 @@
             this.menuItem_NoneSound = new System.Windows.Forms.ToolStripMenuItem();
             this.separator_one = new System.Windows.Forms.ToolStripSeparator();
             this.menuItem_Copy = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItem_Edit = new System.Windows.Forms.ToolStripMenuItem();
             this.separator_two = new System.Windows.Forms.ToolStripSeparator();
             this.menuItem_Recall = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItem_Relay = new System.Windows.Forms.ToolStripMenuItem();
@@ -549,6 +550,7 @@
             this.menuItem_NoneSound,
             this.separator_one,
             this.menuItem_Copy,
+            this.menuItem_Edit,
             this.separator_two,
             this.menuItem_Recall,
             this.menuItem_Relay,
@@ -598,6 +600,13 @@
             this.menuItem_Copy.Size = new System.Drawing.Size(154, 22);
             this.menuItem_Copy.Text = "复制";
             this.menuItem_Copy.Click += new System.EventHandler(this.menuItem_Copy_Click);
+            // 
+            // menuItem_Edit
+            // 
+            this.menuItem_Edit.Name = "menuItem_Edit";
+            this.menuItem_Edit.Size = new System.Drawing.Size(154, 22);
+            this.menuItem_Edit.Text = "编辑";
+            this.menuItem_Edit.Click += new System.EventHandler(this.menuItem_Edit_Click);
             // 
             // separator_two
             // 
@@ -732,6 +741,7 @@
         private System.Windows.Forms.ToolStripMenuItem menuItem_NoneSound;
         private System.Windows.Forms.ToolStripSeparator separator_one;
         private System.Windows.Forms.ToolStripMenuItem menuItem_Copy;
+        private System.Windows.Forms.ToolStripMenuItem menuItem_Edit;
         private System.Windows.Forms.ToolStripSeparator separator_two;
         private System.Windows.Forms.ToolStripMenuItem menuItem_Recall;
         private System.Windows.Forms.ToolStripMenuItem menuItem_Relay;

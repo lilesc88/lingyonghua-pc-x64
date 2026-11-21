@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -12,7 +12,7 @@ using WinFrmTalk.View.list;
 namespace WinFrmTalk
 {
     /// <summary>
-    /// Èº×éÁĞ±í
+    /// ç¾¤ç»„åˆ—è¡¨
     /// </summary>
     public partial class GroupListLayout : UserControl
     {
@@ -25,25 +25,25 @@ namespace WinFrmTalk
         private delegate void ProcesssFriend(Friend msg);
 
         /// <summary>
-        /// µ±Ç°Ñ¡ÖĞµÄÏîÄ¿
+        /// å½“å‰é€‰ä¸­çš„é¡¹ç›®
         /// </summary>
         private FriendItem SelectedItem { get; set; }
 
         /// <summary>
-        /// Ö÷´°¿Ú¶ÔÏó
+        /// ä¸»çª—å£å¯¹è±¡
         /// </summary>
         public FrmMain MainForm { get; set; }
 
         #endregion
 
-        #region ³£Á¿
+        #region å¸¸é‡
         /// <summary>
-        /// É¾³ıÈº×éToken
+        /// åˆ é™¤ç¾¤ç»„Token
         /// </summary>
         public const string DELETE_GROUP_ITEM = nameof(DELETE_GROUP_ITEM);
 
         /// <summary>
-        /// ·¢ËÍÈº×éÏûÏ¢Token
+        /// å‘é€ç¾¤ç»„æ¶ˆæ¯Token
         /// </summary>
         public const string SEND_GROUP_MSG = nameof(SEND_GROUP_MSG);
 
@@ -59,13 +59,13 @@ namespace WinFrmTalk
 
             mAdapter = new GroupListAdapter();
 
-            // ÓÉÓÚ³ÌĞò¼ÓÔØÊ±ÏÈÏÔÊ¾µÄ×î½üÏûÏ¢ÁĞ±í£¬¶ø´ËÁĞ±í²»»á¼ÓÔØ£¬µ¼ÖÂloadÊÂ¼ş²»»á±»µ÷ÓÃ£¬¼àÌı²»µ½xmppÀëÏß¹ıÀ´µÄ¼ÓÈºÏûÏ¢£¬µ¼ÖÂÈº×éÁĞ±í²»Í³Ò»
+            // ç”±äºç¨‹åºåŠ è½½æ—¶å…ˆæ˜¾ç¤ºçš„æœ€è¿‘æ¶ˆæ¯åˆ—è¡¨ï¼Œè€Œæ­¤åˆ—è¡¨ä¸ä¼šåŠ è½½ï¼Œå¯¼è‡´loadäº‹ä»¶ä¸ä¼šè¢«è°ƒç”¨ï¼Œç›‘å¬ä¸åˆ°xmppç¦»çº¿è¿‡æ¥çš„åŠ ç¾¤æ¶ˆæ¯ï¼Œå¯¼è‡´ç¾¤ç»„åˆ—è¡¨ä¸ç»Ÿä¸€
             RegisterMessenger();
 
 
             xListView.HeaderRefresh += XListView_HeaderRefresh;
             xListView.FooterRefresh += XListView_FooterRefresh;
-            GroupSearch.tips = LanguageXmlUtils.GetValue("search", "ËÑË÷");
+            GroupSearch.tips = LanguageXmlUtils.GetValue("search", "æœç´¢");
             GroupSearch.SearchEvent += Search;
         }
 
@@ -100,14 +100,14 @@ namespace WinFrmTalk
         }
 
 
-        #region ¼ÓÔØÊÂ¼ş
+        #region åŠ è½½äº‹ä»¶
         private void GroupListLayout_Load(object sender, EventArgs e)
         {
             //this.txtSearch.GotFocus += SearchFocused;
             //this.txtSearch.LostFocus += SearchUnFocused;
         }
         #endregion
-        #region ¼ÓÔØÈºÁĞ±í
+        #region åŠ è½½ç¾¤åˆ—è¡¨
 
         bool limitPage = false;
         bool isLock = false;
@@ -141,11 +141,11 @@ namespace WinFrmTalk
         }
 
         /// <summary>
-        /// ¼ÓÔØÈºÁĞ±í
+        /// åŠ è½½ç¾¤åˆ—è¡¨
         /// </summary>
         public void LoadRoomList(string searchText = "")
         {
-            var load = new LodingUtils { parent = this.xListView, Title = "¼ÓÔØÖĞ" };
+            var load = new LodingUtils { parent = this.xListView, Title = "åŠ è½½ä¸­" };
             load.start();
 
             Application.DoEvents();
@@ -156,7 +156,7 @@ namespace WinFrmTalk
             {
 
                 pageindex = 0;
-                rooms = new Friend() { IsGroup = 1 }.GetGroupsList();//»ñÈ¡ÁĞ±í
+                rooms = new Friend() { IsGroup = 1 }.GetGroupsList();//è·å–åˆ—è¡¨
 
                 int start = pageindex * PAGE_SIZE;
                 limitPage = rooms.Count > start;
@@ -192,7 +192,7 @@ namespace WinFrmTalk
         }
         #endregion
 
-        #region ×¢²áÍ¨Öª
+        #region æ³¨å†Œé€šçŸ¥
         private void RegisterMessenger()
         {
             Messenger.Default.Register<bool>(this, GroupListLayout.DELETE_GROUP_ITEM, DeleteGroup);
@@ -201,13 +201,13 @@ namespace WinFrmTalk
                 MainForm.SendMessageToFriend(SelectedItem.FriendData);
             });
 
-            // ĞŞ¸ÄÈº×éÃû³Æ
+            // ä¿®æ”¹ç¾¤ç»„åç§°
             Messenger.Default.Register<MessageObject>(this, MessageActions.XMPP_UPDATE_ROOM_CHANGE_MESSAGE, UpdateRommItem);
 
-            // ÎÒÍË³öÁËÒ»¸öÈº
+            // æˆ‘é€€å‡ºäº†ä¸€ä¸ªç¾¤
             Messenger.Default.Register<MessageObject>(this, MessageActions.XMPP_UPDATE_ROOM_DELETE, UpdateRommItem);
 
-            // ÎÒ±»ÑûÇë½øÈëÁËÒ»¸öÈº
+            // æˆ‘è¢«é‚€è¯·è¿›å…¥äº†ä¸€ä¸ªç¾¤
             Messenger.Default.Register<Friend>(this, MessageActions.ROOM_UPDATE_INVITE, CreteItemView);
 
             Messenger.Default.Register<string>(this, MessageActions.UPDATE_HEAD, RefreshFriendHead);
@@ -215,14 +215,14 @@ namespace WinFrmTalk
 
         #endregion
 
-        #region Ë¢ĞÂÓÃ»§Í·Ïñ
+        #region åˆ·æ–°ç”¨æˆ·å¤´åƒ
         private void RefreshFriendHead(string userId)
         {
 
             if (Thread.CurrentThread.IsBackground)
             {
                 var main = new DelegateString(RefreshFriendHead);
-                Invoke(main, userId);
+                if (!IsHandleCreated || IsDisposed) return; try { Invoke(main, userId); } catch (Exception ex) { Console.WriteLine("RefreshFriendHead error: " + ex.Message); }
                 return;
             }
 
@@ -230,13 +230,13 @@ namespace WinFrmTalk
             if (xListView.DataCreated(index))
             {
                 FriendItem item = xListView.GetItemControl(index) as FriendItem;
-                // Ë¢ĞÂÓÃ»§Í·Ïñ
+                // åˆ·æ–°ç”¨æˆ·å¤´åƒ
                 item.LoadHeadImage();
             }
         }
         #endregion
 
-        #region Ë¢ĞÂÈº×éÃû³Æ
+        #region åˆ·æ–°ç¾¤ç»„åç§°
         private void UpdateRommName(Friend friend)
         {
             int index = mAdapter.GetIndexByFriendId(friend.UserId);
@@ -247,7 +247,7 @@ namespace WinFrmTalk
                 if (xListView.DataCreated(index))
                 {
                     FriendItem item = xListView.GetItemControl(index) as FriendItem;
-                    // ĞŞ¸ÄÃû³Æ
+                    // ä¿®æ”¹åç§°
                     item.FriendData.NickName = friend.NickName;
                     item.ChangeFriendName();
 
@@ -257,7 +257,7 @@ namespace WinFrmTalk
         }
         #endregion
 
-        #region ĞŞ¸ÄÈºÃû³Æ
+        #region ä¿®æ”¹ç¾¤åç§°
         private void UpdateRommItem(MessageObject message)
         {
             if (Thread.CurrentThread.IsBackground == true)
@@ -279,7 +279,7 @@ namespace WinFrmTalk
                         int index = mAdapter.GetIndexByFriendId(message.ChatJid);
                         if (index > -1)
                         {
-                            // É¾³ıÊı¾İ    
+                            // åˆ é™¤æ•°æ®    
                             RemoveItemView(message.ChatJid);
 
                             CreteItemView(friend);
@@ -308,7 +308,7 @@ namespace WinFrmTalk
         }
         #endregion
 
-        #region ¸ù¾İRoomJIdÉ¾³ıÏî
+        #region æ ¹æ®RoomJIdåˆ é™¤é¡¹
         private void RemoveItemView(string roomjid)
         {
             int index = mAdapter.GetIndexByFriendId(roomjid);
@@ -326,7 +326,7 @@ namespace WinFrmTalk
         }
         #endregion
 
-        #region ¸ù¾İFriend´´½¨Ïî
+        #region æ ¹æ®Friendåˆ›å»ºé¡¹
         private void CreteItemView(Friend room)
         {
             if (Thread.CurrentThread.IsBackground == true)
@@ -338,7 +338,7 @@ namespace WinFrmTalk
 
             int index = mAdapter.GetIndexByFriendId(room.UserId);
 
-            // Ã»ÓĞ¾ÍÌí¼Ó
+            // æ²¡æœ‰å°±æ·»åŠ 
             if (index == -1)
             {
                 mAdapter.InsertData(0, room);
@@ -347,17 +347,17 @@ namespace WinFrmTalk
         }
         #endregion
 
-        #region ÓÒ¼ü²Ëµ¥-É¾³ı|ÍË³öÈºÁÄ
+        #region å³é”®èœå•-åˆ é™¤|é€€å‡ºç¾¤èŠ
         private void DeleteGroup(bool para)
         {
 
 
-            var group = SelectedItem.FriendData.Clone();//»ñÈ¡Ñ¡ÖĞÈº×é
+            var group = SelectedItem.FriendData.Clone();//è·å–é€‰ä¸­ç¾¤ç»„
             if (CurrIsLeader(Applicate.MyAccount.userId, group.RoomId))
             {
-                if (MessageBox.Show("ÊÇ·ñ½âÉ¢  " + group.NickName + " £¿", "É¾³ıÈºÁÄ", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                if (MessageBox.Show("æ˜¯å¦è§£æ•£  " + group.NickName + " ï¼Ÿ", "åˆ é™¤ç¾¤èŠ", MessageBoxButtons.OKCancel) == DialogResult.OK)
                 {
-                    var load = new LodingUtils { parent = this.xListView, Title = "¼ÓÔØÖĞ" };
+                    var load = new LodingUtils { parent = this.xListView, Title = "åŠ è½½ä¸­" };
                     load.start();
                     HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + ApplicateConst.DeleteRoom)
                         .AddParams("access_token", Applicate.Access_Token)
@@ -380,9 +380,9 @@ namespace WinFrmTalk
             }
             else
             {
-                if (MessageBox.Show("ÊÇ·ñÍË³ö  " + group.NickName + " £¿", "ÍË³öÈºÁÄ", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                if (MessageBox.Show("æ˜¯å¦é€€å‡º  " + group.NickName + " ï¼Ÿ", "é€€å‡ºç¾¤èŠ", MessageBoxButtons.OKCancel) == DialogResult.OK)
                 {
-                    var load = new LodingUtils { parent = this.xListView, Title = "¼ÓÔØÖĞ" };
+                    var load = new LodingUtils { parent = this.xListView, Title = "åŠ è½½ä¸­" };
                     load.start();
                     HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + ApplicateConst.DeleteRoomMember)
                         .AddParams("access_token", Applicate.Access_Token)
@@ -405,17 +405,17 @@ namespace WinFrmTalk
         }
         #endregion
 
-        #region ÉèÖÃÓÒ¼ü²Ëµ¥
+        #region è®¾ç½®å³é”®èœå•
         public FriendItem BindContextMenu(FriendItem item)
         {
 
-            var sendmsgitem = new MenuItem("·¢ËÍÏûÏ¢", (sender, eve) =>
+            var sendmsgitem = new MenuItem("å‘é€æ¶ˆæ¯", (sender, eve) =>
             {
                 Messenger.Default.Send(true, GroupListLayout.SEND_GROUP_MSG);
 
             });
-            //var detailitem = new MenuItem("Èº×éÏêÇé", (sen, eve) => { Messenger.Default.Send(true, GroupListLayout.SHOW_GROUP_DETAIL); });
-            string str = CurrIsLeader(Applicate.MyAccount.userId, item.FriendData.RoomId) ? "½âÉ¢Èº×é" : "ÍË³öÈº×é";
+            //var detailitem = new MenuItem("ç¾¤ç»„è¯¦æƒ…", (sen, eve) => { Messenger.Default.Send(true, GroupListLayout.SHOW_GROUP_DETAIL); });
+            string str = CurrIsLeader(Applicate.MyAccount.userId, item.FriendData.RoomId) ? "è§£æ•£ç¾¤ç»„" : "é€€å‡ºç¾¤ç»„";
             var blockitem = new MenuItem(str, (sender, eve) =>
             {
                 Messenger.Default.Send(true, GroupListLayout.DELETE_GROUP_ITEM);
@@ -425,12 +425,12 @@ namespace WinFrmTalk
             cm.MenuItems.Add(sendmsgitem);
             //cm.MenuItems.Add(detailitem);
             cm.MenuItems.Add(blockitem);
-            item.ContextMenu = cm;//ÉèÖÃÓÒ¼ü²Ëµ¥
+            item.ContextMenu = cm;//è®¾ç½®å³é”®èœå•
             return item;
         }
         #endregion
 
-        #region ÅĞ¶ÏÎÒÔÚÄ³¸öÈºÀïÊÇ·ñÊÇÈºÖ÷
+        #region åˆ¤æ–­æˆ‘åœ¨æŸä¸ªç¾¤é‡Œæ˜¯å¦æ˜¯ç¾¤ä¸»
         private bool CurrIsLeader(string useruId, string roomid)
         {
             int role = new RoomMember() { userId = useruId, roomId = roomid }.GetRoleByUserId();
@@ -438,7 +438,7 @@ namespace WinFrmTalk
         }
         #endregion
 
-        #region Ë«»÷Èº×é¿ªÊ¼ÁÄÌì
+        #region åŒå‡»ç¾¤ç»„å¼€å§‹èŠå¤©
         public void DoubleGroupItem(object sender, EventArgs e)
         {
             FriendItem item = sender as FriendItem;
@@ -447,10 +447,10 @@ namespace WinFrmTalk
 
         #endregion
 
-        #region ×ó¼üºÍÓÒ¼üÑ¡ÖĞÊÂ¼ş
+        #region å·¦é”®å’Œå³é”®é€‰ä¸­äº‹ä»¶
         public void MouseDownItem(object sender, MouseEventArgs e)
         {
-            // ¹ıÂËÖØ¸´µã»÷Ïî
+            // è¿‡æ»¤é‡å¤ç‚¹å‡»é¡¹
             FriendItem temp = sender as FriendItem;
             if (SelectedItem != null && SelectedItem.FriendData != null)
             {
@@ -460,10 +460,10 @@ namespace WinFrmTalk
                 }
             }
 
-            // ¸Ä±äÑ¡ÖĞ±³¾°ÑÕÉ«
+            // æ”¹å˜é€‰ä¸­èƒŒæ™¯é¢œè‰²
             if (SelectedItem != null && SelectedItem.FriendData != null)
             {
-                // °ÑÉÏÒ»¸öÈ¡ÏûÑ¡ÖĞ
+                // æŠŠä¸Šä¸€ä¸ªå–æ¶ˆé€‰ä¸­
                 SelectedItem.IsSelected = false;
             }
             temp.IsSelected = true;
@@ -473,24 +473,24 @@ namespace WinFrmTalk
             if (e == null || e.Button == MouseButtons.Left)
             {
                 MainForm.SelectGroup(SelectedItem.FriendData);
-                MainForm.SelectIndex = MainTabIndex.GroupPage;//ÏÔÊ¾Èº×éÏêÇéÓÒ²àÃæ°å
+                MainForm.SelectIndex = MainTabIndex.GroupPage;//æ˜¾ç¤ºç¾¤ç»„è¯¦æƒ…å³ä¾§é¢æ¿
             }
         }
 
         #endregion
 
-        #region +ºÅµã»÷
+        #region +å·ç‚¹å‡»
         private void btnPlus_Click(object sender, EventArgs e)
         {
             if (Applicate.URLDATA.data.isOpenRoomSearch == 0)
             {
-                #region ´ò¿ªËÑË÷Èº¹¦ÄÜ
+                #region æ‰“å¼€æœç´¢ç¾¤åŠŸèƒ½
                 var tmpset = Applicate.GetWindow<FrmGroupQuery>();
                 var parent = Applicate.GetWindow<FrmMain>();
-                if (tmpset == null)//µ¥Àı´ò¿ªºÃÓÑÌí¼Ó´°¿Ú
+                if (tmpset == null)//å•ä¾‹æ‰“å¼€å¥½å‹æ·»åŠ çª—å£
                 {
                     var query = new FrmGroupQuery();
-                    query.Location = new Point(parent.Location.X + (parent.Width - query.Width) / 2, parent.Location.Y + (parent.Height - query.Height) / 2);//¾ÓÖĞ
+                    query.Location = new Point(parent.Location.X + (parent.Width - query.Width) / 2, parent.Location.Y + (parent.Height - query.Height) / 2);//å±…ä¸­
                     query.Show();
                 }
                 else
@@ -501,17 +501,17 @@ namespace WinFrmTalk
             }
             else
             {
-                #region ´´½¨Èº
+                #region åˆ›å»ºç¾¤
                 FrmBuildGroups create = new FrmBuildGroups();
                 var parent = Applicate.GetWindow<FrmMain>();
-                create.Location = new Point(parent.Location.X + (parent.Width - create.Width) / 2, parent.Location.Y + (parent.Height - create.Height) / 2);//¾ÓÖĞ
+                create.Location = new Point(parent.Location.X + (parent.Width - create.Width) / 2, parent.Location.Y + (parent.Height - create.Height) / 2);//å±…ä¸­
                 create.Show();
                 #endregion
             }
         }
         #endregion
 
-        #region ËÑË÷ÎÄ±¾¸Ä±äÊ±
+        #region æœç´¢æ–‡æœ¬æ”¹å˜æ—¶
 
         private string lastSearchText;
 
@@ -532,11 +532,11 @@ namespace WinFrmTalk
                 return;
             }
 
-            // Çå¿ÕÁËËÑË÷¿ò
+            // æ¸…ç©ºäº†æœç´¢æ¡†
             if (string.IsNullOrEmpty(currText) && !string.IsNullOrEmpty(lastSearchText))
             {
                 lastSearchText = currText;
-                // »Ö¸´Ô­ÁĞ±í
+                // æ¢å¤åŸåˆ—è¡¨
                 LoadRoomList();
                 return;
             }
@@ -544,7 +544,7 @@ namespace WinFrmTalk
             lastSearchText = currText;
             if (!string.IsNullOrEmpty(currText))
             {
-                // ¼ÓÔØËÑË÷Êı¾İ
+                // åŠ è½½æœç´¢æ•°æ®
                 LoadRoomList(currText);
                 return;
             }

@@ -1,4 +1,4 @@
-using Newtonsoft.Json.Linq;
+ï»¿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,7 +22,7 @@ namespace WinFrmTalk.Controls.CustomControls
 {
     public partial class SendMsgPanel : UserControl
     {
-        #region Ë«»º³å
+        #region åŒç¼“å†²
         protected override CreateParams CreateParams
         {
             get
@@ -34,7 +34,7 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ·ÇÆôÓÃ×´Ì¬²»¸Ä±ä±³¾°É«
+        #region éå¯ç”¨çŠ¶æ€ä¸æ”¹å˜èƒŒæ™¯è‰²
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         public static extern int SetWindowLong(IntPtr hWnd, int nIndex, int wndproc);
         [System.Runtime.InteropServices.DllImport("user32.dll")]
@@ -52,70 +52,70 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        private int isHaveReadDel = 0;      //±¾´ÎÁÄÌìÁĞ±íÊÇ·ñº¬ÓĞÔÄºó¼´·ÙÏûÏ¢
-        private bool isHaveMoreLocalMsg = true;        //±¾µØÊı¾İ¿âÊÇ·ñÓĞ¸ü¶àÁÄÌì¼ÇÂ¼
-        private FrmExpressionTab frmExpressionTab;      //±íÇéÁĞ±í´°¿Ú
+        private int isHaveReadDel = 0;      //æœ¬æ¬¡èŠå¤©åˆ—è¡¨æ˜¯å¦å«æœ‰é˜…åå³ç„šæ¶ˆæ¯
+        private bool isHaveMoreLocalMsg = true;        //æœ¬åœ°æ•°æ®åº“æ˜¯å¦æœ‰æ›´å¤šèŠå¤©è®°å½•
+        private FrmExpressionTab frmExpressionTab;      //è¡¨æƒ…åˆ—è¡¨çª—å£
         private Friend _choose_target;
-        //Ñ¡ÔñµÄÁªÏµÈË
+        //é€‰æ‹©çš„è”ç³»äºº
         public Friend choose_target
         {
             get { if (_choose_target == null) return new Friend(); else return _choose_target; }
             set => _choose_target = value;
         }
-        private int emoji_num = 0;      //µ±Ç°ÎÄ±¾¿òÓĞ¶àÉÙ¸öemoji±íÇé
-        private List<string> emoji_codes = new List<string>();   //¼ÇÂ¼ÎÄ±¾¿òÖĞµÄemojiCode
-        private const int row_insert = 20;     //¸ü¶àÁÄÌì¼ÇÂ¼£¬Ò»´Î¼ÓÔØ¶àÉÙĞĞ
-        private int PAGE_INDEX = 1;     //µ±Ç°µÄÏûÏ¢ÁĞ±íÒ³Êı
-        Control crl_content = null;         //Ñ¡ÖĞµÄÁÄÌì¿òÄÚÈİ¿Ø¼ş
-        Control selectControl = null;        //contextMenuStripµÄÓÒ¼üÑ¡ÖĞ¶ÔÏó
-        int rowIndex = 0;        //±»µã»÷µÄĞĞ
-        private int canAddMsg = 1;      //Îª0Ê±´ú±í±¾µØÃ»ÓĞ¸ü¶àÏûÏ¢¼ÇÂ¼
-        private int isReplace = 1;      //Îª0Ê±´ú±íÕıÔÚ·¢ËÍ£¬²»½øĞĞemojiµÄÌæ»»
+        private int emoji_num = 0;      //å½“å‰æ–‡æœ¬æ¡†æœ‰å¤šå°‘ä¸ªemojiè¡¨æƒ…
+        private List<string> emoji_codes = new List<string>();   //è®°å½•æ–‡æœ¬æ¡†ä¸­çš„emojiCode
+        private const int row_insert = 20;     //æ›´å¤šèŠå¤©è®°å½•ï¼Œä¸€æ¬¡åŠ è½½å¤šå°‘è¡Œ
+        private int PAGE_INDEX = 1;     //å½“å‰çš„æ¶ˆæ¯åˆ—è¡¨é¡µæ•°
+        Control crl_content = null;         //é€‰ä¸­çš„èŠå¤©æ¡†å†…å®¹æ§ä»¶
+        Control selectControl = null;        //contextMenuStripçš„å³é”®é€‰ä¸­å¯¹è±¡
+        int rowIndex = 0;        //è¢«ç‚¹å‡»çš„è¡Œ
+        private int canAddMsg = 1;      //ä¸º0æ—¶ä»£è¡¨æœ¬åœ°æ²¡æœ‰æ›´å¤šæ¶ˆæ¯è®°å½•
+        private int isReplace = 1;      //ä¸º0æ—¶ä»£è¡¨æ­£åœ¨å‘é€ï¼Œä¸è¿›è¡Œemojiçš„æ›¿æ¢
         private List<string> fileCollect = new List<string>();
-        EQShowInfoPanelAlpha ShowInfoShade = new EQShowInfoPanelAlpha();       //Í¸Ã÷panelÓÃÓÚ²¶×½¶àÑ¡µã»÷ÊÂ¼ş
-        private bool isCanTalk = false;  //Èº½âÉ¢»òÕß±»Ìß³öµÈ£¬²»ÄÜÔÙÁÄÌì¡£Í¬Ê±¿ØÖÆ²»ÔÙÀ­È¡ÂşÓÎ
-        private bool isDownloadRoaming = false;     //ÊÇ·ñÕıÔÚÀ­È¡ÂşÓÎ£¬±ÜÃâÑ¡ÔñÁÄÌì¶ÔÏó»¹Î´À­È¡µ½×îĞÂÏûÏ¢¾ÍÒÑ¾­Éú³ÉÆøÅİ
-        private Dictionary<string, MessageObject> loadMsgsData = new Dictionary<string, MessageObject>();   //±£´æÔİÊ±²»ÄÜÌí¼Óµ½ÁĞ±íµÄÏûÏ¢
-        LodingUtils loding = new LodingUtils();     //ĞÂ´´Ò»¸öµÈ´ı·û
-        private int readNum = 0;    //Î´¶ÁÊıÁ¿¼ÆÊı
-        private string readMsgId = "";      //Î´¶ÁĞÅÏ¢µÄµÚÒ»Ìõid
+        EQShowInfoPanelAlpha ShowInfoShade = new EQShowInfoPanelAlpha();       //é€æ˜panelç”¨äºæ•æ‰å¤šé€‰ç‚¹å‡»äº‹ä»¶
+        private bool isCanTalk = false;  //ç¾¤è§£æ•£æˆ–è€…è¢«è¸¢å‡ºç­‰ï¼Œä¸èƒ½å†èŠå¤©ã€‚åŒæ—¶æ§åˆ¶ä¸å†æ‹‰å–æ¼«æ¸¸
+        private bool isDownloadRoaming = false;     //æ˜¯å¦æ­£åœ¨æ‹‰å–æ¼«æ¸¸ï¼Œé¿å…é€‰æ‹©èŠå¤©å¯¹è±¡è¿˜æœªæ‹‰å–åˆ°æœ€æ–°æ¶ˆæ¯å°±å·²ç»ç”Ÿæˆæ°”æ³¡
+        private Dictionary<string, MessageObject> loadMsgsData = new Dictionary<string, MessageObject>();   //ä¿å­˜æš‚æ—¶ä¸èƒ½æ·»åŠ åˆ°åˆ—è¡¨çš„æ¶ˆæ¯
+        LodingUtils loding = new LodingUtils();     //æ–°åˆ›ä¸€ä¸ªç­‰å¾…ç¬¦
+        private int readNum = 0;    //æœªè¯»æ•°é‡è®¡æ•°
+        private string readMsgId = "";      //æœªè¯»ä¿¡æ¯çš„ç¬¬ä¸€æ¡id
         private double lastMsgTime = 0;
         private MessageObjectDataDictionary targetMsgData
         {
             get
             {
-                //»ñÈ¡ĞÂµÄÁÄÌì¶ÔÏóµÄÏûÏ¢ÁĞ±í
+                //è·å–æ–°çš„èŠå¤©å¯¹è±¡çš„æ¶ˆæ¯åˆ—è¡¨
                 if (choose_target == null || string.IsNullOrEmpty(choose_target.UserId))
                     return new MessageObjectDataDictionary();
                 else
                     return ChatTargetDictionary.GetMsgData(choose_target.UserId);
             }
-        }     //µ±Ç°ÁÄÌì¶ÔÏóµÄÏûÏ¢×Öµä
-        public int isSeparateChat = 0;      //¼ÇÂ¼ÊÇ·ñÎª¶ÀÁ¢ÁÄÌì´°Ìå
+        }     //å½“å‰èŠå¤©å¯¹è±¡çš„æ¶ˆæ¯å­—å…¸
+        public int isSeparateChat = 0;      //è®°å½•æ˜¯å¦ä¸ºç‹¬ç«‹èŠå¤©çª—ä½“
         
-        #region ²İ¸å»ØÏÔ
+        #region è‰ç¨¿å›æ˜¾
         private void DraftShow(Friend friend)
         {
             if (choose_target != null)
             {
-                //¾ÉÁÄÌì¶ÔÏó´¢´æÔÚÊı¾İ¿âµÄ²İ¸å
+                //æ—§èŠå¤©å¯¹è±¡å‚¨å­˜åœ¨æ•°æ®åº“çš„è‰ç¨¿
                 string old_draft = LocalDataUtils.GetStringData(Applicate.MyAccount.userId + "_DRAFT_" + choose_target.UserId);
-                //¾ÉÁÄÌì¶ÔÏóµ±Ç°µÄ²İ¸å
+                //æ—§èŠå¤©å¯¹è±¡å½“å‰çš„è‰ç¨¿
                 string new_draft = txtSend.Rtf;
-                //ĞèÒª±£´æ²İ¸åµÄ¶ÔÏó
+                //éœ€è¦ä¿å­˜è‰ç¨¿çš„å¯¹è±¡
                 LocalDataUtils.SetStringData(Applicate.MyAccount.userId + "_DRAFT_" + choose_target.UserId, txtSend.Rtf);
 
-                //ÓÃÕıÔò±í´ïÊ½£¬»ñÈ¡Í¼Æ¬rtf
+                //ç”¨æ­£åˆ™è¡¨è¾¾å¼ï¼Œè·å–å›¾ç‰‡rtf
                 MatchCollection matchs = Regex.Matches(txtSend.Rtf, @"{\\pict[a-z0-9\\\s]*}", RegexOptions.IgnoreCase | RegexOptions.Singleline);
                 foreach (Match match in matchs)
                 {
                     txtSend.Rtf = txtSend.Rtf.Replace(match.Value, "[Í¼Æ¬]");
                 }
 
-                //×î½üÏûÏ¢ÁĞ±íµÄ»ØÏÔ
+                //æœ€è¿‘æ¶ˆæ¯åˆ—è¡¨çš„å›æ˜¾
                 if (!string.IsNullOrEmpty(txtSend.Text))
                 {
-                    choose_target.UpdateLastContent("²İ¸å:" + txtSend.Text, TimeUtils.CurrentTimeDouble());
+                    choose_target.UpdateLastContent("è‰ç¨¿:" + txtSend.Text, TimeUtils.CurrentTimeDouble());
                     MessageObject message = new MessageObject()
                     {
                         FromId = Applicate.MyAccount.userId,
@@ -127,7 +127,7 @@ namespace WinFrmTalk.Controls.CustomControls
                     };
                     Messenger.Default.Send(message, MessageActions.XMPP_SHOW_SINGLE_MESSAGE);
                 }
-                // Ë¢ĞÂ×îºóÒ»ÌõÁÄÌì¼ÇÂ¼
+                // åˆ·æ–°æœ€åä¸€æ¡èŠå¤©è®°å½•
                 else
                 {
                     if (!old_draft.Equals(new_draft))
@@ -135,10 +135,10 @@ namespace WinFrmTalk.Controls.CustomControls
                 }
             }
 
-            //ĞÂµÄÁÄÌì¶ÔÏó
+            //æ–°çš„èŠå¤©å¯¹è±¡
             if (friend != null)
             {
-                //»ñÈ¡ĞÂÁÄÌì¶ÔÏóµÄ²İ¸å
+                //è·å–æ–°èŠå¤©å¯¹è±¡çš„è‰ç¨¿
                 string draft = LocalDataUtils.GetStringData(Applicate.MyAccount.userId + "_DRAFT_" + friend.UserId);
                 if (string.IsNullOrEmpty(draft))
                     txtSend.Text = draft;
@@ -148,47 +148,48 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ÁÄÌìÁĞ±íµÚÒ»´Î¼ÓÔØ
+        #region èŠå¤©åˆ—è¡¨ç¬¬ä¸€æ¬¡åŠ è½½
         public SendMsgPanel()
         {
             InitializeComponent();
 
-            ShowInfoVScroll.SetCurrentPanel(showInfo_Panel.Name);   //ÉèÖÃ¹ö¶¯Ìõ
+            ShowInfoVScroll.SetCurrentPanel(showInfo_Panel.Name);   //è®¾ç½®æ»šåŠ¨æ¡
 
-            //ÏûÏ¢ÁĞ±íÕÚÕÖ²ã£¨¶àÑ¡£©
+            //æ¶ˆæ¯åˆ—è¡¨é®ç½©å±‚ï¼ˆå¤šé€‰ï¼‰
             ShowInfoShade.Name = "ShowInfoShade";
             ShowInfoShade.MouseDown += ShowInfoShade_MouseDown;
-            //²»ÏÔÊ¾ÕÚÕÖ²ã
+            //ä¸æ˜¾ç¤ºé®ç½©å±‚
             IsShowInfoShade(false);
-            //Ìí¼Ó¿Ø¼ş
+            //æ·»åŠ æ§ä»¶
             Takeconter_panel.Controls.Add(ShowInfoShade);
-            //°ó¶¨¹ö¶¯ÊÂ¼ş
+            //ç»‘å®šæ»šåŠ¨äº‹ä»¶
             ShowInfoVScroll.SetShowInfoShade(ShowInfoShade.Name);
 
-            //Ìí¼Ó¹ö¶¯¼àÌı
+            //æ·»åŠ æ»šåŠ¨ç›‘å¬
             ShowInfoVScroll.AddScollerBouttom(() =>
             {
                 AddMoreMsg();
             });
 
-            //@Í¨ÖªµÄµã»÷¼àÌı
+            //@é€šçŸ¥çš„ç‚¹å‡»ç›‘å¬
             AtMePanel.AddEvent((msgId) =>
             {
-                //¸üĞÂ@×´Ì¬
+                //æ›´æ–°@çŠ¶æ€
                 choose_target.UpdateAtMeState(0);
 
-                //»ñÈ¡ÊÕµ½@µÄmessage
+                //è·å–æ”¶åˆ°@çš„message
                 MessageObject msg = targetMsgData.GetMsg(msgId);
 
                 if (choose_target.IsGroup != 1 || msg.rowIndex < -1)
                     return;
 
-                //¸ú×Ùµ½¸ÃĞÅÏ¢Î»ÖÃ
+                //è·Ÿè¸ªåˆ°è¯¥ä¿¡æ¯ä½ç½®
                 if (msg != null)
+                    cmsMsgMenu.Items["menuItem_Edit"].Visible = false;
                 {
                     SetPanTopByRowIndex(msg.rowIndex);
                 }
-                //²»ÔÚÁĞ±íÖĞ£¬Ôò±Ø¶¨ÔÚÊı¾İ¿âÖĞ
+                //ä¸åœ¨åˆ—è¡¨ä¸­ï¼Œåˆ™å¿…å®šåœ¨æ•°æ®åº“ä¸­
                 else
                 {
                     while (ShowInfoVScroll.canAdd == 1)
@@ -204,19 +205,19 @@ namespace WinFrmTalk.Controls.CustomControls
                 }
             });
 
-            #region ĞÂÏûÏ¢±êÊ¶µã»÷¼àÌı
+            #region æ–°æ¶ˆæ¯æ ‡è¯†ç‚¹å‡»ç›‘å¬
             unReadNumPanel.AddListen((msgId) =>
             {
                 MessageObject msg = new MessageObject() { FromId = choose_target.UserId, messageId = msgId }.GetMessageObject();
-                //²éÑ¯µÄ½á¹ûÎª¿Õ
+                //æŸ¥è¯¢çš„ç»“æœä¸ºç©º
                 if (string.IsNullOrWhiteSpace(msg.messageId))
                     return;
 
-                #region ×·×ÙĞĞ
-                //ÔÚ×ÖµäÖĞ²éÕÒ
+                #region è¿½è¸ªè¡Œ
+                //åœ¨å­—å…¸ä¸­æŸ¥æ‰¾
                 MessageObject dic_msg = targetMsgData.GetMsg(msgId);
 
-                //¸ú×Ùµ½¸ÃĞÅÏ¢Î»ÖÃ
+                //è·Ÿè¸ªåˆ°è¯¥ä¿¡æ¯ä½ç½®
                 if (dic_msg != null)
                 {
                     if (dic_msg.rowIndex < 0)
@@ -224,7 +225,7 @@ namespace WinFrmTalk.Controls.CustomControls
 
                     SetPanelTopByMsg(dic_msg);
                 }
-                //²»ÔÚÁĞ±íÖĞ£¬Ôò±Ø¶¨ÔÚÊı¾İ¿âÖĞ
+                //ä¸åœ¨åˆ—è¡¨ä¸­ï¼Œåˆ™å¿…å®šåœ¨æ•°æ®åº“ä¸­
                 else
                 {
                     while (ShowInfoVScroll.canAdd == 1)
@@ -242,17 +243,17 @@ namespace WinFrmTalk.Controls.CustomControls
             });
             #endregion
 
-            #region Â¼Òô»Øµ÷
+            #region å½•éŸ³å›è°ƒ
             userSoundRecording.PathCallback = (localPath, timespan) =>
             {
-                //ĞŞ¸Ä½¹µã
+                //ä¿®æ”¹ç„¦ç‚¹
                 txtSend.Focus();
                 int timeLen = (int)timespan.TotalSeconds;
                 int fileSize = Convert.ToInt32(new FileInfo(localPath).Length);
-                //ÏÈÉú³ÉÆøÅİ
+                //å…ˆç”Ÿæˆæ°”æ³¡
                 MessageObject msg = ShiKuManager.SendVoiceMessage(choose_target, "", localPath, fileSize, timeLen, false);
                 JudgeMsgIsAddToPanel(msg);
-                //ÉÏ´«ÒôÆµÎÄ¼ş
+                //ä¸Šä¼ éŸ³é¢‘æ–‡ä»¶
                 UploadEngine.Instance.From(localPath).
                     UploadFile((success, url) =>
                     {
@@ -266,19 +267,19 @@ namespace WinFrmTalk.Controls.CustomControls
             };
             #endregion
 
-            #region ÅÄÕÕ»Øµ÷
+            #region æ‹ç…§å›è°ƒ
 
             #endregion
 
-            //ÔÊĞíÍÏ×§(liuhuan)
+            //å…è®¸æ‹–æ‹½(liuhuan)
             txtSend.AllowDrop = true;
             txtSend.DragDrop += TxtSend_DragDrop;
             txtSend.DragEnter += TxtSend_DragEnter;
 
         }
-        #region ÍÏÈë¿Ø¼ş±ß½çÊ±·¢Éú£¨liuhuan/2019/4/22£©
+        #region æ‹–å…¥æ§ä»¶è¾¹ç•Œæ—¶å‘ç”Ÿï¼ˆliuhuan/2019/4/22ï¼‰
         /// <summary>
-        /// ÍÏÈë¿Ø¼ş±ß½çÊ±·¢Éú
+        /// æ‹–å…¥æ§ä»¶è¾¹ç•Œæ—¶å‘ç”Ÿ
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -296,9 +297,9 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region  ÔÚÍê³ÉÍÏ·Å²Ù×÷Ê±Íê³É£¨liuhuan/2019/4/22£©
+        #region  åœ¨å®Œæˆæ‹–æ”¾æ“ä½œæ—¶å®Œæˆï¼ˆliuhuan/2019/4/22ï¼‰
         /// <summary>
-        /// ÔÚÍê³ÉÍÏ·Å²Ù×÷Ê±Íê³É
+        /// åœ¨å®Œæˆæ‹–æ”¾æ“ä½œæ—¶å®Œæˆ
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -317,18 +318,18 @@ namespace WinFrmTalk.Controls.CustomControls
 
                 //switch (Path.GetExtension(file))
                 //{
-                //    case ".txt"://ÅĞ¶ÏÎÄ¼şÀàĞÍÎªtxtÎÄ¼ş
+                //    case ".txt"://åˆ¤æ–­æ–‡ä»¶ç±»å‹ä¸ºtxtæ–‡ä»¶
                 //        sr = new StreamReader(file, System.Text.Encoding.Default);
 
                 //        sr.Close();
                 //        break;
                 //    case ".png":
-                //    case ".jpg": //ÅĞ¶ÏÎÄ¼şÀàĞÍÎªpngÎÄ¼ş
+                //    case ".jpg": //åˆ¤æ–­æ–‡ä»¶ç±»å‹ä¸ºpngæ–‡ä»¶
                 //    case ".bmp":
 
                 //        sr.Close();
                 //        break;
-                //    case ".html": //ÅĞ¶ÏÎÄ¼şÀàĞÍÎªhtmlÎÄ¼ş
+                //    case ".html": //åˆ¤æ–­æ–‡ä»¶ç±»å‹ä¸ºhtmlæ–‡ä»¶
 
                 //        sr.Close();
                 //        break;
@@ -344,9 +345,9 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region  ·¢ËÍÍÏ×§ºóµÄÎÄ¼ş£¨liuhuan/2019/4/22£©
+        #region  å‘é€æ‹–æ‹½åçš„æ–‡ä»¶ï¼ˆliuhuan/2019/4/22ï¼‰
         /// <summary>
-        /// ÍÏ×§ºóµã»÷·¢ËÍÎÄ¼ş
+        /// æ‹–æ‹½åç‚¹å‡»å‘é€æ–‡ä»¶
         /// </summary>
         private void DroupFeileSend()
         {
@@ -354,7 +355,7 @@ namespace WinFrmTalk.Controls.CustomControls
             {
                 for (int i = 0; i < fileCollect.Count; i++)
                 {
-                    UploadFileOrImage(fileCollect[i], Convert.ToInt32(new FileInfo(fileCollect[i]).Length));   //ÉÏ´«Í¼Æ¬
+                    UploadFileOrImage(fileCollect[i], Convert.ToInt32(new FileInfo(fileCollect[i]).Length));   //ä¸Šä¼ å›¾ç‰‡
                 }
                 txtSend.Clear();
                 fileCollect.Clear();
@@ -366,8 +367,8 @@ namespace WinFrmTalk.Controls.CustomControls
         private void SendMsgPanel_Load(object sender, EventArgs e)
         {
             this.TabStop = false;
-            RegisterMessengers();       //×¢²áÍ¨Öª
-            // ÉèÖÃÁÄÌì±³¾°Í¼Æ¬£¨2026-08-16 ÒÑÈ¥³ıÖ½·É»ú±³¾° chat_bg.png£©
+            RegisterMessengers();       //æ³¨å†Œé€šçŸ¥
+            // è®¾ç½®èŠå¤©èƒŒæ™¯å›¾ç‰‡ï¼ˆ2026-08-16 å·²å»é™¤çº¸é£æœºèƒŒæ™¯ chat_bg.pngï¼‰
             //try
             //{
             //    string bgPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resource", "chat_bg.png");
@@ -381,149 +382,149 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ×¢²áÍ¨Öª
+        #region æ³¨å†Œé€šçŸ¥
         /// <summary>
-        /// ×¢²áÍ¨Öª  (×¢ÊÍ¿É½«Êó±êÒÆÖÁNotifactionÊôĞÔÉÏ²é¿´)    
+        /// æ³¨å†Œé€šçŸ¥  (æ³¨é‡Šå¯å°†é¼ æ ‡ç§»è‡³Notifactionå±æ€§ä¸ŠæŸ¥çœ‹)    
         /// </summary>
         private void RegisterMessengers()
         {
-            //×¢²áÌí¼ÓÏûÏ¢ÆøÅİµ½ÏûÏ¢ÁĞ±í
+            //æ³¨å†Œæ·»åŠ æ¶ˆæ¯æ°”æ³¡åˆ°æ¶ˆæ¯åˆ—è¡¨
             //Messenger.Default.Register<MessageObject>(this, CommonNotifications.XmppMsgAddTable, item => AddMessageToPanel(item.messageId));
-            //×¢²áÍùÎÄ±¾¿òÌí¼Óemoji±íÇé
+            //æ³¨å†Œå¾€æ–‡æœ¬æ¡†æ·»åŠ emojiè¡¨æƒ…
             //Messenger.Default.Register<string>(this, EQFrmInteraction.AddEmojiToTxtSend, item => AddEmojiToTxtSend(item));
-            //×¢²á·¢ËÍÏûÏ¢Ê±Ìí¼ÓÏûÏ¢ÆøÅİ
+            //æ³¨å†Œå‘é€æ¶ˆæ¯æ—¶æ·»åŠ æ¶ˆæ¯æ°”æ³¡
             //Messenger.Default.Register<MessageObject>(this, EQFrmInteraction.SendMsgAddBubble, item => AddMessageToPanel(item));
-            //¶àÑ¡²Ù×÷½áÊø
+            //å¤šé€‰æ“ä½œç»“æŸ
             Messenger.Default.Register<Friend>(this, EQFrmInteraction.MultiSelectEnd, item => CloseMultiSelect(false));
-            #region Çå¿ÕUI
-            //×¢²áÇå¿ÕUI£¨µ¥Ïò£©
+            #region æ¸…ç©ºUI
+            //æ³¨å†Œæ¸…ç©ºUIï¼ˆå•å‘ï¼‰
             Messenger.Default.Register<string>(this, EQFrmInteraction.ClearFdMsgsSingle, (userId) =>
             {
-                //ÇëÇó½Ó¿ÚÉ¾³ıÁÄÌì¼ÇÂ¼
+                //è¯·æ±‚æ¥å£åˆ é™¤èŠå¤©è®°å½•
                 MessageObject message = new MessageObject() { FromId = userId };
                 message.DeleteTable();
 
-                //Í¨Öª×î½üÁÄÌìÁĞ±í¸üĞÂ
+                //é€šçŸ¥æœ€è¿‘èŠå¤©åˆ—è¡¨æ›´æ–°
                 Friend fd = new Friend() { UserId = userId };
                 Messenger.Default.Send(fd, token: MessageActions.UPDATE_FRIEND_LAST_CONTENT);
 
-                // Çå³ı·şÎñÆ÷Êı¾İ
+                // æ¸…é™¤æœåŠ¡å™¨æ•°æ®
                 ClearServerFriendMsg(userId);
 
                 if (choose_target == null)
                     return;
-                if (userId == choose_target.UserId)     //¶ÔÏó±ØĞëÊÇµ±Ç°ÁÄÌì¶ÔÏó²ÅÇå¿ÕÒ³Ãæ
+                if (userId == choose_target.UserId)     //å¯¹è±¡å¿…é¡»æ˜¯å½“å‰èŠå¤©å¯¹è±¡æ‰æ¸…ç©ºé¡µé¢
                     ClearUI(choose_target);
             });
-            //×¢²áÇå¿ÕUI£¨Ë«Ïò£©
+            //æ³¨å†Œæ¸…ç©ºUIï¼ˆåŒå‘ï¼‰
             Messenger.Default.Register<string>(this, MessageActions.CLEAR_FRIEND_MSGS, (userId) =>
             {
-                //Í¨Öª×î½üÁÄÌìÁĞ±í¸üĞÂ
+                //é€šçŸ¥æœ€è¿‘èŠå¤©åˆ—è¡¨æ›´æ–°
                 Friend fd = new Friend() { UserId = userId };
                 Messenger.Default.Send(fd, token: MessageActions.UPDATE_FRIEND_LAST_CONTENT);
 
                 if (choose_target == null)
                     return;
-                if (userId == choose_target.UserId)     //¶ÔÏó±ØĞëÊÇµ±Ç°ÁÄÌì¶ÔÏó²ÅÇå¿ÕÒ³Ãæ
+                if (userId == choose_target.UserId)     //å¯¹è±¡å¿…é¡»æ˜¯å½“å‰èŠå¤©å¯¹è±¡æ‰æ¸…ç©ºé¡µé¢
                     ClearUI(choose_target);
             });
             #endregion
-            //×¢²áÒÆ³ıÄ³Ò»ĞĞ
+            //æ³¨å†Œç§»é™¤æŸä¸€è¡Œ
             Messenger.Default.Register<string>(this, EQFrmInteraction.RemoveMsgOfPanel, item => RemoveMsgOfPanel(item));
-            //°´»ØÖ´¸üĞÂËÍ´ïÏûÏ¢×´Ì¬£¨³É¹¦£©
+            //æŒ‰å›æ‰§æ›´æ–°é€è¾¾æ¶ˆæ¯çŠ¶æ€ï¼ˆæˆåŠŸï¼‰
             Messenger.Default.Register<MessageObject>(this, MessageActions.XMPP_UPDATE_SEND_SUCCESS, item => DrawIsSend(item));
-            //°´»ØÖ´¸üĞÂËÍ´ïÏûÏ¢×´Ì¬£¨Ê§°Ü£©
+            //æŒ‰å›æ‰§æ›´æ–°é€è¾¾æ¶ˆæ¯çŠ¶æ€ï¼ˆå¤±è´¥ï¼‰
             Messenger.Default.Register<MessageObject>(this, MessageActions.XMPP_UPDATE_SEND_FAILED, item => DrawIsSend(item));
-            //°´»ØÖ´¸üĞÂÒÑ¶ÁÏûÏ¢×´Ì¬
+            //æŒ‰å›æ‰§æ›´æ–°å·²è¯»æ¶ˆæ¯çŠ¶æ€
             Messenger.Default.Register<MessageObject>(this, MessageActions.XMPP_UPDATE_RECEIVED_READ, item => DrawIsRead(item));
-            //¸øÏûÏ¢ÁĞ±íÌí¼ÓÏûÏ¢
+            //ç»™æ¶ˆæ¯åˆ—è¡¨æ·»åŠ æ¶ˆæ¯
             Messenger.Default.Register<MessageObject>(this, MessageActions.XMPP_UPDATE_NORMAL_MESSAGE, item => JudgeMsgIsAddToPanel(item));
-            //ÊÕµ½ÁËÒ»¸öÈº×é¿ØÖÆÏûÏ¢
+            //æ”¶åˆ°äº†ä¸€ä¸ªç¾¤ç»„æ§åˆ¶æ¶ˆæ¯
             Messenger.Default.Register<MessageObject>(this, MessageActions.XMPP_UPDATE_ROOM_CHANGE_MESSAGE, item => UpdateRoomUIByMessage(item));
-            //ÊÕµ½ÁËÒ»¸ö³·»ØÍ¨Öª
+            //æ”¶åˆ°äº†ä¸€ä¸ªæ’¤å›é€šçŸ¥
             Messenger.Default.Register<MessageObject>(this, MessageActions.XMPP_UPDATE_RECALL_MESSAGE,
                 item => EQMenuStripControl.menuItem_Recall_Click(this.showInfo_Panel, item, choose_target == null ? "" : choose_target.UserId));
-            //ÊÕµ½ÁËÒ»¸öÈº½ûÑÔÍ¨Öª
+            //æ”¶åˆ°äº†ä¸€ä¸ªç¾¤ç¦è¨€é€šçŸ¥
             Messenger.Default.Register<MessageObject>(this, MessageActions.ROOM_UPDATE_BANNED_TALK, item => UpdateBannedTalk(item));
-            //ÊÕµ½ÁËÒ»¸öĞŞ¸Ä±¸×¢Í¨Öª
+            //æ”¶åˆ°äº†ä¸€ä¸ªä¿®æ”¹å¤‡æ³¨é€šçŸ¥
             Messenger.Default.Register<Friend>(this, MessageActions.UPDATE_FRIEND_REMARKS, item => ModifyFriendName(item));
-            //ÊÕµ½ÁËÒ»¸öÅúÁ¿É¾³ıÍ¨Öª
+            //æ”¶åˆ°äº†ä¸€ä¸ªæ‰¹é‡åˆ é™¤é€šçŸ¥
             Messenger.Default.Register<List<MessageObject>>(this, EQFrmInteraction.BatchDeleteMsg, item => BatchDeleteMsg(item));
-            //ÊÕµ½ÁËÒ»¸ö@ÎÒµÄÍ¨Öª
+            //æ”¶åˆ°äº†ä¸€ä¸ª@æˆ‘çš„é€šçŸ¥
             Messenger.Default.Register<Friend>(this, MessageActions.ROOM_UPDATE_AT_ME, item => AtMeShowPanel(item));
-            //ÊÕµ½ÎÒÖ÷¶¯@±ğÈËµÄÍ¨Öª
+            //æ”¶åˆ°æˆ‘ä¸»åŠ¨@åˆ«äººçš„é€šçŸ¥
             Messenger.Default.Register<Friend>(this, EQFrmInteraction.AddAtUserToTxtSend, item => AddAtUserToTxtSend(item));
-            //ÖØĞÂÉÏ´«Í¼Æ¬²¢¸üĞÂÆøÅİ
+            //é‡æ–°ä¸Šä¼ å›¾ç‰‡å¹¶æ›´æ–°æ°”æ³¡
             Messenger.Default.Register<MessageObject>(this, EQFrmInteraction.ResumeUploadImageMsg, item => ResumeUploadImageMsg(item));
-            //¶àµãµÇÂ¼ÉÏÏßÀëÏßÏûÏ¢
+            //å¤šç‚¹ç™»å½•ä¸Šçº¿ç¦»çº¿æ¶ˆæ¯
             Messenger.Default.Register<string>(this, MessageActions.UPDATE_DEVICE_STATE, item => UpdateDeviceState(item));
 
         }
 
         #endregion
 
-        #region ¸ü»»ÁÄÌì¶ÔÏó£¬Çå³ı»º´æ
+        #region æ›´æ¢èŠå¤©å¯¹è±¡ï¼Œæ¸…é™¤ç¼“å­˜
         private void ClearUI(Friend friend, bool isDispon = true)
         {
-            //¹Ø±ÕÉèÖÃÒ³
+            //å…³é—­è®¾ç½®é¡µ
             if (frmSet != null)
             {
                 frmSet.Close();
                 frmSet = null;
             }
 
-            //²İ¸å»ØÏÔ
+            //è‰ç¨¿å›æ˜¾
             DraftShow(friend);
 
-            //Çå³ıÒÑÑ¡ÔñµÄemoji
+            //æ¸…é™¤å·²é€‰æ‹©çš„emoji
             emoji_num = 0;
             emoji_codes = new List<string>();
 
-            //ÔÄºó¼´·Ù´¦Àí
+            //é˜…åå³ç„šå¤„ç†
             SaveReadDelTime();
             isHaveReadDel = 0;
 
-            //·Ç¶ÀÁ¢´°Ìå
+            //éç‹¬ç«‹çª—ä½“
             if (isSeparateChat == 0)
             {
-                //»ñÈ¡ÉÏ¸öÁÄÌì¶ÔÏó
+                //è·å–ä¸Šä¸ªèŠå¤©å¯¹è±¡
                 if (!string.IsNullOrEmpty(choose_target.UserId))
                 {
                     var last_target = ChatTargetDictionary.GetMsgData(choose_target.UserId);
-                    //Èç¹ûÉÏ¸öÁÄÌì¶ÔÏó²»Îª¶ÀÁ¢´°Ìå
+                    //å¦‚æœä¸Šä¸ªèŠå¤©å¯¹è±¡ä¸ä¸ºç‹¬ç«‹çª—ä½“
                     if (last_target.isSeparateChat == 0)
                     {
-                        //Çå³ıÉÏ¸öÁÄÌì¶ÔÏóµÄÏûÏ¢
+                        //æ¸…é™¤ä¸Šä¸ªèŠå¤©å¯¹è±¡çš„æ¶ˆæ¯
                         if (choose_target != null && !string.IsNullOrEmpty(choose_target.UserId))
                         {
                             if (last_target.GetMsgList().Count > 0)
                                 last_target.RemoveAllData();
                         }
-                        //ÒÆ³ıÇĞ»»ºÃÓÑÇ°µÄ¶ÔÏó
+                        //ç§»é™¤åˆ‡æ¢å¥½å‹å‰çš„å¯¹è±¡
                         ChatTargetDictionary.RemoveItem(choose_target.UserId);
                     }
                 }
             }
             else
             {
-                //ÉÏÒ»¸ö¶ÔÏó±Ø¶¨Îª¿Õ
+                //ä¸Šä¸€ä¸ªå¯¹è±¡å¿…å®šä¸ºç©º
                 //if(string.IsNullOrEmpty(choose_target.userId))
                 //{
-                //»ñÈ¡ĞÂ¶ÀÁ¢´°ÌåµÄÁÄÌì¶ÔÏó
+                //è·å–æ–°ç‹¬ç«‹çª—ä½“çš„èŠå¤©å¯¹è±¡
                 //targetMsgData = ChatTargetDictionary.GetMsgData(friend.userId);
                 var current_target = ChatTargetDictionary.GetMsgData(friend.UserId);
-                //Çå³ıÊı¾İ
+                //æ¸…é™¤æ•°æ®
                 if (current_target != null && current_target.GetMsgList().Count > 0)
                     current_target.RemoveAllData();
                 //}
             }
-            //¸üĞÂÁÄÌì¶ÔÏó
+            //æ›´æ–°èŠå¤©å¯¹è±¡
             choose_target = friend;
-            //±£´æÊÇ·ñÎª¶ÀÁ¢ÁÄÌì
+            //ä¿å­˜æ˜¯å¦ä¸ºç‹¬ç«‹èŠå¤©
             targetMsgData.isSeparateChat = this.isSeparateChat;
             while (showInfo_Panel.Controls.Count > 0)
             {
-                //foreachÑ­»·Ò»´ÎÑ­»·Ö»ÄÜÒÆ³ıÒ»°ë
+                //foreachå¾ªç¯ä¸€æ¬¡å¾ªç¯åªèƒ½ç§»é™¤ä¸€åŠ
                 foreach (Control item in showInfo_Panel.Controls)
                 {
                     showInfo_Panel.Controls.Remove(item);
@@ -538,92 +539,92 @@ namespace WinFrmTalk.Controls.CustomControls
             showInfo_Panel.Height = 0;
             Helpers.ClearMemory();
             showInfo_Panel.Top = 0;
-            PAGE_INDEX = 1;     //ÖØÖÃ·­Ò³
-            atCount = 0;    //ÖØÖÃ@·ûÊıÁ¿
+            PAGE_INDEX = 1;     //é‡ç½®ç¿»é¡µ
+            atCount = 0;    //é‡ç½®@ç¬¦æ•°é‡
 
-            //ÖØÖÃÏòÉÏ·­Ò³
+            //é‡ç½®å‘ä¸Šç¿»é¡µ
             canAddMsg = 1;
             ShowInfoVScroll.canAdd = 1;
             CanAddMoreRoaming = true;
 
-            //Çå¿ÕÂ¼ÖÆ
+            //æ¸…ç©ºå½•åˆ¶
             isStartTrans = 0;
             startTransIndex = 0;
             endTransIndex = 0;
 
-            //»Ö¸´¶Ô»°×´Ì¬
+            //æ¢å¤å¯¹è¯çŠ¶æ€
             isCanTalk = true;
 
-            //¹Ø±ÕµÈ´ı·û
+            //å…³é—­ç­‰å¾…ç¬¦
             loding.stop();
 
-            //ÖØÖÃÂşÓÎ×´Ì¬
+            //é‡ç½®æ¼«æ¸¸çŠ¶æ€
             isDownloadRoaming = false;
 
-            lastMsgTime = 0;    //ÖØÖÃ×îºóÒ»ÌõÏûÏ¢µÄÊ±¼ä
+            lastMsgTime = 0;    //é‡ç½®æœ€åä¸€æ¡æ¶ˆæ¯çš„æ—¶é—´
 
-            //Òş²Ø²¢Çå¿Õ»Ø¸´Ãæ°å
+            //éšè—å¹¶æ¸…ç©ºå›å¤é¢æ¿
             replyPanel.ReplyMsg = null;
             replyPanel.SendToBack();
         }
         #endregion
 
         private Stopwatch stopwatch2 = new Stopwatch();
-        #region Çå¿ÕÁÄÌì»º´æ£¬±£´æĞÂÑ¡ÔñµÄÁÄÌì¶ÔÏó
+        #region æ¸…ç©ºèŠå¤©ç¼“å­˜ï¼Œä¿å­˜æ–°é€‰æ‹©çš„èŠå¤©å¯¹è±¡
         /// <summary>
-        /// Çå¿ÕÁÄÌì»º´æ£¬±£´æĞÂÑ¡ÔñµÄÁÄÌì¶ÔÏó
-        /// <para>Èç¹ûÁÄÌì¶ÔÏó²»±ä£¬Çë²»Òªµ÷ÓÃ</para>
+        /// æ¸…ç©ºèŠå¤©ç¼“å­˜ï¼Œä¿å­˜æ–°é€‰æ‹©çš„èŠå¤©å¯¹è±¡
+        /// <para>å¦‚æœèŠå¤©å¯¹è±¡ä¸å˜ï¼Œè¯·ä¸è¦è°ƒç”¨</para>
         /// </summary>
-        /// <param name="friend">ÁÄÌì¶ÔÏó</param>
+        /// <param name="friend">èŠå¤©å¯¹è±¡</param>
         public void SetChooseFriend(Friend friend, int readNum = 0, string msgId = "", int isSeparateChat = 0)
         {
-            //±ÜÃâÒòÎª´íÎóÍË³ö£¬½çÃæ¹ÒÆğÃ»»Ö¸´
+            //é¿å…å› ä¸ºé”™è¯¯é€€å‡ºï¼Œç•Œé¢æŒ‚èµ·æ²¡æ¢å¤
             this.ResumeLayout();
             showInfo_Panel.ResumeLayout();
 
-            //¼ÇÂ¼Î´¶ÁµÄÏà¹ØĞÅÏ¢
+            //è®°å½•æœªè¯»çš„ç›¸å…³ä¿¡æ¯
             this.readNum = readNum;
             this.readMsgId = msgId;
 
-            //¼ÇÂ¼ÊÇ·ñÎª¶ÀÁ¢ÁÄÌì¶ÔÏó
+            //è®°å½•æ˜¯å¦ä¸ºç‹¬ç«‹èŠå¤©å¯¹è±¡
             this.isSeparateChat = isSeparateChat;
 
-            //ÉèÖÃ¿ÕµÄÁÄÌì¶ÔÏó£¬ÖØÖÃÃæ°å
+            //è®¾ç½®ç©ºçš„èŠå¤©å¯¹è±¡ï¼Œé‡ç½®é¢æ¿
             if (friend == null || string.IsNullOrEmpty(friend.UserId))
             {
                 ClearUI(friend);
                 choose_target = null;
                 return;
             }
-            //µã»÷ÏàÍ¬µÄ¶ÔÏó
+            //ç‚¹å‡»ç›¸åŒçš„å¯¹è±¡
             if (choose_target != null && choose_target.UserId == friend.UserId)
                 return;
 
             //this.SuspendLayout();
-            //panShade.BringToFront();    //ÕÚÕÖ²ãÊ¹½çÃæ¼ÓÔØ¹ı³Ì²»¿É¼û
-            showInfo_Panel.ColumnStyles[0].Width = 0;   //¸´Ñ¡¿òÁĞ²»¿É¼û
-            IsShowPanelMultiSelect(false);      //ÏÔÊ¾ÁÄÌì·¢ËÍ¿ò¶ø²»ÊÇ¶àÑ¡²Ù×÷Ãæ°å
-            IsShowInfoShade(false);     //¹Ø±ÕÏûÏ¢ÁĞ±í¶àÑ¡ÕÚÕÖ²ã
+            //panShade.BringToFront();    //é®ç½©å±‚ä½¿ç•Œé¢åŠ è½½è¿‡ç¨‹ä¸å¯è§
+            showInfo_Panel.ColumnStyles[0].Width = 0;   //å¤é€‰æ¡†åˆ—ä¸å¯è§
+            IsShowPanelMultiSelect(false);      //æ˜¾ç¤ºèŠå¤©å‘é€æ¡†è€Œä¸æ˜¯å¤šé€‰æ“ä½œé¢æ¿
+            IsShowInfoShade(false);     //å…³é—­æ¶ˆæ¯åˆ—è¡¨å¤šé€‰é®ç½©å±‚
             //Applicate.FriendObj = friend;
             ClearUI(friend);
-            //±£´æÁÄÌì¶ÔÏó
+            //ä¿å­˜èŠå¤©å¯¹è±¡
             //choose_target = friend;
 
-            //ĞŞ¸Ä±êÌâ
+            //ä¿®æ”¹æ ‡é¢˜
             if (choose_target.IsGroup == 0)
                 labName.Text = string.IsNullOrEmpty(friend.RemarkName) ? friend.NickName : friend.RemarkName;
             else
                 labName.Text = friend.NickName;
-            //Èº¹«¸æÒş²Ø
+            //ç¾¤å…¬å‘Šéšè—
             roomNotice.CloseNotice();
-            //»ñÈ¡ÈºÉèÖÃ
+            //è·å–ç¾¤è®¾ç½®
             if (choose_target.IsGroup == 1)
                 GetRoomSetting();
-            //»ñÈ¡ºÃÓÑ×´Ì¬µ½±êÌâÀ¸
+            //è·å–å¥½å‹çŠ¶æ€åˆ°æ ‡é¢˜æ 
             else
             {
                 SetOnlineState();
-                //ÉèÖÃÒôÊÓÆµµÄ¿É¼û¶È
+                //è®¾ç½®éŸ³è§†é¢‘çš„å¯è§åº¦
                 if (Applicate.ENABLE_MEET && Applicate.CURRET_VERSION > 4.0f)
                 {
                     lblAudio.Visible = true;
@@ -631,14 +632,14 @@ namespace WinFrmTalk.Controls.CustomControls
                 }
             }
 
-            //ÏÈ¸üĞÂ½çÃæÔÙ
+            //å…ˆæ›´æ–°ç•Œé¢å†
             Application.DoEvents();
 
             stopWatch1.Restart();
-            //ÏÈ½øĞĞÂşÓÎ
+            //å…ˆè¿›è¡Œæ¼«æ¸¸
             FirstDownloadRoaming();
 
-            //Èç¹ûÕıÔÚÂşÓÎÔòÂşÓÎ½áÊøºó²Å¶ÔÃæ°å½øĞĞ²Ù×÷
+            //å¦‚æœæ­£åœ¨æ¼«æ¸¸åˆ™æ¼«æ¸¸ç»“æŸåæ‰å¯¹é¢æ¿è¿›è¡Œæ“ä½œ
             if (!isDownloadRoaming)
                 SetShowInfoPanel();
             stopWatch1.Stop();
@@ -646,7 +647,7 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ¼ÓÔØÏûÏ¢Ãæ°å
+        #region åŠ è½½æ¶ˆæ¯é¢æ¿
         private Stopwatch stopWatch1 = new Stopwatch();
         private void SetShowInfoPanel()
         {
@@ -654,13 +655,13 @@ namespace WinFrmTalk.Controls.CustomControls
             //{
 
             showInfo_Panel.SuspendLayout();
-            //¼ÓÔØÀúÊ·¼ÇÂ¼
+            //åŠ è½½å†å²è®°å½•
             List<MessageObject> msgList = DownRoamAndLoadLocalMsg();
             if (msgList.Count == 0)
             {
                 NotCanAddMoreMsg();
             }
-            //Ğ¡ÓÚ¶şÊ®Ìõ´ú±íÊı¾İ¿âÃ»ÓĞ¸ü¶àµÄÁÄÌì¼ÇÂ¼
+            //å°äºäºŒåæ¡ä»£è¡¨æ•°æ®åº“æ²¡æœ‰æ›´å¤šçš„èŠå¤©è®°å½•
             //if (showInfo_Panel.RowCount == 1)
             //{
             //    showInfo_Panel.RowStyles.Clear();
@@ -681,57 +682,57 @@ namespace WinFrmTalk.Controls.CustomControls
             //if (this.IsHandleCreated)
             //thread.Start();
 
-            //Çå³ı½ûÑÔÃæ°å
+            //æ¸…é™¤ç¦è¨€é¢æ¿
             IsShow_BannedTalkPanel(false);
 
-            //ÏÔÊ¾ÈºÒÑ¶ÁÈËÊı
+            //æ˜¾ç¤ºç¾¤å·²è¯»äººæ•°
             if (choose_target.ShowRead == 1)
                 IsShowReadPersons(true);
 
-            //µÚÒ»´Î¼ÓÔØÊı¾İ£¬Èç¹ûÏûÏ¢ÁĞ±í³¬¹ıÃæ°å£¬Ôò¹ö¶¯µ½µ×²¿
+            //ç¬¬ä¸€æ¬¡åŠ è½½æ•°æ®ï¼Œå¦‚æœæ¶ˆæ¯åˆ—è¡¨è¶…è¿‡é¢æ¿ï¼Œåˆ™æ»šåŠ¨åˆ°åº•éƒ¨
             if ((Takeconter_panel.Height - showInfo_Panel.Height) <= 0)
                 ShowInfoVScroll.SetVScroolToBottom();
 
-            //ÕÚÕÖ²ãÖÃµ×
+            //é®ç½©å±‚ç½®åº•
             //panShade.SendToBack();
             //this.ResumeLayout();
 
-            //µ±Ç°ÊÇ·ñÎª½ûÑÔ
+            //å½“å‰æ˜¯å¦ä¸ºç¦è¨€
             string remindTxt = "";
             bool isShow = JudgeIsBannedTalk(ref remindTxt);
             if (isShow)
                 IsShow_BannedTalkPanel(isShow, remindTxt);
 
-            //¿ØÖÆÊÇ·ñÏÔÊ¾Î´¶ÁÊıÁ¿Ğü¸¡±êÊ¶
+            //æ§åˆ¶æ˜¯å¦æ˜¾ç¤ºæœªè¯»æ•°é‡æ‚¬æµ®æ ‡è¯†
             IsShowUnReadNumPanel(readNum, readMsgId);
 
-            //ÊÇ·ñÏÔÊ¾ÒôÊÓÆµ°´Å¥
+            //æ˜¯å¦æ˜¾ç¤ºéŸ³è§†é¢‘æŒ‰é’®
             if (!Applicate.ENABLE_MEET || Applicate.CURRET_VERSION < 4.6f)
             {
                 lblAudio.Visible = false;
                 lblVideo.Visible = false;
             }
 
-            //¿ØÖÆÊÇ·ñÒªÏÔÊ¾@½Ç±ê
+            //æ§åˆ¶æ˜¯å¦è¦æ˜¾ç¤º@è§’æ ‡
             AtMeShowPanel(choose_target);
         }
         #endregion
 
-        #region Ê×´ÎÑ¡ÔñÁÄÌì¶ÔÏó£¬ÏÂÔØÂşÓÎÏûÏ¢
+        #region é¦–æ¬¡é€‰æ‹©èŠå¤©å¯¹è±¡ï¼Œä¸‹è½½æ¼«æ¸¸æ¶ˆæ¯
         private void FirstDownloadRoaming()
         {
             choose_target = choose_target.GetByUserId();
-            //ĞèÒªÀ­ÂşÓÎ
+            //éœ€è¦æ‹‰æ¼«æ¸¸
             if (choose_target.DownloadRoamStartTime > 0)
             {
-                //ÕıÔÚÂşÓÎ
+                //æ­£åœ¨æ¼«æ¸¸
                 isDownloadRoaming = true;
-                //¿ªÆô½ûÑÔ
+                //å¼€å¯ç¦è¨€
                 IsShow_BannedTalkPanel(true);
-                //ÏÔÊ¾µÈ´ı·û
-                StartLoding(Takeconter_panel, "ÕıÔÚÏÂÔØÂşÓÎÏûÏ¢...");
+                //æ˜¾ç¤ºç­‰å¾…ç¬¦
+                StartLoding(Takeconter_panel, "æ­£åœ¨ä¸‹è½½æ¼«æ¸¸æ¶ˆæ¯...");
 
-                if (choose_target.IsGroup == 0)      //µ¥ÁÄ
+                if (choose_target.IsGroup == 0)      //å•èŠ
                     GetRoamMessageSingle(choose_target.DownloadRoamEndTime, choose_target.DownloadRoamStartTime);
                 else
                     GetRoamMessageGroup(choose_target.DownloadRoamEndTime, choose_target.DownloadRoamStartTime);
@@ -739,7 +740,7 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region Õ¹Ê¾µÈ´ı·û
+        #region å±•ç¤ºç­‰å¾…ç¬¦
         private void StartLoding(Control parent_crl, string title = "")
         {
             //loding = new LodingUtils();
@@ -751,7 +752,7 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ´¦ÀíÈºÍ¨ÖªUI¸üĞÂ
+        #region å¤„ç†ç¾¤é€šçŸ¥UIæ›´æ–°
         private void UpdateRoomUIByMessage(MessageObject msg)
         {
             try
@@ -761,36 +762,36 @@ namespace WinFrmTalk.Controls.CustomControls
                 if (choose_target.IsGroup == 0 || !choose_target.UserId.Equals(msg.objectId))
                     return;
 
-                //Èº¹ÜÀíÔ±×ªÈÃ
+                //ç¾¤ç®¡ç†å‘˜è½¬è®©
                 if (msg.type == kWCMessageType.RoomManagerTransfer)
                 {
 
                 }
-                //Èº¹«¸æ
+                //ç¾¤å…¬å‘Š
                 if (msg.type == kWCMessageType.RoomNotice)
                 {
                     ShowNotice();
                 }
-                //½âÉ¢Èº
+                //è§£æ•£ç¾¤
                 if (msg.type == kWCMessageType.RoomDismiss)
                 {
-                    string remindTxt = "¸ÃÈºÒÑ±»½âÉ¢";
+                    string remindTxt = "è¯¥ç¾¤å·²è¢«è§£æ•£";
                     IsShow_BannedTalkPanel(true, remindTxt);
                 }
-                //¸ü¸ÄÈºÃû³Æ
+                //æ›´æ”¹ç¾¤åç§°
                 if (msg.type == kWCMessageType.RoomNameChange)
                 {
                     choose_target.NickName = msg.content;
                     if (this.IsHandleCreated)
-                        Invoke(new Action(() => { labName.Text = msg.content + "£¨" + userSize + "ÈË£©"; }));
+                        Invoke(new Action(() => { labName.Text = msg.content + "ï¼ˆ" + userSize + "äººï¼‰"; }));
                 }
-                //ÈºÒÑ¶ÁÈËÊı¿ª¹Ø
+                //ç¾¤å·²è¯»äººæ•°å¼€å…³
                 else if (msg.type == kWCMessageType.RoomReadVisiblity)
                 {
                     choose_target.ShowRead = Convert.ToInt32(msg.content);
                     IsShowReadPersons(choose_target.ShowRead == 0 ? false : true);
                 }
-                //Èº½²¿Î
+                //ç¾¤è®²è¯¾
                 else if (msg.type == kWCMessageType.RoomAllowSpeakCourse)
                 {
                     if (this.IsHandleCreated)
@@ -799,7 +800,7 @@ namespace WinFrmTalk.Controls.CustomControls
                             if (Applicate.ENABLE_MEET && Applicate.CURRET_VERSION > 4.0f)
                             {
                                 choose_target.AllowConference = Convert.ToInt32(msg.content);
-                                //¹Ø±Õºó£¬¸Ä±äÆÕÍ¨³ÉÔ±µÄÒôÊÓÆµ°´Å¥×´Ì¬
+                                //å…³é—­åï¼Œæ”¹å˜æ™®é€šæˆå‘˜çš„éŸ³è§†é¢‘æŒ‰é’®çŠ¶æ€
                                 SetControlEnabled(lblAudio, choose_target.AllowSpeakCourse == 0 && !JudgeIsAdmin(Applicate.MyAccount.userId) ? false : true);
                                 SetControlEnabled(lblVideo, choose_target.AllowSpeakCourse == 0 && !JudgeIsAdmin(Applicate.MyAccount.userId) ? false : true);
                             }
@@ -810,7 +811,7 @@ namespace WinFrmTalk.Controls.CustomControls
                             }
                         }));
                 }
-                //Èº»áÒé¿ª¹Ø
+                //ç¾¤ä¼šè®®å¼€å…³
                 else if (msg.type == kWCMessageType.RoomAllowConference)
                 {
                     if (this.IsHandleCreated)
@@ -819,7 +820,7 @@ namespace WinFrmTalk.Controls.CustomControls
                             if (Applicate.ENABLE_MEET && Applicate.CURRET_VERSION > 4.0f)
                             {
                                 choose_target.AllowConference = Convert.ToInt32(msg.content);
-                                //¹Ø±ÕÈº»áÒé£¬ÆÕÍ¨³ÉÔ±²»ÔÊĞíµã»÷ÊÓÆµºÍÒôÆµ
+                                //å…³é—­ç¾¤ä¼šè®®ï¼Œæ™®é€šæˆå‘˜ä¸å…è®¸ç‚¹å‡»è§†é¢‘å’ŒéŸ³é¢‘
                                 //SetControlEnabled(lblAudio, choose_target.allowConference == 0 && !JudgeIsAdmin(Applicate.MyAccount.userId) ? false : true);
                                 //SetControlEnabled(lblVideo, choose_target.allowConference == 0 && !JudgeIsAdmin(Applicate.MyAccount.userId) ? false : true);
                                 lblAudio.Visible = choose_target.AllowConference == 0 && !JudgeIsAdmin(Applicate.MyAccount.userId) ? false : true;
@@ -832,7 +833,7 @@ namespace WinFrmTalk.Controls.CustomControls
                             }
                         }));
                 }
-                //ÈëÈºÍ¨Öª
+                //å…¥ç¾¤é€šçŸ¥
                 else if (msg.type == kWCMessageType.RoomInvite)
                 {
                     if (this.IsHandleCreated)
@@ -840,36 +841,36 @@ namespace WinFrmTalk.Controls.CustomControls
                         {
                             userSize++;
                             labName.Text = (string.IsNullOrEmpty(choose_target.RemarkName) ? choose_target.NickName : choose_target.RemarkName)
-                                        + "£¨" + userSize + "ÈË£©";
+                                        + "ï¼ˆ" + userSize + "äººï¼‰";
                         }));
                 }
-                //ÍËÈºÍ¨Öª
+                //é€€ç¾¤é€šçŸ¥
                 else if (msg.type == kWCMessageType.RoomExit)
                 {
                     if (this.IsHandleCreated)
                         Invoke(new Action(() =>
                         {
-                            //Èç¹ûÊÇ×Ô¼ºµÄÍËÈºÍ¨Öª
+                            //å¦‚æœæ˜¯è‡ªå·±çš„é€€ç¾¤é€šçŸ¥
                             if (msg.toUserId == Applicate.MyAccount.userId)
-                                IsShow_BannedTalkPanel(true, "ÄúÒÑ¾­²»ÔÚ¸ÃÈºÖĞ");
+                                IsShow_BannedTalkPanel(true, "æ‚¨å·²ç»ä¸åœ¨è¯¥ç¾¤ä¸­");
                             else
                             {
-                                //ĞŞ¸ÄÈº±êÌâÈËÊı
+                                //ä¿®æ”¹ç¾¤æ ‡é¢˜äººæ•°
                                 userSize--;
                                 labName.Text = (string.IsNullOrEmpty(choose_target.RemarkName) ? choose_target.NickName : choose_target.RemarkName)
-                                            + "£¨" + userSize + "ÈË£©";
+                                            + "ï¼ˆ" + userSize + "äººï¼‰";
                             }
                         }));
                 }
             }
             catch (Exception ex)
             {
-                LogHelper.log.Error("----´¦ÀíÈºÉèÖÃÏûÏ¢³ö´í£¬·½·¨£¨UpdateRoomUIByMessage£© : " + ex.Message);
+                LogHelper.log.Error("----å¤„ç†ç¾¤è®¾ç½®æ¶ˆæ¯å‡ºé”™ï¼Œæ–¹æ³•ï¼ˆUpdateRoomUIByMessageï¼‰ : " + ex.Message);
             }
         }
         #endregion
 
-        #region ÏÔÊ¾¸ü¶àÁÄÌì¼ÇÂ¼
+        #region æ˜¾ç¤ºæ›´å¤šèŠå¤©è®°å½•
         Label labMoreMsg = null;
         private void AddMoreMessageLabe()
         {
@@ -879,9 +880,9 @@ namespace WinFrmTalk.Controls.CustomControls
                 labMoreMsg.Name = "labMoreMsg";
                 labMoreMsg.Font = new Font(Applicate.SetFont, 9F, FontStyle.Bold, GraphicsUnit.Point, 134);
                 labMoreMsg.ForeColor = Color.FromArgb(78, 169, 233);
-                labMoreMsg.Text = "ÏÔÊ¾¸ü¶àµÄÏûÏ¢¼ÇÂ¼";
+                labMoreMsg.Text = "æ˜¾ç¤ºæ›´å¤šçš„æ¶ˆæ¯è®°å½•";
                 labMoreMsg.TextAlign = ContentAlignment.MiddleCenter;
-                labMoreMsg.Padding = new Padding(0, 10, 0, 0);    //ÉÏ±ß¾à5
+                labMoreMsg.Padding = new Padding(0, 10, 0, 0);    //ä¸Šè¾¹è·5
                 labMoreMsg.AutoSize = true;
                 labMoreMsg.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
                 labMoreMsg.Cursor = Cursors.Hand;
@@ -913,17 +914,17 @@ namespace WinFrmTalk.Controls.CustomControls
         }
 
         /// <summary>
-        /// ²»ÄÜ¼ÌĞøÏòÉÏ·­Ò³ºÍµã»÷¼ÓÔØ¸ü¶àÁÄÌì¼ÇÂ¼
+        /// ä¸èƒ½ç»§ç»­å‘ä¸Šç¿»é¡µå’Œç‚¹å‡»åŠ è½½æ›´å¤šèŠå¤©è®°å½•
         /// </summary>
         private void NotCanAddMoreMsg()
         {
             if (this.IsHandleCreated)
-                //UIÖ÷Ïß³Ì½øĞĞ²Ù×÷
+                //UIä¸»çº¿ç¨‹è¿›è¡Œæ“ä½œ
                 Invoke(new Action(() =>
                 {
                     if (labMoreMsg != null)
                         labMoreMsg.Visible = false;
-                    //²»ÔÙÀ­È¡ºÍ·­Ò³»ñÈ¡Êı¾İ
+                    //ä¸å†æ‹‰å–å’Œç¿»é¡µè·å–æ•°æ®
                     isHaveMoreLocalMsg = false;
                     ShowInfoVScroll.canAdd = -1;
 
@@ -940,15 +941,15 @@ namespace WinFrmTalk.Controls.CustomControls
         }
 
         /// <summary>
-        /// ÄÜ¼ÌĞøÏòÉÏ·­Ò³ºÍµã»÷¼ÓÔØ¸ü¶àÁÄÌì¼ÇÂ¼
+        /// èƒ½ç»§ç»­å‘ä¸Šç¿»é¡µå’Œç‚¹å‡»åŠ è½½æ›´å¤šèŠå¤©è®°å½•
         /// </summary>
         private void CanAddMoreMsg()
         {
             if (this.IsHandleCreated)
-                //UIÖ÷Ïß³Ì½øĞĞ²Ù×÷
+                //UIä¸»çº¿ç¨‹è¿›è¡Œæ“ä½œ
                 Invoke(new Action(() =>
                 {
-                    //²»ÔÙÀ­È¡ºÍ·­Ò³»ñÈ¡Êı¾İ
+                    //ä¸å†æ‹‰å–å’Œç¿»é¡µè·å–æ•°æ®
                     isHaveMoreLocalMsg = true;
                     ShowInfoVScroll.canAdd = 1;
                     if (showInfo_Panel.RowStyles.Count > 0 && showInfo_Panel.RowStyles[0].Height == 0)
@@ -963,16 +964,16 @@ namespace WinFrmTalk.Controls.CustomControls
 
         private void AddMoreMsg()
         {
-            //µÈ´ı·û
+            //ç­‰å¾…ç¬¦
             //LodingUtils lodingUtils = new LodingUtils();
 
-            List<MessageObject> msgList = DownRoamAndLoadLocalMsg();   //Êı¾İ¿â»ñÈ¡µÄ¼¯ºÏ
+            List<MessageObject> msgList = DownRoamAndLoadLocalMsg();   //æ•°æ®åº“è·å–çš„é›†åˆ
             if (msgList.Count == 0)
             {
                 NotCanAddMoreMsg();
                 return;
             }
-            //Ğ¡ÓÚ¶şÊ®Ìõ´ú±íÊı¾İ¿âÃ»ÓĞ¸ü¶àµÄÁÄÌì¼ÇÂ¼
+            //å°äºäºŒåæ¡ä»£è¡¨æ•°æ®åº“æ²¡æœ‰æ›´å¤šçš„èŠå¤©è®°å½•
             //if(showInfo_Panel.RowCount == 1)
             //{
             //    showInfo_Panel.RowStyles.Clear();
@@ -986,24 +987,24 @@ namespace WinFrmTalk.Controls.CustomControls
             //}
 
 
-            //ÁÙÊ±¹ÒÆğ²¼¾Ö
+            //ä¸´æ—¶æŒ‚èµ·å¸ƒå±€
             showInfo_Panel.SuspendLayout();
 
             try
             {
-                #region ¼ÓÔØÀúÊ·¼ÇÂ¼²¢ÇÒ¿Ø¼şÏÂÒÆ
-                List<EQBaseControl> msgPanels = new List<EQBaseControl>();    //ĞèÒªÌí¼ÓµÄ¿Ø¼ş£¬keyÎªlist_msgµÄË÷Òı
-                                                                              //»ñÈ¡ÁÄÌìÆøÅİ¼¯ºÏ
+                #region åŠ è½½å†å²è®°å½•å¹¶ä¸”æ§ä»¶ä¸‹ç§»
+                List<EQBaseControl> msgPanels = new List<EQBaseControl>();    //éœ€è¦æ·»åŠ çš„æ§ä»¶ï¼Œkeyä¸ºlist_msgçš„ç´¢å¼•
+                                                                              //è·å–èŠå¤©æ°”æ³¡é›†åˆ
                 for (int index = 0; index < msgList.Count; index++)
                 {
                     EQBaseControl talk_panel = GetMessagePanel(msgList[index], index + 1);
                     if (talk_panel != null)
                         msgPanels.Add(talk_panel);
                 }
-                //Ìí¼ÓĞÂµÄĞĞÊı
+                //æ·»åŠ æ–°çš„è¡Œæ•°
                 for (int index = 0; index < msgPanels.Count; index++)
                 {
-                    //µÚÒ»ÌõÏûÏ¢¶ÔÁĞ±í½øĞĞ³õÊ¼»¯
+                    //ç¬¬ä¸€æ¡æ¶ˆæ¯å¯¹åˆ—è¡¨è¿›è¡Œåˆå§‹åŒ–
                     if (showInfo_Panel.RowCount == 1)
                     {
                         showInfo_Panel.RowStyles.Clear();
@@ -1012,13 +1013,13 @@ namespace WinFrmTalk.Controls.CustomControls
                         AddMoreMessageLabe();
                     }
 
-                    //°´¿Ø¼ş¸ß¶È²åÈëÒ»ĞĞ
+                    //æŒ‰æ§ä»¶é«˜åº¦æ’å…¥ä¸€è¡Œ
                     showInfo_Panel.RowStyles.Insert(index + 1, new RowStyle(SizeType.Absolute, msgPanels[index].Height));
                     showInfo_Panel.RowCount++;
                     //showInfo_Panel.Height += msgPanels[index].Height;
                 }
-                Dictionary<int, Control> tab_crl = new Dictionary<int, Control>();  //ÁĞ±íÔ­±¾µÄ¿Ø¼ş£¬keyÎªĞĞºÅ
-                //Ñ­»·Ã¿Ò»ĞĞ£¬»ñÈ¡ËùÓĞµÄ¿Ø¼ş
+                Dictionary<int, Control> tab_crl = new Dictionary<int, Control>();  //åˆ—è¡¨åŸæœ¬çš„æ§ä»¶ï¼Œkeyä¸ºè¡Œå·
+                //å¾ªç¯æ¯ä¸€è¡Œï¼Œè·å–æ‰€æœ‰çš„æ§ä»¶
                 foreach (Control item in showInfo_Panel.Controls)
                 {
                     if (item.Name.IndexOf("labMoreMsg") > -1 || item.GetType().Name == "CheckBoxEx")
@@ -1027,27 +1028,27 @@ namespace WinFrmTalk.Controls.CustomControls
                     var position = showInfo_Panel.GetPositionFromControl(item);
                     tab_crl.Add(position.Row, item);
                 }
-                //ÖØĞÂÅÅĞò£¨±ØĞë´Ó×îºóÒ»ĞĞ¿ªÊ¼ÍùÏÂÅ²£©
+                //é‡æ–°æ’åºï¼ˆå¿…é¡»ä»æœ€åä¸€è¡Œå¼€å§‹å¾€ä¸‹æŒªï¼‰
                 for (int index = showInfo_Panel.RowStyles.Count; index > 0; index--)
                 {
                     if (!tab_crl.ContainsKey(index))
                         continue;
-                    //»ñµÃ¸ÃĞĞµÄÏûÏ¢ÆøÅİ
+                    //è·å¾—è¯¥è¡Œçš„æ¶ˆæ¯æ°”æ³¡
                     var item = tab_crl[index];
                     showInfo_Panel.SetRow(item, index + msgPanels.Count);
-                    //Èç¹û¸ÃĞĞÓĞ¸´Ñ¡¿ò£¬ÔòÏÂÒÆ
+                    //å¦‚æœè¯¥è¡Œæœ‰å¤é€‰æ¡†ï¼Œåˆ™ä¸‹ç§»
                     if (showInfo_Panel.GetControlFromPosition(0, index) != null && showInfo_Panel.GetControlFromPosition(0, index) is CheckBoxEx checkBox)
                         showInfo_Panel.SetRow(checkBox, index + msgPanels.Count);
-                    //ĞŞ¸Ä×ÖµäµÄĞĞºÅ
+                    //ä¿®æ”¹å­—å…¸çš„è¡Œå·
                     string msgId = item.Name.Replace("talk_panel_", "");
                     MessageObject msg = targetMsgData.GetMsg(msgId);
                     if (msg != null)
                         msg.rowIndex += msgPanels.Count;
                 }
-                //²åÈë¿Ø¼ş¼¯ºÏ
+                //æ’å…¥æ§ä»¶é›†åˆ
                 for (int index = 0; index < msgPanels.Count; index++)
                 {
-                    //ÒòÎª²»ÊÇËùÓĞmsg¶¼»áÉú³ÉÆøÅİ
+                    //å› ä¸ºä¸æ˜¯æ‰€æœ‰msgéƒ½ä¼šç”Ÿæˆæ°”æ³¡
                     //if (!msgPanels.ContainsKey(index))
                     //    continue;
                     InsertControlToRow(msgPanels[index], index + 1, msgList[index]);
@@ -1058,39 +1059,39 @@ namespace WinFrmTalk.Controls.CustomControls
             {
 
             }
-            //»Ö¸´¹ÒÆğµÄ²¼¾Ö
+            //æ¢å¤æŒ‚èµ·çš„å¸ƒå±€
             showInfo_Panel.ResumeLayout();
 
-            //ÓÉÓÚÏòÉÏ·­Ò³ÖĞÌí¼ÓÏûÏ¢ÆøÅİ»áµ¼ÖÂ¿ÕĞĞ£¬ËùÒÔ·­Ò³¼ÓÔØÍê³ÉºóÌí¼ÓÆøÅİ
+            //ç”±äºå‘ä¸Šç¿»é¡µä¸­æ·»åŠ æ¶ˆæ¯æ°”æ³¡ä¼šå¯¼è‡´ç©ºè¡Œï¼Œæ‰€ä»¥ç¿»é¡µåŠ è½½å®Œæˆåæ·»åŠ æ°”æ³¡
             //AddLoadMsgsToPanel();
         }
         #endregion
 
-        #region ¼ÓÔØ±¾µØÁÄÌì¼ÇÂ¼
+        #region åŠ è½½æœ¬åœ°èŠå¤©è®°å½•
         private List<MessageObject> LoadObjectLocalMsg()
         {
             double timeSend = TimeUtils.CurrentTime();
             if (targetMsgData.GetFirstIndexMsg() != null)
                 timeSend = targetMsgData.GetFirstIndexMsg().timeSend;
-            //»ñÈ¡¹Ì¶¨ÊıÁ¿µÄÁÄÌìÏûÏ¢
+            //è·å–å›ºå®šæ•°é‡çš„èŠå¤©æ¶ˆæ¯
             List<MessageObject> msgList = new MessageObject()
             {
                 FromId = choose_target.UserId
             }.GetPageListNotHaveIsRead(timeSend, row_insert);
-            //±£´æĞèÒªÒÆ³ıµÄmsg¼¯ºÏ
+            //ä¿å­˜éœ€è¦ç§»é™¤çš„msgé›†åˆ
             List<MessageObject> removeList = new List<MessageObject>();
-            //ÒÆ³ıµôÒÑ´æÔÚµÄmsg
+            //ç§»é™¤æ‰å·²å­˜åœ¨çš„msg
             foreach (MessageObject msg in targetMsgData.GetMsgList())
                 foreach (MessageObject item in msgList)
                     if (item.messageId.Equals(msg.messageId))
                         removeList.Add(item);
-            //Ñ­»·ÒÆ³ıÖØ¸´msg
+            //å¾ªç¯ç§»é™¤é‡å¤msg
             foreach (var msg in removeList)
                 msgList.Remove(msg);             
-            //ÊıÁ¿×ã¹»ÏÔÊ¾¼ÓÔØ¸ü¶à
+            //æ•°é‡è¶³å¤Ÿæ˜¾ç¤ºåŠ è½½æ›´å¤š
             if (msgList.Count == row_insert)
                 isHaveMoreLocalMsg = true;
-            //ÖØĞÂÅÅĞò
+            //é‡æ–°æ’åº
             msgList.Sort((x, y) =>
             {
                 if (x.timeSend < y.timeSend)
@@ -1102,40 +1103,40 @@ namespace WinFrmTalk.Controls.CustomControls
             });
             //foreach (MessageObject msg in msgList)
             //{
-            //    //Ìí¼Óµ½»º´æÖĞ
+            //    //æ·»åŠ åˆ°ç¼“å­˜ä¸­
             //    MessageObjectDataDictionary.AddMsgData(msg);
             //}
-            //PAGE_INDEX++;       //·­Ò³
+            //PAGE_INDEX++;       //ç¿»é¡µ
             return msgList;
         }
         #endregion
 
-        #region ¼ÓÔØ±¾µØºÍÂşÓÎÏûÏ¢
-        private bool CanAddMoreRoaming = true;  //ÊÇ·ñÓĞ¸ü¶àµÄÁÄÌì¼ÇÂ¼
+        #region åŠ è½½æœ¬åœ°å’Œæ¼«æ¸¸æ¶ˆæ¯
+        private bool CanAddMoreRoaming = true;  //æ˜¯å¦æœ‰æ›´å¤šçš„èŠå¤©è®°å½•
         private List<MessageObject> DownRoamAndLoadLocalMsg()
         {
             List<MessageObject> list_msgs = LoadObjectLocalMsg();
-            //Êı¾İ¿âÊı¾İ²»×ã
+            //æ•°æ®åº“æ•°æ®ä¸è¶³
             if (list_msgs.Count < row_insert)
             {
-                #region ÂşÓÎ
-                //Éè±¸²»»áÓĞÂşÓÎÏûÏ¢
+                #region æ¼«æ¸¸
+                //è®¾å¤‡ä¸ä¼šæœ‰æ¼«æ¸¸æ¶ˆæ¯
                 if (choose_target.IsDevice == 0 && ShowInfoVScroll.canAdd == 0 && CanAddMoreRoaming)
                 {
-                    //ÕıÔÚÂşÓÎ
+                    //æ­£åœ¨æ¼«æ¸¸
                     isDownloadRoaming = true;
-                    //¿ªÆô½ûÑÔ
+                    //å¼€å¯ç¦è¨€
                     IsShow_BannedTalkPanel(true);
-                    //ÏÔÊ¾µÈ´ı·û
-                    StartLoding(Takeconter_panel, "ÕıÔÚÏÂÔØÂşÓÎÏûÏ¢...");
+                    //æ˜¾ç¤ºç­‰å¾…ç¬¦
+                    StartLoding(Takeconter_panel, "æ­£åœ¨ä¸‹è½½æ¼«æ¸¸æ¶ˆæ¯...");
 
-                    //µ¥Î»ÎªºÁÃë
-                    double endTime = list_msgs.Count < 1   //ÏûÏ¢ÁĞ±í²»´æÔÚÆøÅİ
+                    //å•ä½ä¸ºæ¯«ç§’
+                    double endTime = list_msgs.Count < 1   //æ¶ˆæ¯åˆ—è¡¨ä¸å­˜åœ¨æ°”æ³¡
                             ? (targetMsgData.GetMsgList().Count > 0
                                 ? targetMsgData.GetFirstIndexMsg().timeSend * 1000
                                 : TimeUtils.CurrentTimeMillis())
                             : list_msgs[0].timeSend * 1000;
-                    if (choose_target.IsGroup == 0)      //µ¥ÁÄ
+                    if (choose_target.IsGroup == 0)      //å•èŠ
                         GetRoamMessageSingle(endTime);
                     else
                         GetRoamMessageGroup(endTime);
@@ -1146,20 +1147,20 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ÏûÏ¢ÂşÓÎ
-        #region µ¥ÁÄ
+        #region æ¶ˆæ¯æ¼«æ¸¸
+        #region å•èŠ
         private void GetRoamMessageSingle(double endTime, double startTime = 1262275200000, int page_index = 0)
         {
-            //ĞŞ¸ÄÊ±¼ä´Á  
+            //ä¿®æ”¹æ—¶é—´æˆ³  
             //endTime = endTime == 0 ? UIUtils.CurrentTimeMillis() : endTime * 1000;
-            //endTime--;      //·ÀÖ¹À­È¡±¾µØµÄ×îºóÒ»Ìõ¼ÇÂ¼
+            //endTime--;      //é˜²æ­¢æ‹‰å–æœ¬åœ°çš„æœ€åä¸€æ¡è®°å½•
 
-            //http getÇëÇó»ñµÃÊı¾İ
+            //http getè¯·æ±‚è·å¾—æ•°æ®
             HttpUtils.Instance.InitHttp(this);
-            HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "tigase/shiku_msgs") //»ñÈ¡µ¥ÁÄÂşÓÎ
+            HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "tigase/shiku_msgs") //è·å–å•èŠæ¼«æ¸¸
                 .AddParams("access_token", Applicate.Access_Token)
                 .AddParams("receiver", choose_target.UserId)
-                .AddParams("startTime", startTime.ToString())    // 2010-01-01 00:00:00  ·şÎñ¶Ë·µ»ØµÄÊı¾İÎªµ¹Ğò·µ»Ø
+                .AddParams("startTime", startTime.ToString())    // 2010-01-01 00:00:00  æœåŠ¡ç«¯è¿”å›çš„æ•°æ®ä¸ºå€’åºè¿”å›
                 .AddParams("endTime", Convert.ToInt64(endTime).ToString())
                 .AddParams("pageIndex", page_index.ToString())
                 .AddParams("pageSize", "100")
@@ -1167,21 +1168,21 @@ namespace WinFrmTalk.Controls.CustomControls
                 {
                     try
                     {
-                        #region ±£´æÂşÓÎÏûÏ¢µ½±¾µØ
+                        #region ä¿å­˜æ¼«æ¸¸æ¶ˆæ¯åˆ°æœ¬åœ°
                         if (success)
                         {
-                            //Dictionary<string, MessageObject> msgsData = new Dictionary<string, MessageObject>(); //ÓÃÓÚ¼ìÑéÅúÁ¿²åÈë
+                            //Dictionary<string, MessageObject> msgsData = new Dictionary<string, MessageObject>(); //ç”¨äºæ£€éªŒæ‰¹é‡æ’å…¥
                             string str = result["data"].ToString();
                             JArray itemArray = JArray.Parse(str);
                             var data = new MessageObject().SingleChat(result);
                             //foreach(JToken item in itemArray)
                             for (int index = 0; index < data.Count; index++)
                             {
-                                //¹ıÂËÄ³Ğ©ÏûÏ¢ÀàĞÍ
+                                //è¿‡æ»¤æŸäº›æ¶ˆæ¯ç±»å‹
                                 if (!data[index].IsVisibleMsg())
                                     continue;
 
-                                //ÒòÎª·şÎñÆ÷1¸öĞ¡Ê±²ÅÈ¥É¾³ıÒ»´Î¹ıÆÚÏûÏ¢£¬ËùÒÔ¿ÉÄÜ»áÀ­µ½ÒÑ¹ıÆÚµÄÊ±¼ä
+                                //å› ä¸ºæœåŠ¡å™¨1ä¸ªå°æ—¶æ‰å»åˆ é™¤ä¸€æ¬¡è¿‡æœŸæ¶ˆæ¯ï¼Œæ‰€ä»¥å¯èƒ½ä¼šæ‹‰åˆ°å·²è¿‡æœŸçš„æ—¶é—´
                                 if (data[index].deleteTime < TimeUtils.CurrentTimeDouble() && data[index].deleteTime > 0)
                                     continue;
 
@@ -1192,33 +1193,33 @@ namespace WinFrmTalk.Controls.CustomControls
                                 data[index].ToId = data[index].toUserId;
                                 data[index].isGroup = 0;
 
-                                //½âÃÜ
+                                //è§£å¯†
                                 if (data[index].isEncrypt == 1)
                                     AES.TDecrypt3Des(data[index]);
 
-                                //±£´æÊı¾İ
+                                //ä¿å­˜æ•°æ®
                                 data[index].InsertData();
 
-                                ////»ñÈ¡²»ÖØ¸´idµÄÊı¾İ¼¯ºÏ
+                                ////è·å–ä¸é‡å¤idçš„æ•°æ®é›†åˆ
                                 //if (!msgsData.ContainsKey(data[index].messageId))
                                 //    msgsData.Add(data[index].messageId, data[index]);
                             }
 
-                            //ÂşÓÎ¼ÇÂ¼ÊıÁ¿²»×ã
+                            //æ¼«æ¸¸è®°å½•æ•°é‡ä¸è¶³
                             if (data.Count < 100)
                                 CanAddMoreRoaming = false;
 
-                            //·ÀÖ¹ÂşÓÎÏÂÔØÖĞ½øĞĞ¹ö¶¯£¬µ¼ÖÂÅĞ¶ÏÊı¾İ¿âÎŞÊı¾İºóÎŞ·¨·­Ò³
+                            //é˜²æ­¢æ¼«æ¸¸ä¸‹è½½ä¸­è¿›è¡Œæ»šåŠ¨ï¼Œå¯¼è‡´åˆ¤æ–­æ•°æ®åº“æ— æ•°æ®åæ— æ³•ç¿»é¡µ
                             if (data.Count > 0)
                                 CanAddMoreMsg();
 
                             //data = MessageObject.DictionaryToList(msgsData);
-                            ////ÅúÁ¿²åÈëÊı¾İ¿â
+                            ////æ‰¹é‡æ’å…¥æ•°æ®åº“
                             //if (data.Count > 0)
                             //    data[0].InsertArrayData(data);
                         }
                         #endregion
-                        //Ã»ÓĞ¸ü¶àµÄÂşÓÎÏûÏ¢
+                        //æ²¡æœ‰æ›´å¤šçš„æ¼«æ¸¸æ¶ˆæ¯
                         else
                         {
                             CanAddMoreRoaming = false;
@@ -1226,35 +1227,35 @@ namespace WinFrmTalk.Controls.CustomControls
                     }
                     catch (Exception ex)
                     {
-                        LogHelper.log.Error("----ÂşÓÎ³ö´í£¬·½·¨£¨GetRoamMessageSingle£© : " + ex.Message);
+                        LogHelper.log.Error("----æ¼«æ¸¸å‡ºé”™ï¼Œæ–¹æ³•ï¼ˆGetRoamMessageSingleï¼‰ : " + ex.Message);
                     }
-                    //Ïú»ÙµÈ´ı·û
+                    //é”€æ¯ç­‰å¾…ç¬¦
                     loding.stop();
-                    //½áÊøÂşÓÎ
+                    //ç»“æŸæ¼«æ¸¸
                     isDownloadRoaming = false;
-                    //±ÜÃâÔÙ´Î´¥·¢À­È¡ÂşÓÎ
+                    //é¿å…å†æ¬¡è§¦å‘æ‹‰å–æ¼«æ¸¸
                     choose_target.UpdateDownTime(0, 0);
-                    //¹Ø±Õ½ûÑÔ
+                    //å…³é—­ç¦è¨€
                     IsShow_BannedTalkPanel(false);
-                    //·ÀÖ¹ÉÏ·­À­È¡ÁÄÌì¼ÇÂ¼³ö´í
+                    //é˜²æ­¢ä¸Šç¿»æ‹‰å–èŠå¤©è®°å½•å‡ºé”™
                     if (targetMsgData.GetMsgList().Count < 1)
                     {
-                        //Ìí¼ÓÆøÅİµÈ
+                        //æ·»åŠ æ°”æ³¡ç­‰
                         if (!isDownloadRoaming)
                             SetShowInfoPanel();
                     }
                 });
         }
         #endregion
-        #region ÈºÁÄ
+        #region ç¾¤èŠ
         private void GetRoamMessageGroup(double endTime, double startTime = 1262275200000, int page_index = 0)
         {
-            //http getÇëÇó»ñµÃÊı¾İ
+            //http getè¯·æ±‚è·å¾—æ•°æ®
             HttpUtils.Instance.InitHttp(this);
-            HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "tigase/shiku_muc_msgs") //»ñÈ¡ÈºÂşÓÎ
+            HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "tigase/shiku_muc_msgs") //è·å–ç¾¤æ¼«æ¸¸
                 .AddParams("access_token", Applicate.Access_Token)
                 .AddParams("roomId", choose_target.UserId)
-                .AddParams("startTime", startTime.ToString())    // 2010-01-01 00:00:00  ·şÎñ¶Ë·µ»ØµÄÊı¾İÎªµ¹Ğò·µ»Ø
+                .AddParams("startTime", startTime.ToString())    // 2010-01-01 00:00:00  æœåŠ¡ç«¯è¿”å›çš„æ•°æ®ä¸ºå€’åºè¿”å›
                 .AddParams("endTime", Convert.ToInt64(endTime).ToString())
                 .AddParams("pageIndex", page_index.ToString())
                 .AddParams("pageSize", "100")
@@ -1263,7 +1264,7 @@ namespace WinFrmTalk.Controls.CustomControls
                     try
 
                     {
-                        #region ±£´æÂşÓÎÏûÏ¢µ½±¾µØ
+                        #region ä¿å­˜æ¼«æ¸¸æ¶ˆæ¯åˆ°æœ¬åœ°
                         if (success)
                         {
                             //Dictionary<string, MessageObject> msgsData = new Dictionary<string, MessageObject>();
@@ -1273,11 +1274,11 @@ namespace WinFrmTalk.Controls.CustomControls
                             //foreach(JToken item in itemArray)
                             for (int index = 0; index < data.Count; index++)
                             {
-                                //ÒòÎª·şÎñÆ÷1¸öĞ¡Ê±²ÅÈ¥É¾³ıÒ»´Î¹ıÆÚÏûÏ¢£¬ËùÒÔ¿ÉÄÜ»áÀ­µ½ÒÑ¹ıÆÚµÄÊ±¼ä
+                                //å› ä¸ºæœåŠ¡å™¨1ä¸ªå°æ—¶æ‰å»åˆ é™¤ä¸€æ¬¡è¿‡æœŸæ¶ˆæ¯ï¼Œæ‰€ä»¥å¯èƒ½ä¼šæ‹‰åˆ°å·²è¿‡æœŸçš„æ—¶é—´
                                 if (data[index].deleteTime < TimeUtils.CurrentTimeDouble() && data[index].deleteTime > 0)
                                     continue;
 
-                                //¹ıÂËÄ³Ğ©ÏûÏ¢ÀàĞÍ
+                                //è¿‡æ»¤æŸäº›æ¶ˆæ¯ç±»å‹
                                 if (!data[index].IsVisibleMsg())
                                     continue;
                                 if (string.IsNullOrEmpty(data[index].messageId))
@@ -1289,33 +1290,33 @@ namespace WinFrmTalk.Controls.CustomControls
                                 data[index].ToId = Applicate.MyAccount.userId;
                                 data[index].isGroup = 1;
 
-                                //½âÃÜ
+                                //è§£å¯†
                                 if (data[index].isEncrypt == 1)
                                     AES.TDecrypt3Des(data[index]);
 
-                                //±£´æÊı¾İ
+                                //ä¿å­˜æ•°æ®
                                 data[index].InsertData();
 
-                                ////»ñÈ¡²»ÖØ¸´idµÄÊı¾İ¼¯ºÏ
+                                ////è·å–ä¸é‡å¤idçš„æ•°æ®é›†åˆ
                                 //if (!msgsData.ContainsKey(data[index].messageId))
                                 //    msgsData.Add(data[index].messageId, data[index]);
                             }
 
-                            //ÂşÓÎÊıÁ¿²»×ã
+                            //æ¼«æ¸¸æ•°é‡ä¸è¶³
                             if (data.Count < 100)
                                 CanAddMoreRoaming = false;
 
-                            //·ÀÖ¹ÂşÓÎÏÂÔØÖĞ½øĞĞ¹ö¶¯£¬µ¼ÖÂÅĞ¶ÏÊı¾İ¿âÎŞÊı¾İºóÎŞ·¨·­Ò³
+                            //é˜²æ­¢æ¼«æ¸¸ä¸‹è½½ä¸­è¿›è¡Œæ»šåŠ¨ï¼Œå¯¼è‡´åˆ¤æ–­æ•°æ®åº“æ— æ•°æ®åæ— æ³•ç¿»é¡µ
                             if (data.Count > 0)
                                 CanAddMoreMsg();
 
                             //data = MessageObject.DictionaryToList(msgsData);
-                            ////ÅúÁ¿²åÈëÊı¾İ¿â
+                            ////æ‰¹é‡æ’å…¥æ•°æ®åº“
                             //if (data.Count > 0)
                             //    data[0].InsertArrayData(data);
                         }
                         #endregion
-                        //Ã»ÓĞ¸ü¶àµÄÂşÓÎÏûÏ¢
+                        //æ²¡æœ‰æ›´å¤šçš„æ¼«æ¸¸æ¶ˆæ¯
                         else
                         {
                             CanAddMoreRoaming = false;
@@ -1323,20 +1324,20 @@ namespace WinFrmTalk.Controls.CustomControls
                     }
                     catch (Exception ex)
                     {
-                        LogHelper.log.Error("----ÂşÓÎ³ö´í£¬·½·¨£¨GetRoamMessageSingle£© : " + ex.Message);
+                        LogHelper.log.Error("----æ¼«æ¸¸å‡ºé”™ï¼Œæ–¹æ³•ï¼ˆGetRoamMessageSingleï¼‰ : " + ex.Message);
                     }
-                    //Ïú»ÙµÈ´ı·û
+                    //é”€æ¯ç­‰å¾…ç¬¦
                     loding.stop();
-                    //½áÊøÂşÓÎ
+                    //ç»“æŸæ¼«æ¸¸
                     isDownloadRoaming = false;
-                    //±ÜÃâÔÙ´Î´¥·¢À­È¡ÂşÓÎ
+                    //é¿å…å†æ¬¡è§¦å‘æ‹‰å–æ¼«æ¸¸
                     choose_target.UpdateDownTime(0, 0);
-                    //¹Ø±Õ½ûÑÔ
+                    //å…³é—­ç¦è¨€
                     IsShow_BannedTalkPanel(false);
-                    //·ÀÖ¹ÉÏ·­À­È¡ÁÄÌì¼ÇÂ¼³ö´í
+                    //é˜²æ­¢ä¸Šç¿»æ‹‰å–èŠå¤©è®°å½•å‡ºé”™
                     if (targetMsgData.GetMsgList().Count < 1)
                     {
-                        //Ìí¼ÓÆøÅİµÈ²Ù×÷
+                        //æ·»åŠ æ°”æ³¡ç­‰æ“ä½œ
                         if (!isDownloadRoaming)
                             SetShowInfoPanel();
                     }
@@ -1345,11 +1346,11 @@ namespace WinFrmTalk.Controls.CustomControls
         #endregion
         #endregion
 
-        #region °´»ØÖ´¸üĞÂËÍ´ïÏûÏ¢×´Ì¬
+        #region æŒ‰å›æ‰§æ›´æ–°é€è¾¾æ¶ˆæ¯çŠ¶æ€
         private void DrawIsSend(MessageObject msg)
         {
             MessageObject t_msg = targetMsgData.GetMsg(msg.messageId);
-            //²»ÊôÓÚ×Ô¼ºµÄÏûÏ¢»ØÖ´
+            //ä¸å±äºè‡ªå·±çš„æ¶ˆæ¯å›æ‰§
             if (t_msg == null)
                 return;
             t_msg.isSend = msg.isSend;
@@ -1359,17 +1360,17 @@ namespace WinFrmTalk.Controls.CustomControls
             if (t_msg.fromUserId != Applicate.MyAccount.userId || choose_target == null)
                 return;
 
-            //»ñµÃĞèÒª¸üĞÂµÄ¿Ø¼ş
+            //è·å¾—éœ€è¦æ›´æ–°çš„æ§ä»¶
             string c_name = "talk_panel_" + t_msg.messageId;
 
-            //ÊÇ·ñ´æÔÚ¸ÃÆøÅİÏûÏ¢ºÍËÍ´ï±êÊ¶
+            //æ˜¯å¦å­˜åœ¨è¯¥æ°”æ³¡æ¶ˆæ¯å’Œé€è¾¾æ ‡è¯†
             if (showInfo_Panel.Controls[c_name] == null || showInfo_Panel.Controls[c_name].Controls["lab_msg"] == null)
                 return;
             var position = showInfo_Panel.GetPositionFromControl(showInfo_Panel.Controls[c_name]);
             if (position.Row < 0 || position.Column < 0)
                 return;
 
-            //ÈºÁÄÃ»ÓĞËÍ´ï
+            //ç¾¤èŠæ²¡æœ‰é€è¾¾
             if (choose_target.IsGroup == 1 && t_msg.isSend == 1)
             {
                 if (this.IsHandleCreated)
@@ -1382,7 +1383,7 @@ namespace WinFrmTalk.Controls.CustomControls
                     }));
                 return;
             }
-            //ĞŞ¸ÄÆøÅİµÄ·¢ËÍ×´Ì¬
+            //ä¿®æ”¹æ°”æ³¡çš„å‘é€çŠ¶æ€
             Action action = new Action(() =>
             {
                 EQControlManager.DrawIsSend(t_msg, (Label)showInfo_Panel.Controls[c_name].Controls["lab_msg"]);
@@ -1392,13 +1393,13 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region °´»ØÖ´¸üĞÂÒÑ¶ÁÏûÏ¢×´Ì¬
+        #region æŒ‰å›æ‰§æ›´æ–°å·²è¯»æ¶ˆæ¯çŠ¶æ€
         private void DrawIsRead(MessageObject msg)
         {
-            //»ñµÃĞèÒª¸üĞÂµÄ¿Ø¼ş
+            //è·å¾—éœ€è¦æ›´æ–°çš„æ§ä»¶
             string c_name = "talk_panel_" + msg.messageId;
 
-            //ÊÇ·ñ´æÔÚ¸ÃÆøÅİÏûÏ¢
+            //æ˜¯å¦å­˜åœ¨è¯¥æ°”æ³¡æ¶ˆæ¯
             if (showInfo_Panel.Controls[c_name] == null)
                 return;
             var position = showInfo_Panel.GetPositionFromControl(showInfo_Panel.Controls[c_name]);
@@ -1406,24 +1407,24 @@ namespace WinFrmTalk.Controls.CustomControls
                 return;
 
             MessageObject t_msg = targetMsgData.GetMsg(msg.messageId);
-            //ÊÇ·ñÎªÔÄºó¼´·ÙµÄÒÑ¶ÁÍ¨Öª
+            //æ˜¯å¦ä¸ºé˜…åå³ç„šçš„å·²è¯»é€šçŸ¥
             int isReadDel = 0;
             if (t_msg != null)
                 isReadDel = t_msg.isReadDel;
             if (isReadDel == 1)
-                ReplaceMsgToRemind(msg.messageId, "¶Ô·½²é¿´ÁËÄúµÄÕâÌõÔÄºó¼´·ÙÏûÏ¢");
+                ReplaceMsgToRemind(msg.messageId, "å¯¹æ–¹æŸ¥çœ‹äº†æ‚¨çš„è¿™æ¡é˜…åå³ç„šæ¶ˆæ¯");
             else
             {
                 if (showInfo_Panel.Controls[c_name].Controls["lab_msg"] == null)
                     return;
 
-                //ÈºĞèÒª¿ªÆôÈºÒÑ¶Á
+                //ç¾¤éœ€è¦å¼€å¯ç¾¤å·²è¯»
                 if (choose_target.IsGroup == 1)
                 {
                     if (this.IsHandleCreated)
                         Invoke(new Action(() =>
                         {
-                            //ÏÔÊ¾ÈºÒÑ¶Á
+                            //æ˜¾ç¤ºç¾¤å·²è¯»
                             if (choose_target.ShowRead == 1)
                             {
                                 EQControlManager.DrawReadPerson(msg.readPersons, (Label)showInfo_Panel.Controls[c_name].Controls["lab_msg"]);
@@ -1446,7 +1447,7 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region Èç¹û¸ÃÏûÏ¢ÎªÈºĞÅÏ¢£¬ÇÒ´ò¿ªÁËÈºÒÑ¶ÁÉèÖÃ
+        #region å¦‚æœè¯¥æ¶ˆæ¯ä¸ºç¾¤ä¿¡æ¯ï¼Œä¸”æ‰“å¼€äº†ç¾¤å·²è¯»è®¾ç½®
         private void SetReadPerson_Click(MessageObject messageObject, EQBaseControl talk_panel)
         {
             if (messageObject.isGroup == 1)
@@ -1457,7 +1458,7 @@ namespace WinFrmTalk.Controls.CustomControls
                 {
                     lab_msg.MouseDown += (sender, e) =>
                     {
-                        //µ¯³öÒÑ¶ÁÈËÊıÏÔÊ¾¿ò
+                        //å¼¹å‡ºå·²è¯»äººæ•°æ˜¾ç¤ºæ¡†
                         if (choose_target.ShowRead == 1 && e.Button == MouseButtons.Left)
                         {
                             FrmReaded frmReaded = new FrmReaded();
@@ -1471,30 +1472,30 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ¼ÓÔØÀúÊ·ÏûÏ¢Ê±£¬ÔİÍ£½ÓÊÕ×îĞÂÏûÏ¢
+        #region åŠ è½½å†å²æ¶ˆæ¯æ—¶ï¼Œæš‚åœæ¥æ”¶æœ€æ–°æ¶ˆæ¯
         /// <summary>
-        /// Èç¹ûÕıÔÚ·­Ò³£¬Ôò±£´æ¸Ãmsg£¬Ôİ²»Ìí¼Ó
+        /// å¦‚æœæ­£åœ¨ç¿»é¡µï¼Œåˆ™ä¿å­˜è¯¥msgï¼Œæš‚ä¸æ·»åŠ 
         /// </summary>
         /// <param name="msg"></param>
         private void JudgeMsgIsAddToPanel(MessageObject msg)
         {
-            #region ¹ıÂËÏûÏ¢
+            #region è¿‡æ»¤æ¶ˆæ¯
             if (choose_target == null || msg == null || string.IsNullOrEmpty(msg.messageId))
                 return;
-            //ÕıÔÚÊäÈë¡£¡£Í¨Öª
+            //æ­£åœ¨è¾“å…¥ã€‚ã€‚é€šçŸ¥
             if (msg.type == kWCMessageType.Typing)
             {
                 if (msg.fromUserId == choose_target.UserId)
                     IsShowTyping();
                 return;
             }
-            //²»Éú³ÉÆøÅİµÄÏûÏ¢ÀàĞÍ
+            //ä¸ç”Ÿæˆæ°”æ³¡çš„æ¶ˆæ¯ç±»å‹
             if (!msg.IsVisibleMsg() && msg.type != kWCMessageType.RoomIsVerify)
                 return;
-            //ÒÑ´æÔÚ¸ÃÆøÅİ¿Ø¼ş
+            //å·²å­˜åœ¨è¯¥æ°”æ³¡æ§ä»¶
             if (showInfo_Panel.Controls["talk_panel_" + msg.messageId] != null)
                 return;
-            //contentÎª¿ÕµÄÏûÏ¢²»ÏÔÊ¾
+            //contentä¸ºç©ºçš„æ¶ˆæ¯ä¸æ˜¾ç¤º
             if (string.IsNullOrEmpty(msg.content))
             {
                 switch (msg.type)
@@ -1515,25 +1516,25 @@ namespace WinFrmTalk.Controls.CustomControls
                 }
             }
 
-            #region ÅĞ¶ÏÏûÏ¢ÊÇ·ñÎªµ±Ç°ÁÄÌì¶ÔÏóµÄ
-            //¶àµãµÇÂ¼µÄFromIdÒ²ÊÇ×Ô¼º£¬ĞèÒªÅĞ¶ÏToIdÊÇ·ñÎªµ±Ç°¶ÔÏó
+            #region åˆ¤æ–­æ¶ˆæ¯æ˜¯å¦ä¸ºå½“å‰èŠå¤©å¯¹è±¡çš„
+            //å¤šç‚¹ç™»å½•çš„FromIdä¹Ÿæ˜¯è‡ªå·±ï¼Œéœ€è¦åˆ¤æ–­ToIdæ˜¯å¦ä¸ºå½“å‰å¯¹è±¡
             if (msg.FromId == Applicate.MyAccount.userId)
             {
                 if (msg.ToId != choose_target.UserId)
                     return;
             }
-            //FromIdºÍToId±ØĞëÊÇ×Ô¼ººÍµ±Ç°ÁÄÌì¶ÔÏó£¬FromId»òÕßToIdÎª×Ô¼ºÊ±£¬ÁíÒ»¸ö±Ø¶¨ÎªÁÄÌì¶ÔÏó
+            //FromIdå’ŒToIdå¿…é¡»æ˜¯è‡ªå·±å’Œå½“å‰èŠå¤©å¯¹è±¡ï¼ŒFromIdæˆ–è€…ToIdä¸ºè‡ªå·±æ—¶ï¼Œå¦ä¸€ä¸ªå¿…å®šä¸ºèŠå¤©å¯¹è±¡
             else if (msg.FromId == choose_target.UserId)
             {
                 if (msg.ToId != Applicate.MyAccount.userId)
                     return;
             }
-            //FromId¼È²»ÊÇ×Ô¼ºÒ²²»ÊÇÁÄÌì¶ÔÏó£¬¸ÃÏûÏ¢±Ø¶¨²»Îª¸ÃÁÄÌìÒ³Ãæ
+            //FromIdæ—¢ä¸æ˜¯è‡ªå·±ä¹Ÿä¸æ˜¯èŠå¤©å¯¹è±¡ï¼Œè¯¥æ¶ˆæ¯å¿…å®šä¸ä¸ºè¯¥èŠå¤©é¡µé¢
             else
                 return;
             #endregion
 
-            //¹ıÆÚÏûÏ¢
+            //è¿‡æœŸæ¶ˆæ¯
             if (msg.deleteTime < TimeUtils.CurrentTimeDouble() && msg.deleteTime > 0)
             {
                 msg.DeleteData();
@@ -1541,7 +1542,7 @@ namespace WinFrmTalk.Controls.CustomControls
             }
             #endregion
 
-            //ÕıÔÚ¼ÓÔØÂşÓÎÏûÏ¢
+            //æ­£åœ¨åŠ è½½æ¼«æ¸¸æ¶ˆæ¯
             if (isDownloadRoaming)
             {
                 loadMsgsData.Add(msg.messageId, msg);
@@ -1561,7 +1562,7 @@ namespace WinFrmTalk.Controls.CustomControls
         }
 
         /// <summary>
-        /// Ìí¼Ómsgsµ½Ãæ°å
+        /// æ·»åŠ msgsåˆ°é¢æ¿
         /// </summary>
         private void AddLoadMsgsToPanel()
         {
@@ -1574,23 +1575,23 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region Ìí¼ÓÏûÏ¢ÆøÅİµ½ÁĞ±í
+        #region æ·»åŠ æ¶ˆæ¯æ°”æ³¡åˆ°åˆ—è¡¨
         private Stopwatch stopWatch = new Stopwatch();
         private void AddMessageToPanel(MessageObject msg)
         {
-            //Ìí¼Óµ½»º´æ
+            //æ·»åŠ åˆ°ç¼“å­˜
             targetMsgData.AddMsgData(msg);
-            //»ñÈ¡×ÖµäÖĞ´æ´¢µÄmessage
+            //è·å–å­—å…¸ä¸­å­˜å‚¨çš„message
             MessageObject messageObject = targetMsgData.GetMsg(msg.messageId);
             if (messageObject == null || string.IsNullOrWhiteSpace(messageObject.messageId))
                 return;
 
-            bool isOneSelf = string.Equals(messageObject.fromUserId, Applicate.MyAccount.userId);     //ÅĞ¶ÏÊÇ·ñÎª±¾ÈË·¢ËÍµÄÏûÏ¢
+            bool isOneSelf = string.Equals(messageObject.fromUserId, Applicate.MyAccount.userId);     //åˆ¤æ–­æ˜¯å¦ä¸ºæœ¬äººå‘é€çš„æ¶ˆæ¯
 
-            //´ÓÖ÷Ïß³ÌÖĞ·ÃÎÊ
+            //ä»ä¸»çº¿ç¨‹ä¸­è®¿é—®
             Action action = new Action(() =>
             {
-                //»ñÈ¡¿Ø¼şµÄÀàĞÍ
+                //è·å–æ§ä»¶çš„ç±»å‹
                 //KWTypeControlsDictionary kWTypeControls = new KWTypeControlsDictionary(messageObject);
                 //EQBaseControl eqBase = kWTypeControls.GetObjectByType();
                 EQBaseControl eqBase = KWTypeControlsDictionary.GetObjectByType(messageObject);
@@ -1598,18 +1599,18 @@ namespace WinFrmTalk.Controls.CustomControls
                 //EQBaseControl crl = null;
                 //    KWTypeControlsDictionary.GetObjectByType(messageObject, crl, (eqBase) =>
                 //    {
-                //ÊÇ·ñÏÔÊ¾ÈºÒÑ¶ÁÈËÊı
+                //æ˜¯å¦æ˜¾ç¤ºç¾¤å·²è¯»äººæ•°
                 if (choose_target.IsGroup == 1)
                     eqBase.isShowLabMsg = choose_target.ShowRead == 1 ? true : false;
-                //ÊÇ·ñÏÔÊ¾ÔÄºó¼´·Ù
+                //æ˜¯å¦æ˜¾ç¤ºé˜…åå³ç„š
                 if (choose_target.IsGroup == 0)
                     eqBase.isReadDel = messageObject.isReadDel == 1 ? true : false;
-                //º¬ÓĞÔÄºó¼´·ÙÏûÏ¢
+                //å«æœ‰é˜…åå³ç„šæ¶ˆæ¯
                 if (eqBase.isReadDel)
                     isHaveReadDel = 1;
 
-                #region ÆøÅİÔÚÃæ°åµÄÎ»ÖÃ
-                //»ñÈ¡ÆøÅİ¿Ø¼ş
+                #region æ°”æ³¡åœ¨é¢æ¿çš„ä½ç½®
+                //è·å–æ°”æ³¡æ§ä»¶
                 EQBaseControl talk_panel = eqBase.GetRecombinedPanel();
                 //talk_panel.Location = new Point(Message_panel.Width - talk_panel.Width - 10, 0);
                 if (talk_panel is EQRemindControl)
@@ -1624,7 +1625,7 @@ namespace WinFrmTalk.Controls.CustomControls
                 #endregion
 
                 showInfo_Panel.SuspendLayout();
-                //µÚÒ»ÌõÏûÏ¢¶ÔÁĞ±í½øĞĞ³õÊ¼»¯
+                //ç¬¬ä¸€æ¡æ¶ˆæ¯å¯¹åˆ—è¡¨è¿›è¡Œåˆå§‹åŒ–
                 if (showInfo_Panel.RowCount == 1)
                 {
                     showInfo_Panel.RowStyles.Clear();
@@ -1633,14 +1634,14 @@ namespace WinFrmTalk.Controls.CustomControls
                     AddMoreMessageLabe();
                 }
 
-                //Ìí¼ÓÊ±¼äÆøÅİ
+                //æ·»åŠ æ—¶é—´æ°”æ³¡
                 AddSendTime(eqBase, messageObject);
 
-                //Ìí¼ÓĞÂµÄĞĞ
+                //æ·»åŠ æ–°çš„è¡Œ
                 showInfo_Panel.RowCount = showInfo_Panel.RowStyles.Count + 1;
                 showInfo_Panel.RowStyles.Add(new RowStyle(SizeType.Absolute, talk_panel.Height));
 
-                //Ìí¼Ó¶àÑ¡¸´Ñ¡¿ò
+                //æ·»åŠ å¤šé€‰å¤é€‰æ¡†
                 if (EQControlManager.JudgeIsBubleMsg(messageObject.type))
                 {
                     CheckBoxEx checkBox = new CheckBoxEx();
@@ -1651,17 +1652,17 @@ namespace WinFrmTalk.Controls.CustomControls
                     showInfo_Panel.Controls.Add(checkBox, 0, showInfo_Panel.RowCount - 1);
                 }
 
-                //Ìí¼ÓÁÄÌìÆøÅİ
+                //æ·»åŠ èŠå¤©æ°”æ³¡
                 talk_panel.Name = "talk_panel_" + messageObject.messageId;
                 showInfo_Panel.Controls.Add(talk_panel, 1, showInfo_Panel.RowCount - 1);
                 showInfo_Panel.ResumeLayout();
-                //ĞŞ¸ÄÈºÔ±Ãû³Æ
+                //ä¿®æ”¹ç¾¤å‘˜åç§°
                 ModifyLabName(talk_panel, messageObject.fromUserId);
 
-                //·¢ËÍÒÑ¶ÁÍ¨Öª£¨ÎŞ¸´Ñ¡¿ò´ú±í²»ÊÇÏûÏ¢ÆøÅİ£©£¬²»ÏÔÊ¾ºìµãµÄ²ÅÖ±½Ó·¢ËÍÒÑ¶Á
+                //å‘é€å·²è¯»é€šçŸ¥ï¼ˆæ— å¤é€‰æ¡†ä»£è¡¨ä¸æ˜¯æ¶ˆæ¯æ°”æ³¡ï¼‰ï¼Œä¸æ˜¾ç¤ºçº¢ç‚¹çš„æ‰ç›´æ¥å‘é€å·²è¯»
                 if (messageObject.isRead != 1 && !talk_panel.isShowRedPoint && messageObject.isReadDel == 0)
                 {
-                    //Ö»¶Ô±ğÈËµÄÏûÏ¢·¢ËÍÒÑ¶Á
+                    //åªå¯¹åˆ«äººçš„æ¶ˆæ¯å‘é€å·²è¯»
                     if (messageObject.fromUserId != Applicate.MyAccount.userId)
                     {
                         //if (choose_target.showRead == 1)
@@ -1674,8 +1675,8 @@ namespace WinFrmTalk.Controls.CustomControls
                     }
                 }
 
-                #region ÊÇ·ñÌí¼ÓÑûÇëÈëÈºµã»÷ÊÂ¼ş
-                //Èç¹ûÎªRoomIsVerifyÔòĞèÒªµã»÷ÊÂ¼ş£¬È·ÈÏ½øÈº
+                #region æ˜¯å¦æ·»åŠ é‚€è¯·å…¥ç¾¤ç‚¹å‡»äº‹ä»¶
+                //å¦‚æœä¸ºRoomIsVerifyåˆ™éœ€è¦ç‚¹å‡»äº‹ä»¶ï¼Œç¡®è®¤è¿›ç¾¤
                 if (messageObject.type == kWCMessageType.RoomIsVerify)
                 {
                     talk_panel.MouseDown += (sender, e) =>
@@ -1694,14 +1695,14 @@ namespace WinFrmTalk.Controls.CustomControls
                 }
                 #endregion
 
-                //Ìí¼ÓÒÑ¶ÁÈËÊıµã»÷ÊÂ¼ş
+                //æ·»åŠ å·²è¯»äººæ•°ç‚¹å‡»äº‹ä»¶
                 SetReadPerson_Click(messageObject, talk_panel);
 
-                //Èç¹ûÊÇ×Ô¼ºµÄÏûÏ¢£¬Òª¹öµ½µ×²¿
+                //å¦‚æœæ˜¯è‡ªå·±çš„æ¶ˆæ¯ï¼Œè¦æ»šåˆ°åº•éƒ¨
                 if ((Takeconter_panel.Height - showInfo_Panel.Height) <= 0 && messageObject.fromUserId == Applicate.MyAccount.userId)
                     ShowInfoVScroll.SetVScroolToBottom();
 
-                //Íù×ÖµäÖĞ¼ÇÂ¼µ±Ç°ĞĞ
+                //å¾€å­—å…¸ä¸­è®°å½•å½“å‰è¡Œ
                 messageObject.rowIndex = showInfo_Panel.RowCount - 1;
                 //});
             });
@@ -1713,28 +1714,28 @@ namespace WinFrmTalk.Controls.CustomControls
         /// 
         /// </summary>
         /// <param name="msg"></param>
-        /// <param name="row_index">¿Ø¼şĞèÒªÌí¼ÓµÄÎ»ÖÃ</param>
+        /// <param name="row_index">æ§ä»¶éœ€è¦æ·»åŠ çš„ä½ç½®</param>
         /// <returns></returns>
         private EQBaseControl GetMessagePanel(MessageObject msg, int row_index)
         {
 
-            #region ¹ıÂËÏûÏ¢
+            #region è¿‡æ»¤æ¶ˆæ¯
             if (choose_target == null)
                 return null;
-            //ÕıÔÚÊäÈë¡£¡£Í¨Öª
+            //æ­£åœ¨è¾“å…¥ã€‚ã€‚é€šçŸ¥
             if (msg.type == kWCMessageType.Typing)
             {
                 if (msg.fromUserId == choose_target.UserId)
                     IsShowTyping();
                 return null;
             }
-            //²»Éú³ÉÆøÅİµÄÏûÏ¢ÀàĞÍ
+            //ä¸ç”Ÿæˆæ°”æ³¡çš„æ¶ˆæ¯ç±»å‹
             if (!msg.IsVisibleMsg() && msg.type != kWCMessageType.RoomIsVerify)
                 return null;
-            //ÒÑ´æÔÚ¸ÃÆøÅİ¿Ø¼ş
+            //å·²å­˜åœ¨è¯¥æ°”æ³¡æ§ä»¶
             if (showInfo_Panel.Controls["talk_panel_" + msg.messageId] != null)
                 return null;
-            //contentÎª¿ÕµÄÏûÏ¢²»ÏÔÊ¾
+            //contentä¸ºç©ºçš„æ¶ˆæ¯ä¸æ˜¾ç¤º
             if (string.IsNullOrEmpty(msg.content))
             {
                 switch (msg.type)
@@ -1751,25 +1752,25 @@ namespace WinFrmTalk.Controls.CustomControls
                 }
             }
 
-            #region ÅĞ¶ÏÏûÏ¢ÊÇ·ñÎªµ±Ç°ÁÄÌì¶ÔÏóµÄ
-            //¶àµãµÇÂ¼µÄFromIdÒ²ÊÇ×Ô¼º£¬ĞèÒªÅĞ¶ÏToIdÊÇ·ñÎªµ±Ç°¶ÔÏó
+            #region åˆ¤æ–­æ¶ˆæ¯æ˜¯å¦ä¸ºå½“å‰èŠå¤©å¯¹è±¡çš„
+            //å¤šç‚¹ç™»å½•çš„FromIdä¹Ÿæ˜¯è‡ªå·±ï¼Œéœ€è¦åˆ¤æ–­ToIdæ˜¯å¦ä¸ºå½“å‰å¯¹è±¡
             if (msg.FromId == Applicate.MyAccount.userId)
             {
                 if (msg.ToId != choose_target.UserId)
                     return null;
             }
-            //FromIdºÍToId±ØĞëÊÇ×Ô¼ººÍµ±Ç°ÁÄÌì¶ÔÏó£¬FromId»òÕßToIdÎª×Ô¼ºÊ±£¬ÁíÒ»¸ö±Ø¶¨ÎªÁÄÌì¶ÔÏó
+            //FromIdå’ŒToIdå¿…é¡»æ˜¯è‡ªå·±å’Œå½“å‰èŠå¤©å¯¹è±¡ï¼ŒFromIdæˆ–è€…ToIdä¸ºè‡ªå·±æ—¶ï¼Œå¦ä¸€ä¸ªå¿…å®šä¸ºèŠå¤©å¯¹è±¡
             else if (msg.FromId == choose_target.UserId)
             {
                 if (msg.ToId != Applicate.MyAccount.userId)
                     return null;
             }
-            //FromId¼È²»ÊÇ×Ô¼ºÒ²²»ÊÇÁÄÌì¶ÔÏó£¬¸ÃÏûÏ¢±Ø¶¨²»Îª¸ÃÁÄÌìÒ³Ãæ
+            //FromIdæ—¢ä¸æ˜¯è‡ªå·±ä¹Ÿä¸æ˜¯èŠå¤©å¯¹è±¡ï¼Œè¯¥æ¶ˆæ¯å¿…å®šä¸ä¸ºè¯¥èŠå¤©é¡µé¢
             else
                 return null;
             #endregion
 
-            //¹ıÆÚÏûÏ¢
+            //è¿‡æœŸæ¶ˆæ¯
             if (msg.deleteTime < TimeUtils.CurrentTimeDouble() && msg.deleteTime > 0)
             {
                 msg.DeleteData();
@@ -1777,27 +1778,27 @@ namespace WinFrmTalk.Controls.CustomControls
             }
             #endregion
 
-            //Èç¹ûÊÇ¶Ô·½·¢ËÍµÄÏûÏ¢
+            //å¦‚æœæ˜¯å¯¹æ–¹å‘é€çš„æ¶ˆæ¯
             targetMsgData.AddMsgData(msg);
 
-            bool isOneSelf = string.Equals(msg.fromUserId, Applicate.MyAccount.userId);     //ÅĞ¶ÏÊÇ·ñÎª±¾ÈË·¢ËÍµÄÏûÏ¢
+            bool isOneSelf = string.Equals(msg.fromUserId, Applicate.MyAccount.userId);     //åˆ¤æ–­æ˜¯å¦ä¸ºæœ¬äººå‘é€çš„æ¶ˆæ¯
 
-            //»ñÈ¡¿Ø¼şµÄÀàĞÍ
+            //è·å–æ§ä»¶çš„ç±»å‹
             //KWTypeControlsDictionary kWTypeControls = new KWTypeControlsDictionary(msg);
             //EQBaseControl eqBase = kWTypeControls.GetObjectByType();
             EQBaseControl eqBase = KWTypeControlsDictionary.GetObjectByType(msg);
 
-            //ÊÇ·ñÏÔÊ¾ÈºÒÑ¶ÁÈËÊı
+            //æ˜¯å¦æ˜¾ç¤ºç¾¤å·²è¯»äººæ•°
             if (choose_target.IsGroup == 1)
                 eqBase.isShowLabMsg = choose_target.ShowRead == 1 ? true : false;
-            //ÊÇ·ñÏÔÊ¾ÔÄºó¼´·Ù
+            //æ˜¯å¦æ˜¾ç¤ºé˜…åå³ç„š
             if (choose_target.IsGroup == 0)
                 eqBase.isReadDel = msg.isReadDel == 1 ? true : false;
-            //º¬ÓĞÔÄºó¼´·ÙÏûÏ¢
+            //å«æœ‰é˜…åå³ç„šæ¶ˆæ¯
             if (eqBase.isReadDel)
                 isHaveReadDel = 1;
 
-            //»ñÈ¡ÆøÅİ¿Ø¼ş
+            //è·å–æ°”æ³¡æ§ä»¶
             EQBaseControl talk_panel = eqBase.GetRecombinedPanel();
             talk_panel.Name = "talk_panel_" + msg.messageId;
             //talk_panel.Location = new Point(Message_panel.Width - talk_panel.Width - 10, 0);
@@ -1811,28 +1812,28 @@ namespace WinFrmTalk.Controls.CustomControls
                     talk_panel.Anchor = (AnchorStyles.Left | AnchorStyles.Top);
             }
 
-            //Ìí¼ÓÒÑ¶ÁÈËÊıµã»÷ÊÂ¼ş
+            //æ·»åŠ å·²è¯»äººæ•°ç‚¹å‡»äº‹ä»¶
             SetReadPerson_Click(msg, talk_panel);
 
-            //»ñÈ¡×ÖµäÖĞ´æ´¢µÄmessage
+            //è·å–å­—å…¸ä¸­å­˜å‚¨çš„message
             MessageObject messageObject = targetMsgData.GetMsg(msg.messageId);
-            //Íù×ÖµäÖĞ¼ÇÂ¼µ±Ç°ĞĞ
+            //å¾€å­—å…¸ä¸­è®°å½•å½“å‰è¡Œ
             if (messageObject != null)
                 messageObject.rowIndex = row_index;
 
             return talk_panel;
         }
         /// <summary>
-        /// ÍùÏûÏ¢ÁĞ±í²åÈë¿Ø¼ş
+        /// å¾€æ¶ˆæ¯åˆ—è¡¨æ’å…¥æ§ä»¶
         /// </summary>
-        /// <param name="talk_panel">ĞèÒª²åÈëµÄ¿Ø¼ş</param>
-        /// <param name="row_index">Ä¿±êĞĞ</param>
+        /// <param name="talk_panel">éœ€è¦æ’å…¥çš„æ§ä»¶</param>
+        /// <param name="row_index">ç›®æ ‡è¡Œ</param>
         public void InsertControlToRow(EQBaseControl talk_panel, int row_index, MessageObject messageObject)
         {
             if (showInfo_Panel.Controls[talk_panel.Name] != null)
                 return;
 
-            //¶àÑ¡¸´Ñ¡¿ò
+            //å¤šé€‰å¤é€‰æ¡†
             if (EQControlManager.JudgeIsBubleMsg(messageObject.type))
             {
                 CheckBoxEx checkBox = new CheckBoxEx();
@@ -1843,10 +1844,10 @@ namespace WinFrmTalk.Controls.CustomControls
                 showInfo_Panel.Controls.Add(checkBox, 0, row_index);
             }
 
-            //·¢ËÍÒÑ¶ÁÍ¨Öª£¨ÎŞ¸´Ñ¡¿ò´ú±í²»ÊÇÏûÏ¢ÆøÅİ£©£¬²»ÏÔÊ¾ºìµãµÄ²ÅÖ±½Ó·¢ËÍÒÑ¶Á
+            //å‘é€å·²è¯»é€šçŸ¥ï¼ˆæ— å¤é€‰æ¡†ä»£è¡¨ä¸æ˜¯æ¶ˆæ¯æ°”æ³¡ï¼‰ï¼Œä¸æ˜¾ç¤ºçº¢ç‚¹çš„æ‰ç›´æ¥å‘é€å·²è¯»
             if (messageObject.isRead != 1 && !talk_panel.isShowRedPoint && messageObject.isReadDel == 0)
             {
-                //Ö»¶Ô±ğÈËµÄÏûÏ¢·¢ËÍÒÑ¶Á
+                //åªå¯¹åˆ«äººçš„æ¶ˆæ¯å‘é€å·²è¯»
                 if (messageObject.fromUserId != Applicate.MyAccount.userId)
                 {
                     //if (choose_target.showRead == 1)
@@ -1859,7 +1860,7 @@ namespace WinFrmTalk.Controls.CustomControls
                 }
             }
 
-            //Èç¹ûÎªRoomIsVerifyÔòĞèÒªµã»÷ÊÂ¼ş£¬È·ÈÏ½øÈº
+            //å¦‚æœä¸ºRoomIsVerifyåˆ™éœ€è¦ç‚¹å‡»äº‹ä»¶ï¼Œç¡®è®¤è¿›ç¾¤
             if (messageObject.type == kWCMessageType.RoomIsVerify)
             {
                 talk_panel.MouseDown += (sender, e) =>
@@ -1877,19 +1878,19 @@ namespace WinFrmTalk.Controls.CustomControls
                 };
             }
 
-            //Ìí¼ÓÁÄÌìÆøÅİ
+            //æ·»åŠ èŠå¤©æ°”æ³¡
             showInfo_Panel.Controls.Add(talk_panel, 1, row_index);
         }
         #endregion
 
-        #region ·¢ËÍ°´Å¥µã»÷ÊÂ¼ş
+        #region å‘é€æŒ‰é’®ç‚¹å‡»äº‹ä»¶
         private void btnSend_Click(object sender, EventArgs e)
         {
-            //Ñ¡Ôñ¶ÔÏó²»ÄÜÎª¿Õ
+            //é€‰æ‹©å¯¹è±¡ä¸èƒ½ä¸ºç©º
             if (choose_target == null || string.IsNullOrEmpty(choose_target.UserId))
                 return;
 
-            //Èç¹ûµ±Ç°Îª½ûÑÔÖĞ
+            //å¦‚æœå½“å‰ä¸ºç¦è¨€ä¸­
             if (isBannedTalk || !btnSend.Visible)
                 return;
 
@@ -1902,7 +1903,7 @@ namespace WinFrmTalk.Controls.CustomControls
             {
                 try
                 {
-                    //±£´æ±äÁ¿£¬Òì²½Ö´ĞĞ»áµ¼ÖÂ±äÁ¿³ö´í
+                    //ä¿å­˜å˜é‡ï¼Œå¼‚æ­¥æ‰§è¡Œä¼šå¯¼è‡´å˜é‡å‡ºé”™
                     string strSend = txtSend.Text;
                     string rtfSend = txtSend.Rtf;
                     int eji_num = emoji_num;
@@ -1914,59 +1915,59 @@ namespace WinFrmTalk.Controls.CustomControls
 
                     Thread sendThread = new Thread(() =>
                     {
-                        //ÊäÈë²»ÄÜÎª¿Õ
+                        //è¾“å…¥ä¸èƒ½ä¸ºç©º
                         if (string.IsNullOrEmpty(strSend) && eji_num < 1)
                         {
-                            //²»´æÔÚÍ¼Æ¬
+                            //ä¸å­˜åœ¨å›¾ç‰‡
                             if (!EQControlManager.JudgeRtfHaveImg(rtfSend))
                                 return;
                         }
 
-                        //emoji±íÇé×ªÎªcode
+                        //emojiè¡¨æƒ…è½¬ä¸ºcode
                         strSend = EmojiPngToCode(rtfSend, eji_codes);
-                        //ÓÃÓÚrtfµÄ×ª»¯
+                        //ç”¨äºrtfçš„è½¬åŒ–
                         RichTextBox richTextBox = new RichTextBox();
                         richTextBox.Rtf = strSend;
 
-                        #region ½âÎöÍ¼Æ¬²¢µ¥¶À·¢ËÍ
+                        #region è§£æå›¾ç‰‡å¹¶å•ç‹¬å‘é€
                         try
                         {
                             List<Image> list_images = new List<Image>();
-                            //ÓÃÕıÔò±í´ïÊ½£¬»ñÈ¡Í¼Æ¬rtf
+                            //ç”¨æ­£åˆ™è¡¨è¾¾å¼ï¼Œè·å–å›¾ç‰‡rtf
                             MatchCollection matchs = Regex.Matches(richTextBox.Rtf, @"{\\pict[^}]+}", RegexOptions.IgnoreCase | RegexOptions.Singleline);
                             foreach (Match item in matchs)
                             {
                                 //richTextBox.Rtf = richTextBox.Rtf.Replace(item.Value, "");
-                                ////±£´æÍ¼Æ¬µ½±¾µØ
+                                ////ä¿å­˜å›¾ç‰‡åˆ°æœ¬åœ°
                                 //string filePath = EQControlManager.RtfToImageSave(item.Value);
 
-                                ////·¢ËÍÍ¼Æ¬
+                                ////å‘é€å›¾ç‰‡
                                 //if (!string.IsNullOrEmpty(filePath))
                                 //{
-                                //    //Ìí¼ÓÆøÅİµ½ÁĞ±í
+                                //    //æ·»åŠ æ°”æ³¡åˆ°åˆ—è¡¨
                                 //    MessageObject msg = ShiKuManager.SendImageMessage(fdSend, "", filePath, Convert.ToInt32(new FileInfo(filePath).Length), false);
                                 //    JudgeMsgIsAddToPanel(msg);
 
                                 //    UploadEngine.Instance.From(filePath).
-                                //        //ÉÏ´«ÖĞ
+                                //        //ä¸Šä¼ ä¸­
                                 //        UpProgress((progress) =>
                                 //        {
 
                                 //        }).
-                                //        //ÉÏ´«Íê³É
+                                //        //ä¸Šä¼ å®Œæˆ
                                 //        UploadFile((success, url_path) =>
                                 //        {
                                 //            MessageObject t_msg = targetMsgData.GetMsg(msg.messageId);
                                 //            if (t_msg != null)
                                 //            {
-                                //                //ĞŞ¸ÄÆøÅİµÄÍ¼Æ¬ºÍÑùÊ½
+                                //                //ä¿®æ”¹æ°”æ³¡çš„å›¾ç‰‡å’Œæ ·å¼
                                 //                string name = "talk_panel_" + t_msg.messageId;
                                 //                if (showInfo_Panel.Controls.Find(name, true).Length > 0 && showInfo_Panel.Controls.Find(name, true)[0] is EQImageControl imageCrl)
                                 //                {
                                 //                    UploadImage(imageCrl, t_msg, url_path, success);
                                 //                }
                                 //            }
-                                //            //Èç¹ûµ±Ç°ÁÄÌì¶ÔÏóÒÑÇĞ»»£¬Ôò²»¸üĞÂUIÖ»·¢ËÍ
+                                //            //å¦‚æœå½“å‰èŠå¤©å¯¹è±¡å·²åˆ‡æ¢ï¼Œåˆ™ä¸æ›´æ–°UIåªå‘é€
                                 //            if (!choose_target.userId.Equals(msg.fromUserId) && success)
                                 //            {
                                 //                msg.content = url_path;
@@ -1980,15 +1981,15 @@ namespace WinFrmTalk.Controls.CustomControls
                         }
                         catch (Exception ex)
                         {
-                            LogHelper.log.Error("----½âÎöÍ¼Æ¬³ö´í£¬·½·¨£¨btnSend_Click£© : " + ex.Message);
+                            LogHelper.log.Error("----è§£æå›¾ç‰‡å‡ºé”™ï¼Œæ–¹æ³•ï¼ˆbtnSend_Clickï¼‰ : " + ex.Message);
                         }
                         #endregion
 
-                        //·¢ËÍÎÄ±¾ÏûÏ¢
+                        //å‘é€æ–‡æœ¬æ¶ˆæ¯
                         if (!string.IsNullOrEmpty(strSend) && !string.IsNullOrWhiteSpace(richTextBox.Text))
                         {
                             MessageObject msg = null;
-                            //»Ø¸´ÏûÏ¢
+                            //å›å¤æ¶ˆæ¯
                             if (replyMsg != null && !string.IsNullOrEmpty(replyMsg.messageId))
                                 msg = ShiKuManager.SendReplayMessage(fdSend, replyMsg, richTextBox.Text, false);
                             else
@@ -1999,11 +2000,11 @@ namespace WinFrmTalk.Controls.CustomControls
                                     msg = ShiKuManager.SendTextMessage(fdSend, richTextBox.Text.TrimEnd(), false);
 
                             }
-                            JudgeMsgIsAddToPanel(msg);     //Ìí¼ÓÏûÏ¢ÆøÅİ
-                            ShiKuManager.xmpp.SendMessage(msg);//Ö¸¶¨·¢ËÍµÄUserId
+                            JudgeMsgIsAddToPanel(msg);     //æ·»åŠ æ¶ˆæ¯æ°”æ³¡
+                            ShiKuManager.xmpp.SendMessage(msg);//æŒ‡å®šå‘é€çš„UserId
                         }
 
-                        //¹ö¶¯µ½µ×²¿
+                        //æ»šåŠ¨åˆ°åº•éƒ¨
                         //if ((Takeconter_panel.Height - showInfo_Panel.Height) <= 0)
                         //    ShowInfoVScroll.SetVScroolToBottom();
 
@@ -2014,9 +2015,9 @@ namespace WinFrmTalk.Controls.CustomControls
                         sendThread.Start();
                     }
                 }
-                catch (Exception ex) { LogHelper.log.Error("----·¢ËÍÏûÏ¢³ö´í£¬·½·¨£¨btnSend_Click£© : " + ex.Message, ex); }
+                catch (Exception ex) { LogHelper.log.Error("----å‘é€æ¶ˆæ¯å‡ºé”™ï¼Œæ–¹æ³•ï¼ˆbtnSend_Clickï¼‰ : " + ex.Message, ex); }
 
-                //Çå¿Õ·¢ËÍ¿ò
+                //æ¸…ç©ºå‘é€æ¡†
                 txtSend.Focus();
                 txtSend.Clear();
                 emoji_num = 0;
@@ -2024,7 +2025,7 @@ namespace WinFrmTalk.Controls.CustomControls
                 atCount = 0;
                 list_atFriends = new List<Friend>();
 
-                //Çå¿Õ»Ø¸´Ãæ°å
+                //æ¸…ç©ºå›å¤é¢æ¿
                 if (!string.IsNullOrEmpty(replyPanel.ReplyMsg.messageId))
                 {
                     replyPanel.ReplyMsg = new MessageObject();
@@ -2034,7 +2035,7 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region Ñ¡Ôñ±íÇé
+        #region é€‰æ‹©è¡¨æƒ…
         private void lblExpression_MouseEnter(object sender, EventArgs e)
         {
             lblExpression.Image = Resources.ExpressionBase;
@@ -2047,30 +2048,30 @@ namespace WinFrmTalk.Controls.CustomControls
             lblExpression.Cursor = Cursors.Default;
         }
 
-        #region µã»÷µ¯³ö±íÇéÑ¡Ôñ¿ò
+        #region ç‚¹å‡»å¼¹å‡ºè¡¨æƒ…é€‰æ‹©æ¡†
         private void lblExpression_MouseClick(object sender, MouseEventArgs e)
         {
-            //»ñÈ¡Êó±êµã»÷±íÇéÊ±µÄ×ø±ê
+            //è·å–é¼ æ ‡ç‚¹å‡»è¡¨æƒ…æ—¶çš„åæ ‡
             Point ms = Control.MousePosition;
             frmExpressionTab = FrmExpressionTab.GetExpressionTab();
-            //ĞŞ¸ÄÁĞ±íË÷Òı
+            //ä¿®æ”¹åˆ—è¡¨ç´¢å¼•
             frmExpressionTab.tabExpression.SelectedIndex = 0;
-            //ÉèÖÃµ¯³ö´°ÆğÊ¼×ø±ê
+            //è®¾ç½®å¼¹å‡ºçª—èµ·å§‹åæ ‡
             int location_x = ms.X - e.X - 8;
             int location_y = ms.Y - frmExpressionTab.Height - e.Y - 5;
             frmExpressionTab.Location = new Point(location_x, location_y);
-            //´«µİ¶ÔÏó¸øĞÂ´°¿Ú
+            //ä¼ é€’å¯¹è±¡ç»™æ–°çª—å£
             frmExpressionTab.SetFriendTarget(choose_target);
-            //¿Ø¼şÏÔÊ¾ÔÚ×îÉÏ²ã
+            //æ§ä»¶æ˜¾ç¤ºåœ¨æœ€ä¸Šå±‚
             frmExpressionTab.TopMost = true;
             frmExpressionTab.Show();
 
-            //»Øµ÷
+            //å›è°ƒ
             frmExpressionTab.expressionAction = (type, code) =>
             {
                 switch (type)
                 {
-                    //Ñ¡ÔñÁËemoji±íÇé
+                    //é€‰æ‹©äº†emojiè¡¨æƒ…
                     case ExpressionType.Emoji:
                         AddEmojiToTxtSend(code);
                         break;
@@ -2081,24 +2082,24 @@ namespace WinFrmTalk.Controls.CustomControls
         #endregion
         #endregion
 
-        #region ´¦Àíemoji±íÇé
+        #region å¤„ç†emojiè¡¨æƒ…
         private void AddEmojiToTxtSend(string emoji_code)
         {
-            int selectionIndex = txtSend.SelectionStart;    //¼ÇÂ¼Êó±êµÄµ±Ç°¹â±ê
-            ////»ñÈ¡±íÇé×Öµä
+            int selectionIndex = txtSend.SelectionStart;    //è®°å½•é¼ æ ‡çš„å½“å‰å…‰æ ‡
+            ////è·å–è¡¨æƒ…å­—å…¸
             //Dictionary<string, string> emojiData = EmojiCodeDictionary.GetEmojiCodeDataDictionary();
-            ////»ñÈ¡emojiÍ¼²¢×ªÎªrtf
+            ////è·å–emojiå›¾å¹¶è½¬ä¸ºrtf
             //string emoji_rtf = GetEmoji(emoji_code, Color.White);
-            ////½ØÈ¡emojiÍ¼Æ¬²¿·ÖµÄrtf
+            ////æˆªå–emojiå›¾ç‰‡éƒ¨åˆ†çš„rtf
             //emoji_rtf = subRtf(emoji_rtf);
-            ////Èç¹û×ÖµäÖĞ²»´æÔÚ£¬ÔòÌí¼Ó£¬ÓÃ×÷ºóÀ´µÄ»¥×ª
+            ////å¦‚æœå­—å…¸ä¸­ä¸å­˜åœ¨ï¼Œåˆ™æ·»åŠ ï¼Œç”¨ä½œåæ¥çš„äº’è½¬
             //if (!emojiData.ContainsKey(emoji_rtf))
             //    emojiData.Add(emoji_rtf, emoji_code);
 
-            //´´½¨Ò»¸ö¸±±¾
+            //åˆ›å»ºä¸€ä¸ªå‰¯æœ¬
             //RichTextBox richSend = new RichTextBox();
             //richSend.Rtf = EmojiPngToCode(txtSend.Rtf);
-            ////´Ó¹â±ê´¦Ìí¼Ó
+            ////ä»å…‰æ ‡å¤„æ·»åŠ 
             //richSend.SelectedText += emoji_code;
             //richSend.Rtf = GetEmoji(richSend.Text, Color.White);
             //txtSend.Rtf = richSend.Rtf;
@@ -2112,23 +2113,23 @@ namespace WinFrmTalk.Controls.CustomControls
             //emoji_codes.Add(emoji_code);
             Helpers.ClearMemory();
 
-            txtSend.SelectionStart = selectionIndex + 1;    //ĞŞ¸Ä¹â±êµÄÎ»ÖÃ
+            txtSend.SelectionStart = selectionIndex + 1;    //ä¿®æ”¹å…‰æ ‡çš„ä½ç½®
         }
 
         /// <summary>
-        /// ¸ù¾İ´«µİµÄrtf×ªÎªcodeÎÄ±¾
+        /// æ ¹æ®ä¼ é€’çš„rtfè½¬ä¸ºcodeæ–‡æœ¬
         /// </summary>
         /// <param name="rtf"></param>
         /// <returns></returns>
         private string EmojiPngToCode(string rtf, List<string> emoji_codes)
         {
-            ////»ñÈ¡±íÇé×Öµä
+            ////è·å–è¡¨æƒ…å­—å…¸
             //Dictionary<string, string> emojiData = EmojiCodeDictionary.GetEmojiCodeDataDictionary();
 
-            ////´´½¨Ò»¸ö¸±±¾
+            ////åˆ›å»ºä¸€ä¸ªå‰¯æœ¬
             //RichTextBox richSend = new RichTextBox();
             //richSend.Rtf = rtf;
-            ////Í¨¹ıÑ­»·£¬°ÑrtfÍ¼Æ¬Ìæ»»Îªcode
+            ////é€šè¿‡å¾ªç¯ï¼ŒæŠŠrtfå›¾ç‰‡æ›¿æ¢ä¸ºcode
             //foreach (var key in emojiData.Keys)
             //{
             //    RichTextBox rich = new RichTextBox();
@@ -2152,16 +2153,16 @@ namespace WinFrmTalk.Controls.CustomControls
 
         private string subRtf(string emoji_rtf)
         {
-            //rtf1¨C> RTF°æ±¾
-            //ansi¨C> ×Ö·û¼¯
-            //ansicpg936¨C> ¼òÌåÖĞÎÄ
-            //deff0¨C> Ä¬ÈÏ×ÖÌå0
-            //deflang1033¨C> ÃÀ¹úÓ¢Óï
-            //deflangfe2052¨C> ÖĞ¹úººÓï
-            //fonttb¨C> ×ÖÌåÁĞ±í
-            //f0->×ÖÌå0
-            //fcharset134->GB2312¹ú±êÂë
-            //¡®cb\¡¯ce\¡¯cc\¡¯e5¨C> ËÎÌå
+            //rtf1â€“> RTFç‰ˆæœ¬
+            //ansiâ€“> å­—ç¬¦é›†
+            //ansicpg936â€“> ç®€ä½“ä¸­æ–‡
+            //deff0â€“> é»˜è®¤å­—ä½“0
+            //deflang1033â€“> ç¾å›½è‹±è¯­
+            //deflangfe2052â€“> ä¸­å›½æ±‰è¯­
+            //fonttbâ€“> å­—ä½“åˆ—è¡¨
+            //f0->å­—ä½“0
+            //fcharset134->GB2312å›½æ ‡ç 
+            //â€˜cb\â€™ce\â€™cc\â€™e5â€“> å®‹ä½“
             int startIndex = emoji_rtf.IndexOf("\\viewkind4\\uc1\\pard\\lang2052\\f0\\fs18") + "\\viewkind4\\uc1\\pard\\lang2052\\f0\\fs18".Length;
             emoji_rtf = emoji_rtf.Substring(startIndex);
             int endIndex = emoji_rtf.IndexOf("\\par");
@@ -2171,19 +2172,19 @@ namespace WinFrmTalk.Controls.CustomControls
 
         #region StringToEmoji
         /// <summary>
-        /// ´«µİº¬ÓĞemoji codeµÄÎÄ±¾£¬·µ»Ø×ª»¯ÎªÍ¼Æ¬ºóµÄrtf×Ö·û´®
+        /// ä¼ é€’å«æœ‰emoji codeçš„æ–‡æœ¬ï¼Œè¿”å›è½¬åŒ–ä¸ºå›¾ç‰‡åçš„rtfå­—ç¬¦ä¸²
         /// </summary>
-        /// <param name="ric_text">º¬ÓĞemoji codeµÄÎÄ±¾</param>
-        /// <param name="bg_cloor">Ìî³ä»æ»­µ×É«µÄ±³¾°É«</param>
+        /// <param name="ric_text">å«æœ‰emoji codeçš„æ–‡æœ¬</param>
+        /// <param name="bg_cloor">å¡«å……ç»˜ç”»åº•è‰²çš„èƒŒæ™¯è‰²</param>
         /// <returns></returns>
         private string GetEmoji(string ric_text, Color bg_cloor)
         {
             RichTextBox richTextBox = new RichTextBox();
             richTextBox.Text = ric_text;
-            //Æ¥Åä·ûºÏ¹æÔòµÄ±íÇécode
+            //åŒ¹é…ç¬¦åˆè§„åˆ™çš„è¡¨æƒ…code
             MatchCollection match = Regex.Matches(richTextBox.Text, @"\[[a-z_-]*\]", RegexOptions.IgnoreCase | RegexOptions.Singleline);
             string[] newStr = new string[match.Count];
-            //²»ÓÃ×ö¼ÇÂ¼µÄ±äÁ¿
+            //ä¸ç”¨åšè®°å½•çš„å˜é‡
             int index = 0;
             foreach (Match item in match)
             {
@@ -2191,30 +2192,30 @@ namespace WinFrmTalk.Controls.CustomControls
                 index++;
             }
 
-            //Ñ­»·Ìæ»»codeÎª±íÇéÍ¼Æ¬
+            //å¾ªç¯æ›¿æ¢codeä¸ºè¡¨æƒ…å›¾ç‰‡
             for (int i = 0; i < newStr.Length; i++)
             {
-                //»ñÈ¡±íÇécodeÔÚRichTextBoxµÄÎ»ÖÃ
+                //è·å–è¡¨æƒ…codeåœ¨RichTextBoxçš„ä½ç½®
                 index = richTextBox.Text.IndexOf(newStr[i]);
-                //±íÇécodeÈ¥³ı[]
+                //è¡¨æƒ…codeå»é™¤[]
                 string image_name = newStr[i].Replace("[", "").Replace("]", "");
-                //¸ø¼ôÇĞ°åÉèÖÃÍ¼Æ¬¶ÔÏó
+                //ç»™å‰ªåˆ‡æ¿è®¾ç½®å›¾ç‰‡å¯¹è±¡
                 string path = string.Format(@"Res\Emoji\{0}.png", image_name);
                 if (!File.Exists(path))
                     break;
 
-                //»ñÈ¡RichTextBox¿Ø¼şÖĞÊó±ê½¹µãµÄË÷ÒıÎ»ÖÃ
+                //è·å–RichTextBoxæ§ä»¶ä¸­é¼ æ ‡ç„¦ç‚¹çš„ç´¢å¼•ä½ç½®
                 richTextBox.SelectionStart = index;
-                //´ÓÊó±ê½¹µã´¦¿ªÊ¼Ñ¡ÖĞ¼¸¸ö×Ö·û
+                //ä»é¼ æ ‡ç„¦ç‚¹å¤„å¼€å§‹é€‰ä¸­å‡ ä¸ªå­—ç¬¦
                 richTextBox.SelectionLength = newStr[i].Length;
-                //Çå¿Õ¼ôÇĞ°å£¬·ÀÖ¹ÀïÃæÖ®Ç°ÓĞÄÚÈİ
+                //æ¸…ç©ºå‰ªåˆ‡æ¿ï¼Œé˜²æ­¢é‡Œé¢ä¹‹å‰æœ‰å†…å®¹
                 Clipboard.Clear();
                 Bitmap bmp = new Bitmap(path);
                 Bitmap newBmp = new Bitmap(25, 25);
                 Graphics g = Graphics.FromImage(newBmp);
                 //g.Clear(bg_cloor);
 
-                //»­Ô²ĞÎ
+                //ç”»åœ†å½¢
                 GraphicsPath gpath = new GraphicsPath();
                 gpath.AddEllipse(0, 0, 25, 25);
                 g.SmoothingMode = SmoothingMode.AntiAlias;
@@ -2225,7 +2226,7 @@ namespace WinFrmTalk.Controls.CustomControls
                 g.DrawImage(bmp, new Rectangle(0, 0, 25, 25), new Rectangle(0, 0, bmp.Width, bmp.Height), GraphicsUnit.Pixel);
                 g.Dispose();
                 Clipboard.SetImage(newBmp);
-                //½«Í¼Æ¬Õ³Ìùµ½Êó±ê½¹µãÎ»ÖÃ(Ñ¡ÖĞµÄ×Ö·û¶¼»á±»Í¼Æ¬¸²¸Ç)
+                //å°†å›¾ç‰‡ç²˜è´´åˆ°é¼ æ ‡ç„¦ç‚¹ä½ç½®(é€‰ä¸­çš„å­—ç¬¦éƒ½ä¼šè¢«å›¾ç‰‡è¦†ç›–)
                 richTextBox.Paste();
                 Clipboard.Clear();
             }
@@ -2238,19 +2239,19 @@ namespace WinFrmTalk.Controls.CustomControls
 
         #region RtfToEmoji
         /// <summary>
-        /// ´«µİº¬ÓĞemoji codeµÄÎÄ±¾£¬·µ»Ø×ª»¯ÎªÍ¼Æ¬ºóµÄrtf×Ö·û´®
+        /// ä¼ é€’å«æœ‰emoji codeçš„æ–‡æœ¬ï¼Œè¿”å›è½¬åŒ–ä¸ºå›¾ç‰‡åçš„rtfå­—ç¬¦ä¸²
         /// </summary>
-        /// <param name="ric_text">º¬ÓĞemoji codeµÄÎÄ±¾</param>
-        /// <param name="bg_cloor">Ìî³ä»æ»­µ×É«µÄ±³¾°É«</param>
+        /// <param name="ric_text">å«æœ‰emoji codeçš„æ–‡æœ¬</param>
+        /// <param name="bg_cloor">å¡«å……ç»˜ç”»åº•è‰²çš„èƒŒæ™¯è‰²</param>
         /// <returns></returns>
         private string GetEmojiByRtf(string ric_rtf, Color bg_cloor)
         {
             RichTextBox richTextBox = new RichTextBox();
             richTextBox.Rtf = ric_rtf;
-            //Æ¥Åä·ûºÏ¹æÔòµÄ±íÇécode
+            //åŒ¹é…ç¬¦åˆè§„åˆ™çš„è¡¨æƒ…code
             MatchCollection match = Regex.Matches(richTextBox.Text, @"\[[a-z_-]*\]", RegexOptions.IgnoreCase | RegexOptions.Singleline);
             string[] newStr = new string[match.Count];
-            //²»ÓÃ×ö¼ÇÂ¼µÄ±äÁ¿
+            //ä¸ç”¨åšè®°å½•çš„å˜é‡
             int index = 0;
             foreach (Match item in match)
             {
@@ -2258,23 +2259,23 @@ namespace WinFrmTalk.Controls.CustomControls
                 index++;
             }
 
-            //Ñ­»·Ìæ»»codeÎª±íÇéÍ¼Æ¬
+            //å¾ªç¯æ›¿æ¢codeä¸ºè¡¨æƒ…å›¾ç‰‡
             for (int i = 0; i < newStr.Length; i++)
             {
-                //»ñÈ¡±íÇécodeÔÚRichTextBoxµÄÎ»ÖÃ
+                //è·å–è¡¨æƒ…codeåœ¨RichTextBoxçš„ä½ç½®
                 index = richTextBox.Text.IndexOf(newStr[i]);
-                //±íÇécodeÈ¥³ı[]
+                //è¡¨æƒ…codeå»é™¤[]
                 string image_name = newStr[i].Replace("[", "").Replace("]", "");
-                //¸ø¼ôÇĞ°åÉèÖÃÍ¼Æ¬¶ÔÏó
+                //ç»™å‰ªåˆ‡æ¿è®¾ç½®å›¾ç‰‡å¯¹è±¡
                 string path = string.Format(@"Res\Emoji\{0}.png", image_name);
                 if (!File.Exists(path))
                     break;
 
-                //»ñÈ¡RichTextBox¿Ø¼şÖĞÊó±ê½¹µãµÄË÷ÒıÎ»ÖÃ
+                //è·å–RichTextBoxæ§ä»¶ä¸­é¼ æ ‡ç„¦ç‚¹çš„ç´¢å¼•ä½ç½®
                 richTextBox.SelectionStart = index;
-                //´ÓÊó±ê½¹µã´¦¿ªÊ¼Ñ¡ÖĞ¼¸¸ö×Ö·û
+                //ä»é¼ æ ‡ç„¦ç‚¹å¤„å¼€å§‹é€‰ä¸­å‡ ä¸ªå­—ç¬¦
                 richTextBox.SelectionLength = newStr[i].Length;
-                //Çå¿Õ¼ôÇĞ°å£¬·ÀÖ¹ÀïÃæÖ®Ç°ÓĞÄÚÈİ
+                //æ¸…ç©ºå‰ªåˆ‡æ¿ï¼Œé˜²æ­¢é‡Œé¢ä¹‹å‰æœ‰å†…å®¹
                 Clipboard.Clear();
                 Bitmap bmp = new Bitmap(path);
                 Bitmap newBmp = new Bitmap(25, 25);
@@ -2286,7 +2287,7 @@ namespace WinFrmTalk.Controls.CustomControls
                 g.DrawImage(bmp, new Rectangle(0, 0, 25, 25), new Rectangle(0, 0, bmp.Width, bmp.Height), GraphicsUnit.Pixel);
                 g.Dispose();
                 Clipboard.SetImage(newBmp);
-                //½«Í¼Æ¬Õ³Ìùµ½Êó±ê½¹µãÎ»ÖÃ(Ñ¡ÖĞµÄ×Ö·û¶¼»á±»Í¼Æ¬¸²¸Ç)
+                //å°†å›¾ç‰‡ç²˜è´´åˆ°é¼ æ ‡ç„¦ç‚¹ä½ç½®(é€‰ä¸­çš„å­—ç¬¦éƒ½ä¼šè¢«å›¾ç‰‡è¦†ç›–)
                 richTextBox.Paste();
                 Clipboard.Clear();
             }
@@ -2298,7 +2299,7 @@ namespace WinFrmTalk.Controls.CustomControls
         #endregion
         #endregion
 
-        #region ĞŞ¸Ä·¢ËÍ°´Å¥Ğü¸¡Ê±ÑÕÉ«
+        #region ä¿®æ”¹å‘é€æŒ‰é’®æ‚¬æµ®æ—¶é¢œè‰²
         private void btnSend_MouseEnter(object sender, EventArgs e)
         {
             btnSend.ForeColor = Color.White;
@@ -2311,17 +2312,17 @@ namespace WinFrmTalk.Controls.CustomControls
         #endregion
 
         #region Send File
-        #region ÎÄ¼ş·¢ËÍ
+        #region æ–‡ä»¶å‘é€
         private void lblSendFile_MouseDown(object sender, MouseEventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Multiselect = true;//¸ÃÖµÈ·¶¨ÊÇ·ñ¿ÉÒÔÑ¡Ôñ¶à¸öÎÄ¼ş
-            dialog.Title = "ÇëÑ¡ÔñÎÄ¼ş¼Ğ";
-            dialog.Filter = "ËùÓĞÎÄ¼ş (*.*)|*.*" +
-                "|Í¼Ïñ (*.jpg;*.jpeg;*.png)|*.jpg;*.jpeg;*.png" +
-                "|ÊÓÆµ (*.avi;*.mp4;*.rmvb;*.flv)|*.avi;*.mp4;*.rmvb;*.flv";
+            dialog.Multiselect = true;//è¯¥å€¼ç¡®å®šæ˜¯å¦å¯ä»¥é€‰æ‹©å¤šä¸ªæ–‡ä»¶
+            dialog.Title = "è¯·é€‰æ‹©æ–‡ä»¶å¤¹";
+            dialog.Filter = "æ‰€æœ‰æ–‡ä»¶ (*.*)|*.*" +
+                "|å›¾åƒ (*.jpg;*.jpeg;*.png)|*.jpg;*.jpeg;*.png" +
+                "|è§†é¢‘ (*.avi;*.mp4;*.rmvb;*.flv)|*.avi;*.mp4;*.rmvb;*.flv";
 
-            //Íê³ÉÑ¡ÔñÍ¼Æ¬µÄ²Ù×÷
+            //å®Œæˆé€‰æ‹©å›¾ç‰‡çš„æ“ä½œ
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 foreach (string file in dialog.FileNames)
@@ -2329,25 +2330,25 @@ namespace WinFrmTalk.Controls.CustomControls
                     try
                     {
                     bool isVideo = FileUtils.JudgeIsVideoFile(file);
-                    //Èç¹ûÎªÊÓÆµÎÄ¼ş
+                    //å¦‚æœä¸ºè§†é¢‘æ–‡ä»¶
                     if (isVideo)
                     {
-                        //ÏÈÉú³ÉÆøÅİ
+                        //å…ˆç”Ÿæˆæ°”æ³¡
                         int fileSize = Convert.ToInt32(new FileInfo(file).Length);
                         MessageObject msg = ShiKuManager.SendVideoMessage(choose_target, "", file, fileSize, false);
                         JudgeMsgIsAddToPanel(msg);
                         
-                        //»ñÈ¡ÆøÅİ
+                        //è·å–æ°”æ³¡
                         string name = "talk_panel_" + msg.messageId;
                         if (showInfo_Panel.Controls.Find(name, true).Length > 0 && showInfo_Panel.Controls.Find(name, true)[0] is EQBaseControl talk_panel)
                         {
                             UploadEngine.Instance.From(file).
-                            //ÉÏ´«ÖĞ
+                            //ä¸Šä¼ ä¸­
                             UpProgress((progress) =>
                             {
 
                             }).
-                            //ÉÏ´«Íê³É
+                            //ä¸Šä¼ å®Œæˆ
                             UploadFile((success, url) =>
                             {
                                 UploadVideo(talk_panel, msg, url, success);
@@ -2355,11 +2356,11 @@ namespace WinFrmTalk.Controls.CustomControls
                         }
                     }
                     else
-                        UploadFileOrImage(file, Convert.ToInt32(new FileInfo(file).Length));   //ÉÏ´«Í¼Æ¬
+                        UploadFileOrImage(file, Convert.ToInt32(new FileInfo(file).Length));   //ä¸Šä¼ å›¾ç‰‡
                     }
                     catch (Exception ex)
                     {
-                        LogHelper.log.Error("·¢ËÍÎÄ¼şÊ§°Ü: " + file + " : " + ex.Message, ex);
+                        LogHelper.log.Error("å‘é€æ–‡ä»¶å¤±è´¥: " + file + " : " + ex.Message, ex);
                     }
                 }
                 dialog.Dispose();
@@ -2368,7 +2369,7 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ÉÏ´«ÎÄ¼ş
+        #region ä¸Šä¼ æ–‡ä»¶
         private void UploadFileOrImage(string fileLocation, int fileSize)
         {
             try
@@ -2378,20 +2379,20 @@ namespace WinFrmTalk.Controls.CustomControls
                     msg = ShiKuManager.SendImageMessage(choose_target, "", fileLocation, fileSize, false);
                 else
                     msg = ShiKuManager.SendFileMessage(choose_target, "", fileLocation, fileSize, false);
-                //Ìí¼ÓÆøÅİ
+                //æ·»åŠ æ°”æ³¡
                 JudgeMsgIsAddToPanel(msg);
 
-                //»ñÈ¡ÆøÅİ
+                //è·å–æ°”æ³¡
                 string name = "talk_panel_" + msg.messageId;
                 if (showInfo_Panel.Controls.Find(name, true).Length > 0 && showInfo_Panel.Controls.Find(name, true)[0] is EQBaseControl talk_panel)
                 {
                     UploadEngine.Instance.From(fileLocation).
-                    //ÉÏ´«ÖĞ
+                    //ä¸Šä¼ ä¸­
                     UpProgress((progress) =>
                     {
                         if (talk_panel is EQFileControl)
                         {
-                            //»ñÈ¡µ½ÎÄ¼şµÄpanel
+                            //è·å–åˆ°æ–‡ä»¶çš„panel
                             if (talk_panel.Controls.Find("image_panel", true).Length > 0 && talk_panel.Controls.Find("image_panel", true)[0] is Panel image_panel)
                                 if (image_panel.Controls.Find("crl_content", true).Length > 0 && image_panel.Controls.Find("crl_content", true)[0] is FilePanelLeft filePanel)
                                 {
@@ -2406,7 +2407,7 @@ namespace WinFrmTalk.Controls.CustomControls
                     {
                         if (talk_panel is EQFileControl)
                         {
-                            //»ñÈ¡µ½ÎÄ¼şµÄpanel
+                            //è·å–åˆ°æ–‡ä»¶çš„panel
                             if (talk_panel.Controls.Find("image_panel", true).Length > 0 && talk_panel.Controls.Find("image_panel", true)[0] is Panel image_panel)
                                 if (image_panel.Controls.Find("crl_content", true).Length > 0 && image_panel.Controls.Find("crl_content", true)[0] is FilePanelLeft filePanel)
                                 {
@@ -2416,17 +2417,17 @@ namespace WinFrmTalk.Controls.CustomControls
                                 }
                         }
                     }).
-                    //ÉÏ´«Íê³É
+                    //ä¸Šä¼ å®Œæˆ
                     UploadFile((success, url) =>
                     {
                         if (msg.type == kWCMessageType.File)
                         {
                             if (talk_panel is EQFileControl)
                             {
-                                //»ñÈ¡µ½ÎÄ¼şµÄpanel
+                                //è·å–åˆ°æ–‡ä»¶çš„panel
                                 if (talk_panel.Controls.Find("image_panel", true).Length > 0 && talk_panel.Controls.Find("image_panel", true)[0] is Panel image_panel)
                                     if (image_panel.Controls.Find("crl_content", true).Length > 0 && image_panel.Controls.Find("crl_content", true)[0] is FilePanelLeft filePanel)
-                                        //¹Ø±ÕÏÂÔØËÙ¶È
+                                        //å…³é—­ä¸‹è½½é€Ÿåº¦
                                         filePanel.lblSpeed.Visible = false;
                             }
                             msg.content = url;
@@ -2436,7 +2437,7 @@ namespace WinFrmTalk.Controls.CustomControls
                         }
                         else if (msg.type == kWCMessageType.Image)
                             UploadImage(talk_panel, msg, url, success);
-                        ////ÉÏ´«Ê§°Ü
+                        ////ä¸Šä¼ å¤±è´¥
                         //if (string.IsNullOrEmpty(url) || !success)
                         //    return;
 
@@ -2447,7 +2448,7 @@ namespace WinFrmTalk.Controls.CustomControls
                         //    msg.UpdateMessageContent();
                         //    ShiKuManager.xmpp.SendMessage(msg);
 
-                        //    //ĞŞ¸ÄÆøÅİµÄÍ¼Æ¬ºÍÑùÊ½
+                        //    //ä¿®æ”¹æ°”æ³¡çš„å›¾ç‰‡å’Œæ ·å¼
                         //    if (msg.type == kWCMessageType.Image)
                         //    {
                         //        if (talk_panel is EQImageControl imageCrl)
@@ -2460,27 +2461,27 @@ namespace WinFrmTalk.Controls.CustomControls
             }
             catch (Exception ex)
             {
-                LogHelper.log.Error("----ÉÏ´«ÎÄ¼ş³ö´í£¬·½·¨£¨UploadFileOrImage£© : " + ex.Message, ex);
+                LogHelper.log.Error("----ä¸Šä¼ æ–‡ä»¶å‡ºé”™ï¼Œæ–¹æ³•ï¼ˆUploadFileOrImageï¼‰ : " + ex.Message, ex);
             }
         }
         #endregion
 
-        #region ÉÏ´«Í¼Æ¬
+        #region ä¸Šä¼ å›¾ç‰‡
         private void UploadImage(EQBaseControl talk_panel, MessageObject msg, string url, bool success)
         {
         msg = targetMsgData.GetMsg(msg.messageId) ?? msg;
         if (msg == null)
                 return;
-            //ĞŞ¸ÄÆøÅİµÄÍ¼Æ¬ºÍÑùÊ½
+            //ä¿®æ”¹æ°”æ³¡çš„å›¾ç‰‡å’Œæ ·å¼
             if (talk_panel is EQImageControl imageCrl)
             {
                 if (imageCrl.Controls.Find("crl_content", true).Length > 0 && imageCrl.Controls.Find("crl_content", true)[0] is PictureBox pic_image)
                 {
-                    //ÉÏ´«Ê§°Ü
+                    //ä¸Šä¼ å¤±è´¥
                     if (string.IsNullOrEmpty(url) || !success)
                     {
                         msg.isSend = -1;
-                        //¹Ø±ÕµÈ´ı·û
+                        //å…³é—­ç­‰å¾…ç¬¦
                         if (pic_image.Controls.Find("loding", true).Length > 0 && pic_image.Controls.Find("loding", true)[0] is USELoding loding)
                         {
                             loding.Dispose();
@@ -2496,7 +2497,7 @@ namespace WinFrmTalk.Controls.CustomControls
                         msg.UpdateMessageContent();
                         ShiKuManager.xmpp.SendMessage(msg);
                         imageCrl.LoadImage(pic_image);
-                // 2026-08-16 Í¬²½¿Ø¼şÏûÏ¢¶ÔÏó£¨LoadImage ÄÚ²¿ÓÃ this.messageObject ÅĞ¶Ï content£©
+                // 2026-08-16 åŒæ­¥æ§ä»¶æ¶ˆæ¯å¯¹è±¡ï¼ˆLoadImage å†…éƒ¨ç”¨ this.messageObject åˆ¤æ–­ contentï¼‰
                 imageCrl.messageObject = msg;
                     }
                 }
@@ -2504,23 +2505,23 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ÉÏ´«ÊÓÆµ
+        #region ä¸Šä¼ è§†é¢‘
         private void UploadVideo(EQBaseControl talk_panel, MessageObject msg, string url, bool success)
         {
             msg = targetMsgData.GetMsg(msg.messageId) ?? msg;
             if (msg != null)
             {
-                //ĞŞ¸ÄÆøÅİµÄÍ¼Æ¬ºÍÑùÊ½
+                //ä¿®æ”¹æ°”æ³¡çš„å›¾ç‰‡å’Œæ ·å¼
                 if (talk_panel is EQVideoControl videoCrl)
                 {
                     if (videoCrl.Controls.Find("crl_content", true).Length > 0 && videoCrl.Controls.Find("crl_content", true)[0] is PictureBox pic_content)
                     {
-                        //ÉÏ´«Ê§°Ü
+                        //ä¸Šä¼ å¤±è´¥
                         if (string.IsNullOrEmpty(url) || !success)
                         {
                             msg.isSend = -1;
                             msg.content = "error";
-                            //¹Ø±ÕµÈ´ı·û
+                            //å…³é—­ç­‰å¾…ç¬¦
                             if (pic_content.Controls.Find("loding", true).Length > 0 && pic_content.Controls.Find("loding", true)[0] is USELoding loding)
                             {
                                 loding.Dispose();
@@ -2536,7 +2537,7 @@ namespace WinFrmTalk.Controls.CustomControls
                             msg.UpdateMessageContent();
                             ShiKuManager.xmpp.SendMessage(msg);
                             videoCrl.LoadVideo(pic_content);
-                // 2026-08-16 Í¬²½¿Ø¼şÏûÏ¢¶ÔÏó£¨LoadVideo ÄÚ²¿ÓÃ this.messageObject ÅĞ¶Ï content£©
+                // 2026-08-16 åŒæ­¥æ§ä»¶æ¶ˆæ¯å¯¹è±¡ï¼ˆLoadVideo å†…éƒ¨ç”¨ this.messageObject åˆ¤æ–­ contentï¼‰
                 videoCrl.messageObject = msg;
                         }
                     }
@@ -2545,7 +2546,7 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ÅĞ¶ÏÊÇ·ñÎªÍ¼Æ¬
+        #region åˆ¤æ–­æ˜¯å¦ä¸ºå›¾ç‰‡
         private bool JudgeIsImage(string fileName)
         {
             try
@@ -2569,19 +2570,22 @@ namespace WinFrmTalk.Controls.CustomControls
         #endregion
         #endregion
 
-        #region ÓÒ¼ü²Ëµ¥
-        #region É¾³ı
+        #region å³é”®èœå•
+        #region åˆ é™¤
         private void menuItem_Delete_Click(object sender, EventArgs e)
         {
             if (selectControl.Name.IndexOf("talk_panel_") < 0)
                 return;
 
             string messageId = selectControl.Name.Replace("talk_panel_", "");
+            // 2026-11-19 åŒå‘åˆ é™¤ï¼šåŒæ–¹éƒ½çœ‹ä¸åˆ°ï¼Œä¸”ä¸å¯æ¢å¤
+            if (MessageBox.Show("åˆ é™¤åå¯¹æ–¹ä¹Ÿå°†çœ‹ä¸åˆ°è¿™æ¡æ¶ˆæ¯ï¼Œä¸”æ— æ³•æ¢å¤ï¼Œç¡®å®šåˆ é™¤ï¼Ÿ", "åˆ é™¤æ¶ˆæ¯", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) != DialogResult.OK)
+                return;
             EQMenuStripControl.menuItem_Delete_Click(this.showInfo_Panel, messageId, ref lastMsgTime, choose_target.UserId);
         }
         #endregion
 
-        #region ³·»Ø
+        #region æ’¤å›
         private void menuItem_Recall_Click(object sender, EventArgs e)
         {
             if (selectControl == null || selectControl.Name.IndexOf("talk_panel_") < 0)
@@ -2589,60 +2593,133 @@ namespace WinFrmTalk.Controls.CustomControls
             string messageId = selectControl.Name.Replace("talk_panel_", "");
             MessageObject messageObject = targetMsgData.GetMsg(messageId);
 
-            //ÖØĞÂ´´½¨Ò»¸ömsg
+            //é‡æ–°åˆ›å»ºä¸€ä¸ªmsg
             MessageObject copyMsg = messageObject.CopyMessage();
             copyMsg.type = kWCMessageType.Remind;
-            copyMsg.content = "Äã³·»ØÁËÒ»ÌõÏûÏ¢";
-            //±ÜÃâÖØ¸´ÓÒ¼ü²Ëµ¥£¬ÏÈ¸üĞÂUI
+            copyMsg.content = "ä½ æ’¤å›äº†ä¸€æ¡æ¶ˆæ¯";
+            //é¿å…é‡å¤å³é”®èœå•ï¼Œå…ˆæ›´æ–°UI
             EQMenuStripControl.menuItem_Recall_Click(this.showInfo_Panel, copyMsg, choose_target == null ? "" : choose_target.UserId);
 
-            //µ÷ÓÃ½Ó¿Ú
-            HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "tigase/deleteMsg"). //É¾³ıÈº×é
+            //è°ƒç”¨æ¥å£
+            HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "tigase/deleteMsg"). //åˆ é™¤ç¾¤ç»„
                 AddParams("access_token", Applicate.Access_Token).
-                AddParams("type", messageObject.isGroup == 0 ? "1" : "2").    //1 µ¥ÁÄ  2 ÈºÁÄ
-                AddParams("delete", "2").   //1£º É¾³ıÊôÓÚ×Ô¼ºµÄÏûÏ¢¼ÇÂ¼ 2£º³·»Ø É¾³ıÕûÌõÏûÏ¢¼ÇÂ¼
+                AddParams("type", messageObject.isGroup == 0 ? "1" : "2").    //1 å•èŠ  2 ç¾¤èŠ
+                AddParams("delete", "2").   //1ï¼š åˆ é™¤å±äºè‡ªå·±çš„æ¶ˆæ¯è®°å½• 2ï¼šæ’¤å› åˆ é™¤æ•´æ¡æ¶ˆæ¯è®°å½•
                 AddParams("messageId", messageObject.messageId).
                 AddParams("roomJid", messageObject.toUserId).
-                Build().ExecuteJson<object>((sccess, obj) =>   //·µ»ØÖµËµÃ÷£º text£º¼ÓÃÜºóµÄÄÚÈİ
+                Build().ExecuteJson<object>((sccess, obj) =>   //è¿”å›å€¼è¯´æ˜ï¼š textï¼šåŠ å¯†åçš„å†…å®¹
                 {
-                    //É¾³ı³É¹¦
+                    //åˆ é™¤æˆåŠŸ
                     if (sccess)
                     {
                         ShiKuManager.SendRecallMessage(messageObject.GetFriend(), messageObject);
                         //int result = messageObject.UpdateData();
-                        HttpUtils.Instance.ShowTip("³·»Ø³É¹¦");
+                        HttpUtils.Instance.ShowTip("æ’¤å›æˆåŠŸ");
                     }
                 });
         }
         #endregion
 
-        #region ¸´ÖÆ
+        #region å¤åˆ¶
+
+        #region ç¼–è¾‘æ¶ˆæ¯ï¼ˆ2026-11-19ï¼‰
+        private void menuItem_Edit_Click(object sender, EventArgs e)
+        {
+            if (selectControl == null || selectControl.Name.IndexOf("talk_panel_") < 0) return;
+            string messageId = selectControl.Name.Replace("talk_panel_", "");
+            MessageObject msg = targetMsgData.GetMsg(messageId);
+            if (msg == null) return;
+            EQRichTextBoxControl rich = FindRichTextBoxControl(selectControl);
+            if (rich == null)
+            {
+                HttpUtils.Instance.ShowTip("è¯¥æ¶ˆæ¯ä¸æ”¯æŒç¼–è¾‘");
+                return;
+            }
+            rich.BeginInlineEdit((newText) =>
+            {
+                if (UIUtils.IsNull(newText))
+                {
+                    HttpUtils.Instance.ShowTip("å†…å®¹ä¸èƒ½ä¸ºç©º");
+                    return;
+                }
+                if (newText == msg.content) return;
+                // 2026-11-19 æœ¬åœ°å…ˆè½åœ°å¹¶ç«‹åˆ»é€šçŸ¥å¯¹ç«¯ï¼Œä¸ä¾èµ– HTTP å›è°ƒï¼ˆå›è°ƒå¼‚å¸¸ä¼šå¯¼è‡´å¯¹ç«¯æ”¶ä¸åˆ°ï¼‰
+                EditDebugLog("commit id=" + msg.messageId + " new=" + newText);
+                try { msg.content = newText; msg.UpdateMessageContent(); } catch (Exception ex) { EditDebugLog("db-error " + ex.Message); }
+                try { msg.GetFriend().UpdateLastContent(newText, msg.timeSend); } catch (Exception ex) { EditDebugLog("lastcontent-error " + ex.Message); }
+                try { rich.ApplyEditedContent(newText); } catch (Exception ex) { EditDebugLog("apply-error " + ex.Message); }
+                try { Messenger.Default.Send(msg, MessageActions.XMPP_UPDATE_RECALL_MESSAGE); } catch (Exception ex) { EditDebugLog("refresh-error " + ex.Message); }
+                try { ShiKuManager.SendEditMessage(msg.GetFriend(), msg, newText); EditDebugLog("send203-ok id=" + msg.messageId); } catch (Exception ex) { EditDebugLog("send203-error " + ex.Message); }
+                HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "tigase/updateMsg")
+                    .AddParams("access_token", Applicate.Access_Token)
+                    .AddParams("type", msg.isGroup == 0 ? "1" : "2")
+                    .AddParams("messageId", msg.messageId)
+                    .AddParams("content", newText)
+                    .AddParams("roomJid", msg.toUserId)
+                    .Build().ExecuteJson<object>((success, obj) =>
+                    {
+                        if (!success)
+                        {
+                            EditDebugLog("edit-fail id=" + msg.messageId + " obj=" + (obj == null ? "null" : obj.ToString()));
+                            HttpUtils.Instance.ShowTip("ç¼–è¾‘å¤±è´¥ï¼Œè¯·ç¨åé‡è¯•");
+                            rich.RestoreContent(msg.content);
+                            return;
+                        }
+                        EditDebugLog("server-ok id=" + msg.messageId);
+                    });
+            });
+        }
+
+        // 2026-11-19 ç¼–è¾‘æµç¨‹è¯Šæ–­æ—¥å¿—ï¼ˆ%LOCALAPPDATA%\WinFrmTalk\edit_debug.logï¼‰
+        private static void EditDebugLog(string text)
+        {
+            try
+            {
+                string dir = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "WinFrmTalk");
+                if (!System.IO.Directory.Exists(dir)) System.IO.Directory.CreateDirectory(dir);
+                System.IO.File.AppendAllText(System.IO.Path.Combine(dir, "edit_debug.log"),
+                    DateTime.Now.ToString("HH:mm:ss.fff") + " " + text + Environment.NewLine);
+            }
+            catch { }
+        }
+        private EQRichTextBoxControl FindRichTextBoxControl(Control root)
+        {
+            if (root is EQRichTextBoxControl rich) return rich;
+            foreach (Control child in root.Controls)
+            {
+                EQRichTextBoxControl found = FindRichTextBoxControl(child);
+                if (found != null) return found;
+            }
+            return null;
+        }
+        #endregion
+
         private void menuItem_Copy_Click(object sender, EventArgs e)
         {
             MessageObject msg = GetMsgBySelectCrl();
             switch (msg.type)
             {
                 case kWCMessageType.Image:
-                    //Çå¿Õ¼ôÇĞ°å£¬·ÀÖ¹ÀïÃæÖ®Ç°ÓĞÄÚÈİ
+                    //æ¸…ç©ºå‰ªåˆ‡æ¿ï¼Œé˜²æ­¢é‡Œé¢ä¹‹å‰æœ‰å†…å®¹
                     Clipboard.Clear();
-                    //¸ø¼ôÇĞ°åÉèÖÃÍ¼Æ¬¶ÔÏó
+                    //ç»™å‰ªåˆ‡æ¿è®¾ç½®å›¾ç‰‡å¯¹è±¡
                     PictureBox picBox = crl_content as PictureBox;
                     Image image = picBox.BackgroundImage;
                     //Bitmap bitmap = new Bitmap(image);
                     Clipboard.SetImage(image);
                     break;
                 case kWCMessageType.Text:
-                    //Çå¿Õ¼ôÇĞ°å£¬·ÀÖ¹ÀïÃæÖ®Ç°ÓĞÄÚÈİ
+                    //æ¸…ç©ºå‰ªåˆ‡æ¿ï¼Œé˜²æ­¢é‡Œé¢ä¹‹å‰æœ‰å†…å®¹
                     Clipboard.Clear();
-                    //¸ø¼ôÇĞ°åÉèÖÃÍ¼Æ¬¶ÔÏó
+                    //ç»™å‰ªåˆ‡æ¿è®¾ç½®å›¾ç‰‡å¯¹è±¡
                     RichTextBox richTextBox = crl_content as RichTextBox;
                     string content = richTextBox.Tag.ToString();
                     Clipboard.SetText(content);
                     break;
                 case kWCMessageType.Replay:
-                    //Çå¿Õ¼ôÇĞ°å£¬·ÀÖ¹ÀïÃæÖ®Ç°ÓĞÄÚÈİ
+                    //æ¸…ç©ºå‰ªåˆ‡æ¿ï¼Œé˜²æ­¢é‡Œé¢ä¹‹å‰æœ‰å†…å®¹
                     Clipboard.Clear();
-                    //¸ø¼ôÇĞ°åÉèÖÃÍ¼Æ¬¶ÔÏó
+                    //ç»™å‰ªåˆ‡æ¿è®¾ç½®å›¾ç‰‡å¯¹è±¡
                     //RichTextBox richTextBox = crl_content as RichTextBox;
                     //string content = richTextBox.Tag.ToString();
                     Clipboard.SetText(msg.content);
@@ -2653,16 +2730,16 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ×ª·¢
+        #region è½¬å‘
         private void menuItem_Relay_Click(object sender, EventArgs e)
         {
-            //»ñÈ¡Ñ¡ÔñµÄMessage
+            //è·å–é€‰æ‹©çš„Message
             if (selectControl == null || selectControl.Name.IndexOf("talk_panel_") < 0)
                 return;
             string messageId = selectControl.Name.Replace("talk_panel_", "");
             MessageObject messageObject = targetMsgData.GetMsg(messageId);
 
-            //Ñ¡Ôñ×ª·¢µÄºÃÓÑ
+            //é€‰æ‹©è½¬å‘çš„å¥½å‹
             var frmFriendSelect = new FrmFriendSelect();
             frmFriendSelect.LoadFriendsData(1);
             frmFriendSelect.AddConfrmListener((UserFriends) =>
@@ -2670,10 +2747,10 @@ namespace WinFrmTalk.Controls.CustomControls
                 foreach (var friend in UserFriends.Values)
                 {
                     MessageObject msg = ShiKuManager.SendForwardMessage(friend, messageObject);
-                    //Èç¹û×ª·¢¶ÔÏó°üÀ¨µ±Ç°ÁÄÌì¶ÔÏó£¬¸øUIÌí¼ÓÏûÏ¢ÆøÅİ
+                    //å¦‚æœè½¬å‘å¯¹è±¡åŒ…æ‹¬å½“å‰èŠå¤©å¯¹è±¡ï¼Œç»™UIæ·»åŠ æ¶ˆæ¯æ°”æ³¡
                     if (friend.UserId == choose_target.UserId)
                     {
-                        //Ìí¼ÓÏûÏ¢ÆøÅİÍ¨Öª
+                        //æ·»åŠ æ¶ˆæ¯æ°”æ³¡é€šçŸ¥
                         JudgeMsgIsAddToPanel(msg);
                     }
                 }
@@ -2681,10 +2758,10 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ¶àÑ¡
+        #region å¤šé€‰
         private void IsShowInfoShade(bool isShow)
         {
-            //ÆôÓÃ×´Ì¬
+            //å¯ç”¨çŠ¶æ€
             if (isShow)
             {
                 ShowInfoShade.Visible = true;
@@ -2703,27 +2780,27 @@ namespace WinFrmTalk.Controls.CustomControls
         }
 
         /// <summary>
-        /// ¿ªÆô¶àÑ¡
+        /// å¼€å¯å¤šé€‰
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void menuItem_MultiSelect_Click(object sender, EventArgs e)
         {
-            //Çå¿ÕÖ®Ç°±»¶àÑ¡µÄ¼¯ºÏ
+            //æ¸…ç©ºä¹‹å‰è¢«å¤šé€‰çš„é›†åˆ
             multiSelectPanel1.List_Msgs = new List<MessageObject>();
             multiSelectPanel1.FdTalking = choose_target;
-            //Õ¹Ê¾¶àÑ¡
+            //å±•ç¤ºå¤šé€‰
             IsShowPanelMultiSelect(true);
 
-            //ÉèÖÃÍ¸Ã÷panelÓÃÓÚ²¶×½¶àÑ¡µã»÷ÊÂ¼şµÄµã»÷ĞĞ
+            //è®¾ç½®é€æ˜panelç”¨äºæ•æ‰å¤šé€‰ç‚¹å‡»äº‹ä»¶çš„ç‚¹å‡»è¡Œ
             IsShowInfoShade(true);
         }
         #endregion
 
-        #region ÊÕ²Ø
+        #region æ”¶è—
         private void menuItem_Collect_Click(object sender, EventArgs e)
         {
-            //»ñÈ¡Ñ¡ÔñµÄMessage
+            //è·å–é€‰æ‹©çš„Message
             if (selectControl == null || selectControl.Name.IndexOf("talk_panel_") < 0)
                 return;
             string messageId = selectControl.Name.Replace("talk_panel_", "");
@@ -2734,7 +2811,7 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region »Ø¸´
+        #region å›å¤
         private void menuItem_Reply_Click(object sender, EventArgs e)
         {
             MessageObject msg = GetMsgBySelectCrl();
@@ -2745,36 +2822,36 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ´ò¿ªÎÄ¼ş¼Ğ
+        #region æ‰“å¼€æ–‡ä»¶å¤¹
         private void menuItem_OpenFileFolder_Click(object sender, EventArgs e)
         {
             MessageObject msg = GetMsgBySelectCrl();
             string filePath = EQControlManager.GetFilePathByType(msg);
-            //ÎÄ¼ş²»´æÔÚ
+            //æ–‡ä»¶ä¸å­˜åœ¨
             if (!File.Exists(filePath))
             {
-                HttpUtils.Instance.ShowTip("ÎÄ¼ş²»´æÔÚ");
+                HttpUtils.Instance.ShowTip("æ–‡ä»¶ä¸å­˜åœ¨");
                 return;
             }
             System.Diagnostics.Process.Start("explorer.exe", "/select," + filePath);
         }
         #endregion
 
-        #region Áí´æÎª
+        #region å¦å­˜ä¸º
         private void menuItem_SaveAs_Click(object sender, EventArgs e)
         {
             MessageObject msg = GetMsgBySelectCrl();
-            //Ñ¡ÔñÎÄ¼ş¼ĞÂ·¾¶
+            //é€‰æ‹©æ–‡ä»¶å¤¹è·¯å¾„
             FolderBrowserDialog dialog = new FolderBrowserDialog();
-            dialog.Description = "Áí´æÎª..";
+            dialog.Description = "å¦å­˜ä¸º..";
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                //ÎÄ¼şµÄ±¾µØÂ·¾¶
+                //æ–‡ä»¶çš„æœ¬åœ°è·¯å¾„
                 string localPath = dialog.SelectedPath;
                 if (string.IsNullOrEmpty(localPath))
                     return;
 
-                //ÏÂÔØÎÄ¼ş
+                //ä¸‹è½½æ–‡ä»¶
                 if (msg.type == kWCMessageType.File)
                 {
                     localPath += "\\" + FileUtils.GetFileName(msg.fileName);
@@ -2786,48 +2863,48 @@ namespace WinFrmTalk.Controls.CustomControls
                     DownloadEngine.Instance.DownUrl(msg.content).SavePath(localPath)
                         .Down((path) =>
                         {
-                            HttpUtils.Instance.ShowTip("ÏÂÔØÍê³É£º" + path);
+                            HttpUtils.Instance.ShowTip("ä¸‹è½½å®Œæˆï¼š" + path);
                         });
                 }
             }
         }
         #endregion
 
-        #region ÏÂÔØ
+        #region ä¸‹è½½
         private void menuItem_Dowmload_Click(object sender, EventArgs e)
         {
             MessageObject msg = GetMsgBySelectCrl();
             if (msg.type == kWCMessageType.File)
             {
-                //ÎÄ¼şµÄ±¾µØÂ·¾¶
+                //æ–‡ä»¶çš„æœ¬åœ°è·¯å¾„
                 string localPath = Applicate.LocalConfigData.FileFolderPath + FileUtils.GetFileName(msg.fileName);
                 DownloadFile(msg, localPath);
             }
         }
         #endregion
 
-        #region ´æ±íÇé
+        #region å­˜è¡¨æƒ…
         private void menuItem_SaveCustomize_Click(object sender, EventArgs e)
         {
             MessageObject msg = GetMsgBySelectCrl();
-            // httpÊÕ²Ø±íÇé
+            // httpæ”¶è—è¡¨æƒ…
             CollectUtils.CollectExpression(msg);
         }
         #endregion
 
-        #region Â¼ÖÆ
-        private int isStartTrans = 0;       //ÊÇ·ñ¿ªÊ¼Â¼ÖÆ
-        private int startTransIndex = 0;    //¿ªÊ¼Â¼ÖÆµÄĞĞºÅ
-        private int endTransIndex = 0;      //½áÊøÂ¼ÖÆµÄĞĞºÅ
+        #region å½•åˆ¶
+        private int isStartTrans = 0;       //æ˜¯å¦å¼€å§‹å½•åˆ¶
+        private int startTransIndex = 0;    //å¼€å§‹å½•åˆ¶çš„è¡Œå·
+        private int endTransIndex = 0;      //ç»“æŸå½•åˆ¶çš„è¡Œå·
         private void menuItem_Transcribe_Click(object sender, EventArgs e)
         {
             isStartTrans = isStartTrans == 1 ? 0 : 1;
-            menuItem_Transcribe.Text = isStartTrans == 1 ? "Í£Ö¹Â¼ÖÆ" : "¿ªÊ¼Â¼ÖÆ";
+            menuItem_Transcribe.Text = isStartTrans == 1 ? "åœæ­¢å½•åˆ¶" : "å¼€å§‹å½•åˆ¶";
 
-            //¿ªÊ¼Â¼ÖÆ
+            //å¼€å§‹å½•åˆ¶
             if (isStartTrans == 1)
                 startTransIndex = GetMsgBySelectCrl().rowIndex;
-            //½áÊøÂ¼ÖÆ
+            //ç»“æŸå½•åˆ¶
             else
             {
                 endTransIndex = GetMsgBySelectCrl().rowIndex;
@@ -2839,13 +2916,13 @@ namespace WinFrmTalk.Controls.CustomControls
                     frmMyColleagueEidt.Close();
                 });
 
-                frmMyColleagueEidt.ShowThis("¿Î³ÌÂ¼ÖÆ", "¿Î³ÌÃû³Æ");
+                frmMyColleagueEidt.ShowThis("è¯¾ç¨‹å½•åˆ¶", "è¯¾ç¨‹åç§°");
             }
         }
         #endregion
 
-        #region Êó±êÓÒ¼ü²Ëµ¥
-        //²»Í¬µÄ¿Ø¼şÊó±êµã»÷ÊÂ¼şÒ²²»Í¬
+        #region é¼ æ ‡å³é”®èœå•
+        //ä¸åŒçš„æ§ä»¶é¼ æ ‡ç‚¹å‡»äº‹ä»¶ä¹Ÿä¸åŒ
         private void Content_MouseDown(object sender, MouseEventArgs e)
         {
             crl_content = sender as Control;
@@ -2853,7 +2930,7 @@ namespace WinFrmTalk.Controls.CustomControls
 
             if (e.Button == MouseButtons.Right)
             {
-                //¼ÇÂ¼±»Ñ¡ÖĞµÄ¿Ø¼ş
+                //è®°å½•è¢«é€‰ä¸­çš„æ§ä»¶
                 selectControl = crl_content.Parent;
                 while (true)
                 {
@@ -2862,28 +2939,31 @@ namespace WinFrmTalk.Controls.CustomControls
                     else
                         selectControl = selectControl.Parent;
                 }
-                rowIndex = showInfo_Panel.GetRow(selectControl);    //¼ÇÂ¼±»Ñ¡ÖĞĞĞ
+                rowIndex = showInfo_Panel.GetRow(selectControl);    //è®°å½•è¢«é€‰ä¸­è¡Œ
 
                 MessageObject msg = targetMsgData.GetMsg(selectControl.Name.Replace("talk_panel_", ""));
-                //ÅĞ¶ÏÊÇ·ñÎª±¾ÈË
+                //åˆ¤æ–­æ˜¯å¦ä¸ºæœ¬äºº
                 bool isOneself = msg.fromUserId != Applicate.MyAccount.userId ? false : true;
-                //ÉèÖÃÓÒ¼ü²Ëµ¥µÄ¿É¼û¶È
+                //è®¾ç½®å³é”®èœå•çš„å¯è§åº¦
                 if (msg != null)
                     new KWTypeMenuStripDictionary().SettingMenuStripVisible(ref cmsMsgMenu, msg.type, isOneself);
-                //Èç¹û×Ô¼ºÎªÈºÖ÷»ò¹ÜÀíÔ±£¬Ôò¿ÉÒÔ³·»ØËùÓĞĞÅÏ¢
+                // 2026-11-19 ä»…è‡ªå·±å‘å‡ºçš„æ–‡æœ¬æ¶ˆæ¯å¯ç¼–è¾‘
+                if (msg.type == kWCMessageType.Text && isOneself)
+                    cmsMsgMenu.Items["menuItem_Edit"].Visible = true;
+                //å¦‚æœè‡ªå·±ä¸ºç¾¤ä¸»æˆ–ç®¡ç†å‘˜ï¼Œåˆ™å¯ä»¥æ’¤å›æ‰€æœ‰ä¿¡æ¯
                 if (choose_target.IsGroup == 1 && JudgeIsAdmin(Applicate.MyAccount.userId))
                     cmsMsgMenu.Items["menuItem_Recall"].Visible = true;
-                //ËùÓĞ×Ô¼ºµÄÏûÏ¢¶¼¿ÉÒÔ½øĞĞÂ¼ÖÆ£¨Ö»ÄÜÍùºóÂ¼ÖÆ£©
+                //æ‰€æœ‰è‡ªå·±çš„æ¶ˆæ¯éƒ½å¯ä»¥è¿›è¡Œå½•åˆ¶ï¼ˆåªèƒ½å¾€åå½•åˆ¶ï¼‰
                 if (msg.fromUserId == Applicate.MyAccount.userId)
                     if ((isStartTrans == 1 && startTransIndex < msg.rowIndex) || isStartTrans == 0)
                         cmsMsgMenu.Items["menuItem_Transcribe"].Visible = true;
-                //Èç¹ûÕıÔÚÂ¼Òô£¬Ôò²»ÄÜ½øĞĞ»Ø¸´
+                //å¦‚æœæ­£åœ¨å½•éŸ³ï¼Œåˆ™ä¸èƒ½è¿›è¡Œå›å¤
                 menuItem_Reply.Enabled = userSoundRecording.SoundState ? false : true;
-                //Èç¹ûÎÄ¼ş²»´æÔÚ£¬Ôò²»ÏÔÊ¾´ò¿ªÎÄ¼ş¼Ğ£¬¶øÊÇÏÔÊ¾ÏÂÔØ
+                //å¦‚æœæ–‡ä»¶ä¸å­˜åœ¨ï¼Œåˆ™ä¸æ˜¾ç¤ºæ‰“å¼€æ–‡ä»¶å¤¹ï¼Œè€Œæ˜¯æ˜¾ç¤ºä¸‹è½½
                 if (msg.type == kWCMessageType.File)
                 {
                     string filePath = EQControlManager.GetFilePathByType(msg);
-                    //ÎÄ¼ş²»´æÔÚ
+                    //æ–‡ä»¶ä¸å­˜åœ¨
                     if (!File.Exists(filePath))
                     {
                         menuItem_OpenFileFolder.Visible = false;
@@ -2901,30 +2981,30 @@ namespace WinFrmTalk.Controls.CustomControls
         #endregion
         #endregion
 
-        #region ÁĞ±íÆøÅİÌí¼ÓºÍÒÆ³ı´¥·¢ÊÂ¼ş
+        #region åˆ—è¡¨æ°”æ³¡æ·»åŠ å’Œç§»é™¤è§¦å‘äº‹ä»¶
         private void showInfo_Panel_ControlAdded(object sender, ControlEventArgs e)
         {
-            //Èç¹ûÌí¼Ó¸´Ñ¡¿ò²»´¦Àí
+            //å¦‚æœæ·»åŠ å¤é€‰æ¡†ä¸å¤„ç†
             if (e.Control is CheckBoxEx)
                 return;
 
-            #region ¹ö¶¯µ½µ×²¿
+            #region æ»šåŠ¨åˆ°åº•éƒ¨
             if (showInfo_Panel.Top == (Takeconter_panel.Height - showInfo_Panel.Height))
             {
                 showInfo_Panel.Top -= e.Control.Height;
             }
             #endregion
 
-            #region ÕıÔÚ´Ó¶¥²¿¼ÓÔØÀúÊ·¼ÇÂ¼
+            #region æ­£åœ¨ä»é¡¶éƒ¨åŠ è½½å†å²è®°å½•
             if (ShowInfoVScroll.canAdd == 0)
             {
                 showInfo_Panel.Top -= e.Control.Height;
-                //¸üĞÂ¹ö¶¯ÌõµÄÎ»ÖÃ
+                //æ›´æ–°æ»šåŠ¨æ¡çš„ä½ç½®
                 ShowInfoVScroll.UpdateVScrollLocation();
             }
             #endregion
 
-            //¸ß¶È×ÔÊÊÓ¦
+            //é«˜åº¦è‡ªé€‚åº”
             if (e.Control is Label && e.Control.Name.Equals("labMoreMsg"))
             {
                 showInfo_Panel.Height += 45;
@@ -2935,14 +3015,14 @@ namespace WinFrmTalk.Controls.CustomControls
                 showInfo_Panel.Height += e.Control.Height;
                 ShowInfoShade.Height = showInfo_Panel.Height;
             }
-            //×Ô¶¯µ÷Õû¸ß¶ÈºÍ¹ö¶¯Ìõ
+            //è‡ªåŠ¨è°ƒæ•´é«˜åº¦å’Œæ»šåŠ¨æ¡
             //ShowInfoVScroll.UpdateVScrollLocation();
 
-            //²»ÊÇÌí¼ÓÁÄÌìÆøÅİµÄÖ±½ÓÌø³ö
+            //ä¸æ˜¯æ·»åŠ èŠå¤©æ°”æ³¡çš„ç›´æ¥è·³å‡º
             if (e.Control.GetType().Name.IndexOf("EQ") < 0)
                 return;
 
-            //Èç¹ûÌí¼ÓµÄÆøÅİÎª×îĞÂÒ»ÌõÏûÏ¢
+            //å¦‚æœæ·»åŠ çš„æ°”æ³¡ä¸ºæœ€æ–°ä¸€æ¡æ¶ˆæ¯
             //if (!string.IsNullOrEmpty(e.Control.Name))
             //{
             //    string msgId = e.Control.Name.Replace("talk_panel_", "");
@@ -2952,21 +3032,21 @@ namespace WinFrmTalk.Controls.CustomControls
             //        EQNewsMsgHint newsMsgHint = new EQNewsMsgHint();
             //        showInfo_Panel.RowCount++;
             //        showInfo_Panel.RowStyles.Insert(rowIndex, new RowStyle(SizeType.Absolute, newsMsgHint.Height));
-            //        //¿Ø¼şÏÂÒÆ
+            //        //æ§ä»¶ä¸‹ç§»
             //        showInfo_Panel.SetRow(e.Control, rowIndex + 1);
             //        newsMsgHint.Anchor = AnchorStyles.None;
             //        showInfo_Panel.Controls.Add(newsMsgHint, 1, rowIndex);
             //    }
             //}
 
-            #region Ìí¼ÓÓÒ¼ü²Ëµ¥
+            #region æ·»åŠ å³é”®èœå•
             foreach (Control item in e.Control.Controls)
             {
                 switch (item.Name)
                 {
                     case "lab_msg": break;
                     case "lab_hand": break;
-                    //ÄÚÈİ¿Ø¼şÔÚÆøÅİÄÚ
+                    //å†…å®¹æ§ä»¶åœ¨æ°”æ³¡å†…
                     case "image_panel":
                         //item.MouseDown += Content_MouseDown;
                         foreach (Control crl in item.Controls)
@@ -2974,14 +3054,14 @@ namespace WinFrmTalk.Controls.CustomControls
                             if (string.Equals(crl.Name, "crl_content"))
                             {
                                 crl.MouseDown += Content_MouseDown;
-                                AddContentMouseDownToCrl(crl);  //¸øËùÓĞ×Ó¿Ø¼şÉèÖÃÓÒ¼ü²Ëµ¥ÊÂ¼ş
+                                AddContentMouseDownToCrl(crl);  //ç»™æ‰€æœ‰å­æ§ä»¶è®¾ç½®å³é”®èœå•äº‹ä»¶
                                 crl.ContextMenuStrip = cmsMsgMenu;
                             }
                         }
                         break;
                     case "crl_content":
                         item.MouseDown += Content_MouseDown;
-                        AddContentMouseDownToCrl(item);  //¸øËùÓĞ×Ó¿Ø¼şÉèÖÃÓÒ¼ü²Ëµ¥ÊÂ¼ş
+                        AddContentMouseDownToCrl(item);  //ç»™æ‰€æœ‰å­æ§ä»¶è®¾ç½®å³é”®èœå•äº‹ä»¶
                         item.ContextMenuStrip = cmsMsgMenu;
                         break;
                     default:
@@ -2992,7 +3072,7 @@ namespace WinFrmTalk.Controls.CustomControls
             #endregion
         }
 
-        #region ¸øËùÓĞ×Ó¿Ø¼şÉèÖÃÓÒ¼ü²Ëµ¥ÊÂ¼ş
+        #region ç»™æ‰€æœ‰å­æ§ä»¶è®¾ç½®å³é”®èœå•äº‹ä»¶
         private void AddContentMouseDownToCrl(Control crl)
         {
             foreach (Control child_crl in crl.Controls)
@@ -3007,31 +3087,31 @@ namespace WinFrmTalk.Controls.CustomControls
 
         private void showInfo_Panel_ControlRemoved(object sender, ControlEventArgs e)
         {
-            //Èç¹ûÌí¼Ó¸´Ñ¡¿ò²»´¦Àí
+            //å¦‚æœæ·»åŠ å¤é€‰æ¡†ä¸å¤„ç†
             if (e.Control is CheckBoxEx)
                 return;
 
             if (e.Control is Label)
             {
-                //¸ß¶È×ÔÊÊÓ¦
-                showInfo_Panel.Height -= e.Control.Height;    //²»Ö¹ÎªºÎ£¬»áÓĞ6¸öÏñËØÆ«ÒÆ
+                //é«˜åº¦è‡ªé€‚åº”
+                showInfo_Panel.Height -= e.Control.Height;    //ä¸æ­¢ä¸ºä½•ï¼Œä¼šæœ‰6ä¸ªåƒç´ åç§»
                 ShowInfoShade.Height = showInfo_Panel.Height;
             }
             else
             {
-                //¸ß¶È×ÔÊÊÓ¦
-                showInfo_Panel.Height -= (e.Control.Height + 6);    //²»Ö¹ÎªºÎ£¬»áÓĞ6¸öÏñËØÆ«ÒÆ
+                //é«˜åº¦è‡ªé€‚åº”
+                showInfo_Panel.Height -= (e.Control.Height + 6);    //ä¸æ­¢ä¸ºä½•ï¼Œä¼šæœ‰6ä¸ªåƒç´ åç§»
                 ShowInfoShade.Height = showInfo_Panel.Height;
             }
-            //×Ô¶¯µ÷Õû¸ß¶ÈºÍ¹ö¶¯Ìõ
+            //è‡ªåŠ¨è°ƒæ•´é«˜åº¦å’Œæ»šåŠ¨æ¡
             ShowInfoVScroll.UpdateVScrollLocation();
-            //ÉèÖÃ¹ö¶¯ÌõÊÇ·ñ¿É¼û
+            //è®¾ç½®æ»šåŠ¨æ¡æ˜¯å¦å¯è§
             //if (showInfo_Panel.Height - Takeconter_panel.Height > 0)
             //    ShowInfoVScroll.Visible = true;
             //else
             //    ShowInfoVScroll.Visible = false;
 
-            //Èç¹û¿Ø¼şÊÇÏûÏ¢ÆøÅİÀàĞÍ
+            //å¦‚æœæ§ä»¶æ˜¯æ¶ˆæ¯æ°”æ³¡ç±»å‹
             if (e.Control is EQBaseControl talk_panel)
             {
                 string msgId = talk_panel.Name.Replace("talk_panel_", "");
@@ -3045,8 +3125,8 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region µã»÷µ¯³öÉèÖÃÒ³
-        FrmSuspension frmSet;   //ÉèÖÃÒ³
+        #region ç‚¹å‡»å¼¹å‡ºè®¾ç½®é¡µ
+        FrmSuspension frmSet;   //è®¾ç½®é¡µ
         private void lab_detial_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -3054,7 +3134,7 @@ namespace WinFrmTalk.Controls.CustomControls
                 if (choose_target == null)
                     return;
                 
-                //Èç¹ûÁÄÌì¶ÔÏóÎªÈº×é
+                //å¦‚æœèŠå¤©å¯¹è±¡ä¸ºç¾¤ç»„
                 if (choose_target.IsGroup == 1)
                 {
                     frmSet = new FrmSMPGroupSet() { room = choose_target };
@@ -3067,7 +3147,7 @@ namespace WinFrmTalk.Controls.CustomControls
                     //frmSet = FrmSingleSet.GetFrmSingleSet();
                     //FrmSingleSet.GetFrmSingleSet().friend = choose_target;
                 }
-                //»ñÈ¡Èı¸öµã¿Ø¼şÏà¶ÔÆÁÄ»µÄÎ»ÖÃ
+                //è·å–ä¸‰ä¸ªç‚¹æ§ä»¶ç›¸å¯¹å±å¹•çš„ä½ç½®
                 Point point = PointToScreen(Takeconter_panel.Location);
                 point = new Point(point.X + (Takeconter_panel.Width - frmSet.Width), point.Y + panTitle.Height);
 
@@ -3079,7 +3159,7 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ÈºÁÄ¼ÇÂ¼Ò³
+        #region ç¾¤èŠè®°å½•é¡µ
         private void lblHistory_MouseDown(object sender, MouseEventArgs e)
         {
             //FrmHistoryMsg frmHistoryMsg = new FrmHistoryMsg();
@@ -3093,10 +3173,10 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ¶àÑ¡¹¦ÄÜÃæ°å
-        #region ¶àÑ¡Ãæ°åµã»÷ÊÂ¼ş
+        #region å¤šé€‰åŠŸèƒ½é¢æ¿
+        #region å¤šé€‰é¢æ¿ç‚¹å‡»äº‹ä»¶
         /// <summary>
-        /// ¶àÑ¡Ãæ°åµã»÷ÊÂ¼ş
+        /// å¤šé€‰é¢æ¿ç‚¹å‡»äº‹ä»¶
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -3104,11 +3184,11 @@ namespace WinFrmTalk.Controls.CustomControls
         {
             if (e.Button == MouseButtons.Left)
             {
-                //¼ÆËãµ±Ç°µã»÷µÄshowInfo_panelµÄy×ø±ê£¨Ïà¶Ô±¾ÉíÎª²ÎÕÕÎï£¬¶ø²»ÊÇ´°Ìå£©
+                //è®¡ç®—å½“å‰ç‚¹å‡»çš„showInfo_panelçš„yåæ ‡ï¼ˆç›¸å¯¹æœ¬èº«ä¸ºå‚ç…§ç‰©ï¼Œè€Œä¸æ˜¯çª—ä½“ï¼‰
                 float showInfo_panel_y = e.Y;
                 float sum_height = 0;
                 rowIndex = 0;
-                //¼ÆËãµã»÷µÄ×ø±êÊÇµÚ¼¸ĞĞ
+                //è®¡ç®—ç‚¹å‡»çš„åæ ‡æ˜¯ç¬¬å‡ è¡Œ
                 while (true)
                 {
                     sum_height += showInfo_Panel.RowStyles[rowIndex].Height;
@@ -3117,28 +3197,28 @@ namespace WinFrmTalk.Controls.CustomControls
                     rowIndex++;
                 }
 
-                //ÅĞ¶Ï¸ÃĞĞÊÇ·ñÓĞ¸´Ñ¡¿ò
+                //åˆ¤æ–­è¯¥è¡Œæ˜¯å¦æœ‰å¤é€‰æ¡†
                 if (showInfo_Panel.GetControlFromPosition(0, rowIndex) == null)
                     return;
                 if (!(showInfo_Panel.GetControlFromPosition(0, rowIndex) is CheckBoxEx checkBox))
                     return;
 
-                //µã»÷ĞŞ¸ÄÑ¡ÖĞ×´Ì¬
+                //ç‚¹å‡»ä¿®æ”¹é€‰ä¸­çŠ¶æ€
                 //bool box_checked = ((LollipopCheckBox)showInfo_Panel.GetControlFromPosition(0, rowIndex)).Checked;
                 checkBox.Checked = checkBox.Checked == true ? false : true;
 
                 string crl_name = showInfo_Panel.GetControlFromPosition(1, rowIndex).Name;
                 string messageId = crl_name.Replace("talk_panel_", "");
                 MessageObject msg = targetMsgData.GetMsg(messageId);
-                //Ìí¼ÓÑ¡ÖĞ
+                //æ·»åŠ é€‰ä¸­
                 multiSelectPanel1.List_Msgs.Add(msg);
 
-                #region ĞŞ¸Äµ×É«
-                //isOpenCellPaint = true;     //ĞèÒªÖØ»æÊÂ¼ş¸øµ¥Ôª¸ñ¹´Ñ¡¸ÄĞĞºó¸ü»»µ×É«
+                #region ä¿®æ”¹åº•è‰²
+                //isOpenCellPaint = true;     //éœ€è¦é‡ç»˜äº‹ä»¶ç»™å•å…ƒæ ¼å‹¾é€‰æ”¹è¡Œåæ›´æ¢åº•è‰²
                 //if (isOpenCellPaint)
                 //    this.showInfo_Panel.CellPaint += new TableLayoutCellPaintEventHandler(showInfo_Panel_CellPaint);
 
-                ////´¥·¢ÖØ»æ£¬ĞŞ¸Äµ×É«
+                ////è§¦å‘é‡ç»˜ï¼Œä¿®æ”¹åº•è‰²
                 ////showInfo_Panel.RowStyles[rowIndex].Height = showInfo_Panel.RowStyles[rowIndex].Height;
                 //((MaterialCheckBox)showInfo_Panel.GetControlFromPosition(0, rowIndex)).Visible = false;
                 //((MaterialCheckBox)showInfo_Panel.GetControlFromPosition(0, rowIndex)).Visible = true;
@@ -3148,7 +3228,7 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ÉèÖÃ¸´Ñ¡¿ò¿É¼û¶È
+        #region è®¾ç½®å¤é€‰æ¡†å¯è§åº¦
         private void SetCheckBoxVisible(bool visible)
         {
             for (int index = 0; index < showInfo_Panel.Controls.Count; index++)
@@ -3198,34 +3278,34 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region »ñÈ¡ÈºÉèÖÃ
+        #region è·å–ç¾¤è®¾ç½®
         private int userSize = 0;
         private void GetRoomSetting()
         {
             if (choose_target.IsDevice == 1 || choose_target.Status != 2 || choose_target == null)
                 return;
 
-            //·ÀÖ¹ÒòÎª½Ó¿ÚÒì²½µ¼ÖÂÃû³Æ²»¶Ô
+            //é˜²æ­¢å› ä¸ºæ¥å£å¼‚æ­¥å¯¼è‡´åç§°ä¸å¯¹
             string name = choose_target.NickName;
-            //http getÇëÇó»ñµÃÊı¾İ
+            //http getè¯·æ±‚è·å¾—æ•°æ®
             HttpUtils.Instance.InitHttp(this);
-            //½«Êı¾İ±£´æ
-            HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/getRoom") //»ñÈ¡ÈºÏêÇé
+            //å°†æ•°æ®ä¿å­˜
+            HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/getRoom") //è·å–ç¾¤è¯¦æƒ…
                 .AddParams("access_token", Applicate.Access_Token)
                 .AddParams("roomId", choose_target.RoomId)
                 .Build().Execute((success, result) =>
                 {
                     if (success && choose_target != null)
                     {
-                        labName.Text = name + "£¨" + UIUtils.DecodeString(result, "userSize") + "ÈË£©";
+                        labName.Text = name + "ï¼ˆ" + UIUtils.DecodeString(result, "userSize") + "äººï¼‰";
                         userSize = UIUtils.DecodeInt(result, "userSize");
                         choose_target.TransToMember(result);
-                        // ¸üĞÂ¶ÔÏóµÄÊôĞÔÖµ
+                        // æ›´æ–°å¯¹è±¡çš„å±æ€§å€¼
                         //Applicate.FriendObj = choose_target;
 
                         if (Applicate.ENABLE_MEET && Applicate.CURRET_VERSION > 4.0f)
                         {
-                            //¹Ø±ÕÈº»áÒé£¬ÆÕÍ¨³ÉÔ±²»ÔÊĞíµã»÷ÊÓÆµºÍÒôÆµ
+                            //å…³é—­ç¾¤ä¼šè®®ï¼Œæ™®é€šæˆå‘˜ä¸å…è®¸ç‚¹å‡»è§†é¢‘å’ŒéŸ³é¢‘
                             lblAudio.Visible = choose_target.AllowConference == 0 && !JudgeIsAdmin(Applicate.MyAccount.userId) ? false : true;
                             lblVideo.Visible = choose_target.AllowConference == 0 && !JudgeIsAdmin(Applicate.MyAccount.userId) ? false : true;
 
@@ -3236,14 +3316,14 @@ namespace WinFrmTalk.Controls.CustomControls
                             lblVideo.Visible = false;
                         }
 
-                        //ÊÇ·ñÏÔÊ¾Èº¹«¸æ
+                        //æ˜¯å¦æ˜¾ç¤ºç¾¤å…¬å‘Š
                         bool isShowNotice = LocalDataUtils.GetBoolData(choose_target.UserId + "show_notice");
                         if (isShowNotice)
                             ShowNotice();
                     }
                     else
                     {
-                        string remindTxt = "¸ÃÈºÒÑ±»½âÉ¢";
+                        string remindTxt = "è¯¥ç¾¤å·²è¢«è§£æ•£";
                         IsShow_BannedTalkPanel(true, remindTxt);
                         isCanTalk = false;
                     }
@@ -3251,34 +3331,34 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ½ûÑÔ
+        #region ç¦è¨€
         /// <summary>
-        /// ÅĞ¶ÏÊÇ·ñ½ûÑÔ
+        /// åˆ¤æ–­æ˜¯å¦ç¦è¨€
         /// </summary>
-        /// <returns>·µ»ØtrueÔòÎª½ûÑÔ×´Ì¬</returns>
+        /// <returns>è¿”å›trueåˆ™ä¸ºç¦è¨€çŠ¶æ€</returns>
         private bool JudgeIsBannedTalk(ref string remindTxt)
         {
             if (choose_target == null || choose_target.IsGroup != 1)
                 return false;
 
-            //ÊÇ·ñÈ«Ìå½ûÑÔ
+            //æ˜¯å¦å…¨ä½“ç¦è¨€
             string all = LocalDataUtils.GetStringData(choose_target.UserId + "BANNED_TALK_ALL" + Applicate.MyAccount.userId, "0");
-            //¹ÜÀíÔ±ºÍÈºÖ÷³ıÍâ
+            //ç®¡ç†å‘˜å’Œç¾¤ä¸»é™¤å¤–
             if (!"0".Equals(all) && !JudgeIsAdmin(Applicate.MyAccount.userId))
             {
-                // È«Ìå½ûÑÔ
-                remindTxt = "±¾ÈºÒÑ½øĞĞÈ«Ìå½ûÑÔ";
+                // å…¨ä½“ç¦è¨€
+                remindTxt = "æœ¬ç¾¤å·²è¿›è¡Œå…¨ä½“ç¦è¨€";
                 return true;
             }
 
             string single = LocalDataUtils.GetStringData(choose_target.UserId + "BANNED_TALK" + Applicate.MyAccount.userId, "0");
-            //ÊÇ·ñµ¥¸ö½ûÑÔ
+            //æ˜¯å¦å•ä¸ªç¦è¨€
             if (!"0".Equals(single) && !JudgeIsGroupOwner(Applicate.MyAccount.userId))
             {
                 double time = double.Parse(single);
                 if (time > TimeUtils.CurrentTimeDouble())
                 {
-                    remindTxt = "½ûÑÔÊ±¼äÖÁ£º" + time.StampToDatetime().ToString("yyyy-MM-dd HH:mm:ss");
+                    remindTxt = "ç¦è¨€æ—¶é—´è‡³ï¼š" + time.StampToDatetime().ToString("yyyy-MM-dd HH:mm:ss");
                     return true;
                 }
             }
@@ -3288,17 +3368,17 @@ namespace WinFrmTalk.Controls.CustomControls
 
         private void IsShow_BannedTalkPanel(bool isShow, string remindTxt = "")
         {
-            //µ±Í¨Öª´¥·¢Ê±£¬ĞèÒª»Øµ½Ö÷Ïß³Ì
+            //å½“é€šçŸ¥è§¦å‘æ—¶ï¼Œéœ€è¦å›åˆ°ä¸»çº¿ç¨‹
             Action action = new Action(() =>
             {
                 if (isShow)
                 {
-                    //Òş²Ø·¢ËÍ°´Å¥
+                    //éšè—å‘é€æŒ‰é’®
                     btnSend.Visible = false;
 
                     SetControlEnabled(this.Bottom_Panel, false);
 
-                    //ÎÄ×ÖÌáĞÑ
+                    //æ–‡å­—æé†’
                     Label lblRemind = new Label();
                     lblRemind.Name = "lblRemind";
                     lblRemind.AutoSize = false;
@@ -3312,7 +3392,7 @@ namespace WinFrmTalk.Controls.CustomControls
                 }
                 else
                 {
-                    //»Ö¸´·¢ËÍ°´Å¥
+                    //æ¢å¤å‘é€æŒ‰é’®
                     btnSend.Visible = true;
                     if (txtSend.Controls["lblRemind"] != null && txtSend.Controls["lblRemind"] is Label lblRemind)
                         lblRemind.Dispose();
@@ -3323,20 +3403,20 @@ namespace WinFrmTalk.Controls.CustomControls
                 Invoke(action);
         }
 
-        bool isBannedTalk = false;  //ÊÇ·ñ½ûÑÔÖĞ
+        bool isBannedTalk = false;  //æ˜¯å¦ç¦è¨€ä¸­
         private void UpdateBannedTalk(MessageObject msg)
         {
             string remindTxt = "";
-            //ÅĞ¶ÏÊÇ·ñÎª½ûÑÔ×´Ì¬
+            //åˆ¤æ–­æ˜¯å¦ä¸ºç¦è¨€çŠ¶æ€
             isBannedTalk = JudgeIsBannedTalk(ref remindTxt);
             if (isBannedTalk)
                 txtSend.Clear();
-            //txtSend.Visible = !isBannedTalk;   //Ê¹ÎÄ±¾¿òÊ§È¥½¹µã
+            //txtSend.Visible = !isBannedTalk;   //ä½¿æ–‡æœ¬æ¡†å¤±å»ç„¦ç‚¹
             IsShow_BannedTalkPanel(isBannedTalk, remindTxt);
         }
         #endregion
 
-        #region ÅĞ¶ÏÊÇ·ñÎªÈºÖ÷»òÕß¹ÜÀíÔ±
+        #region åˆ¤æ–­æ˜¯å¦ä¸ºç¾¤ä¸»æˆ–è€…ç®¡ç†å‘˜
         private bool JudgeIsAdmin(string userId)
         {
             if (choose_target.IsGroup == 1)
@@ -3349,7 +3429,7 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ÅĞ¶ÏÊÇ·ñÎªÈºÖ÷
+        #region åˆ¤æ–­æ˜¯å¦ä¸ºç¾¤ä¸»
         private bool JudgeIsGroupOwner(string userId)
         {
             if (choose_target.IsGroup == 1)
@@ -3362,20 +3442,20 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region »ñÈ¡ºÃÓÑÊÇ·ñÔÚÏß
+        #region è·å–å¥½å‹æ˜¯å¦åœ¨çº¿
         private void SetOnlineState()
         {
             if (choose_target.IsDevice == 1)
             {
                 bool isOnline = MultiDeviceManager.Instance.IsDeviceLine(choose_target.UserId);
                 string userName = string.IsNullOrEmpty(choose_target.RemarkName) ? choose_target.NickName : choose_target.RemarkName;
-                labName.Text = userName + (isOnline ? "£¨ÔÚÏß£©" : "£¨ÀëÏß£©");
+                labName.Text = userName + (isOnline ? "ï¼ˆåœ¨çº¿ï¼‰" : "ï¼ˆç¦»çº¿ï¼‰");
                 return;
             }
 
-            //http getÇëÇó»ñµÃÊı¾İ
+            //http getè¯·æ±‚è·å¾—æ•°æ®
             HttpUtils.Instance.InitHttp(this);
-            HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "user/getOnLine") //»ñÈ¡ÈºÏêÇé
+            HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "user/getOnLine") //è·å–ç¾¤è¯¦æƒ…
                 .AddParams("access_token", Applicate.Access_Token)
                 .AddParams("userId", choose_target.UserId)
                 .Build().Execute((success, result) =>
@@ -3383,28 +3463,28 @@ namespace WinFrmTalk.Controls.CustomControls
                     if (success)
                     {
                         string userName = string.IsNullOrEmpty(choose_target.RemarkName) ? choose_target.NickName : choose_target.RemarkName;
-                        //ÔÚÏß
+                        //åœ¨çº¿
                         if (result["data"].ToString().Equals("1"))
-                            labName.Text = userName + "£¨ÔÚÏß£©";
+                            labName.Text = userName + "ï¼ˆåœ¨çº¿ï¼‰";
                         else
-                            labName.Text = userName + "£¨ÀëÏß£©";
+                            labName.Text = userName + "ï¼ˆç¦»çº¿ï¼‰";
                     }
                 });
         }
         #endregion
 
-        #region ÊÓÆµ
+        #region è§†é¢‘
         private void lblVideo_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
-                //µ¥ÁÄ
+                //å•èŠ
                 if (choose_target.IsGroup == 0)
                     ShiKuManager.SendAskMeetMessage(choose_target, true);
-                //ÈºÁÄ
+                //ç¾¤èŠ
                 else
                 {
-                    //Ñ¡Ôñ×ª·¢µÄºÃÓÑ
+                    //é€‰æ‹©è½¬å‘çš„å¥½å‹
                     var frmFriendSelect = new FrmFriendSelect();
                     frmFriendSelect.LoadFriendsData(choose_target);
                     frmFriendSelect.AddConfrmListener((UserFriends) =>
@@ -3421,18 +3501,18 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ÒôÆµ
+        #region éŸ³é¢‘
         private void lblAudio_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
-                //µ¥ÁÄ
+                //å•èŠ
                 if (choose_target.IsGroup == 0)
                     ShiKuManager.SendAskMeetMessage(choose_target, false);
-                //ÈºÁÄ
+                //ç¾¤èŠ
                 else
                 {
-                    //Ñ¡Ôñ×ª·¢µÄºÃÓÑ
+                    //é€‰æ‹©è½¬å‘çš„å¥½å‹
                     var frmFriendSelect = new FrmFriendSelect();
                     frmFriendSelect.LoadFriendsData(choose_target);
                     frmFriendSelect.AddConfrmListener((UserFriends) =>
@@ -3449,24 +3529,24 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ÊÕµ½Í¨ÖªĞŞ¸ÄÁÄÌì¶ÔÏóÃû×Ö
+        #region æ”¶åˆ°é€šçŸ¥ä¿®æ”¹èŠå¤©å¯¹è±¡åå­—
         private void ModifyFriendName(Friend friend)
         {
             string newName = string.IsNullOrWhiteSpace(friend.RemarkName) ? friend.NickName : friend.RemarkName;
-            //µ¥ÁÄ²¢ÇÒÎªµ±Ç°ÁÄÌì¶ÔÏó
+            //å•èŠå¹¶ä¸”ä¸ºå½“å‰èŠå¤©å¯¹è±¡
             if (friend.UserId == choose_target.UserId && friend.IsGroup == 0)
             {
                 labName.Text = newName;
-                //ÊÇ·ñÔÚÏß
+                //æ˜¯å¦åœ¨çº¿
                 SetOnlineState();
             }
-            //ĞŞ¸Ä×Öµä
+            //ä¿®æ”¹å­—å…¸
             if (Applicate.FdNames.ContainsKey(friend.UserId))
                 Applicate.FdNames[friend.UserId] = newName;
         }
         #endregion
 
-        #region ÅúÁ¿É¾³ı
+        #region æ‰¹é‡åˆ é™¤
         private void BatchDeleteMsg(List<MessageObject> list_msgs)
         {
             if (list_msgs == null || list_msgs.Count < 1)
@@ -3475,48 +3555,48 @@ namespace WinFrmTalk.Controls.CustomControls
             showInfo_Panel.SuspendLayout();
 
             MessageObject lastMsg = targetMsgData.GetLastIndexMsg();
-            bool isLastMsg = false;     //¼ÇÂ¼ÊÇ·ñº¬ÓĞ×îºóÒ»ÌõÏûÏ¢ÔÚÄÚ
+            bool isLastMsg = false;     //è®°å½•æ˜¯å¦å«æœ‰æœ€åä¸€æ¡æ¶ˆæ¯åœ¨å†…
             foreach (MessageObject msg in list_msgs)
             {
-                //Èç¹ûÊÇ×îºóÒ»ÌõÏûÏ¢£¬ĞèÒªÍ¨Öª×î½üÁÄÌìÁĞ±í¸üĞÂ×îºóÒ»ÌõÏûÏ¢
+                //å¦‚æœæ˜¯æœ€åä¸€æ¡æ¶ˆæ¯ï¼Œéœ€è¦é€šçŸ¥æœ€è¿‘èŠå¤©åˆ—è¡¨æ›´æ–°æœ€åä¸€æ¡æ¶ˆæ¯
                 if (msg != null && lastMsg != null && lastMsg.rowIndex == msg.rowIndex)
                 {
                     isLastMsg = true;
-                    lastMsgTime = msg.timeSend;     //¸üĞÂÁĞ±í×îºóÒ»ÌõÏûÏ¢µÄÊ±¼ä
+                    lastMsgTime = msg.timeSend;     //æ›´æ–°åˆ—è¡¨æœ€åä¸€æ¡æ¶ˆæ¯çš„æ—¶é—´
                 }
 
                 int rowIndex = msg.rowIndex;
-                //ÒÆ³ı¸´Ñ¡¿ò
+                //ç§»é™¤å¤é€‰æ¡†
                 if (showInfo_Panel.GetControlFromPosition(0, rowIndex) is CheckBoxEx checkBox)
                 {
                     showInfo_Panel.Controls.Remove(checkBox);
                     checkBox.Dispose();
                 }
-                //ÒÆ³ıÆøÅİ¿Ø¼ş
+                //ç§»é™¤æ°”æ³¡æ§ä»¶
                 var item = showInfo_Panel.GetControlFromPosition(1, rowIndex);
                 showInfo_Panel.Controls.Remove(item);
                 if (item != null)
                     item.Dispose();
                 showInfo_Panel.RowStyles[rowIndex].Height = 0;
-                //´Ó×ÖµäÖĞÒÆ³ı
+                //ä»å­—å…¸ä¸­ç§»é™¤
                 targetMsgData.RemoveMsgData(msg.messageId);
             }
-            //µ÷ÓÃ½Ó¿ÚÉ¾³ıÊı¾İ
+            //è°ƒç”¨æ¥å£åˆ é™¤æ•°æ®
             CollectUtils.DelServerMessages(list_msgs, isLastMsg);
             showInfo_Panel.ResumeLayout();
         }
         #endregion
 
-        #region ÏÔÊ¾ÕıÔÚÊäÈë
+        #region æ˜¾ç¤ºæ­£åœ¨è¾“å…¥
         private void IsShowTyping()
         {
-            if (labName.Text.IndexOf("ÕıÔÚÊäÈë¡£¡£") > -1)
+            if (labName.Text.IndexOf("æ­£åœ¨è¾“å…¥ã€‚ã€‚") > -1)
                 return;
 
             if (this.IsHandleCreated)
                 Invoke(new Action(() =>
                 {
-                    labName.Text += "  ÕıÔÚÊäÈë¡£¡£";
+                    labName.Text += "  æ­£åœ¨è¾“å…¥ã€‚ã€‚";
                 }));
             Task.Factory.StartNew(() =>
                {
@@ -3524,14 +3604,14 @@ namespace WinFrmTalk.Controls.CustomControls
                    if (this.IsHandleCreated)
                        Invoke(new Action(() =>
                        {
-                           labName.Text = labName.Text.Replace("  ÕıÔÚÊäÈë¡£¡£", "");
+                           labName.Text = labName.Text.Replace("  æ­£åœ¨è¾“å…¥ã€‚ã€‚", "");
                        }));
                });
 
         }
         #endregion
 
-        #region ¸ø¶Ô·½·¢ËÍÎÒÕıÔÚÊäÈëµÄÍ¨Öª
+        #region ç»™å¯¹æ–¹å‘é€æˆ‘æ­£åœ¨è¾“å…¥çš„é€šçŸ¥
         private void txtSend_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -3543,15 +3623,15 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ÏÔÊ¾»òÒş²ØÈºÒÑ¶ÁÈËÊı
+        #region æ˜¾ç¤ºæˆ–éšè—ç¾¤å·²è¯»äººæ•°
         private void IsShowReadPersons(bool isShow)
         {
             foreach (Control item in showInfo_Panel.Controls)
             {
-                //²»ÊÇÏûÏ¢ÆøÅİ
+                //ä¸æ˜¯æ¶ˆæ¯æ°”æ³¡
                 if (item.Name.IndexOf("talk_panel") < 0)
                     continue;
-                //ÏÔÊ¾ÒÑ¶ÁÈËÊı±êÊ¶
+                //æ˜¾ç¤ºå·²è¯»äººæ•°æ ‡è¯†
                 var crls = item.Controls.Find("lab_msg", true);
                 if (crls.Length > 0 && crls[0] is Label lab_msg)
                     if (this.IsHandleCreated)
@@ -3563,7 +3643,7 @@ namespace WinFrmTalk.Controls.CustomControls
 
                         if (isShow)
                         {
-                            //ºìµãÏÂÒÆ
+                            //çº¢ç‚¹ä¸‹ç§»
                             crls = item.Controls.Find("lab_redPoint", true);
                             if (crls.Length > 0 && crls[0] is Label lab_redPoint)
                                 Invoke(new Action(() =>
@@ -3577,10 +3657,10 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ¼à¿Ø°´¼ü
+        #region ç›‘æ§æŒ‰é”®
         private void txtSend_KeyPress(object sender, KeyPressEventArgs e)
         {
-            //°´ÏÂEnter¼ü
+            //æŒ‰ä¸‹Enteré”®
             if (e.KeyChar == 13)
             {
                 txtSend.Clear();
@@ -3594,7 +3674,7 @@ namespace WinFrmTalk.Controls.CustomControls
             //Ctrl+V
             if (e.Control && e.KeyCode == Keys.V)
             {
-                //¼ì²éÊÇ·ñğ¤ÌùÎÄ¼ş
+                //æ£€æŸ¥æ˜¯å¦é»è´´æ–‡ä»¶
                 if(Clipboard.GetFileDropList().Count > 0)
                 {
                     var strCollection = Clipboard.GetFileDropList();
@@ -3605,22 +3685,22 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ·¢ËÍÏûÏ¢ÎÄ±¾¿ò£¬ÎÄ±¾±ä¸üÊÂ¼ş
-        private bool isChangingEmoji = false;   //ÊÇ·ñÕıÔÚ×ª»»emoji±íÇé
-        private int txtChangedState = 1;    //0ÎªÕıÔÚÑ¡Ôñ@³ÉÔ±£¬²»ÔÙµ¯³öºÃÓÑÑ¡ÔñÆ÷
-        private int atCount = 0;    //@µÄÈËÊı
+        #region å‘é€æ¶ˆæ¯æ–‡æœ¬æ¡†ï¼Œæ–‡æœ¬å˜æ›´äº‹ä»¶
+        private bool isChangingEmoji = false;   //æ˜¯å¦æ­£åœ¨è½¬æ¢emojiè¡¨æƒ…
+        private int txtChangedState = 1;    //0ä¸ºæ­£åœ¨é€‰æ‹©@æˆå‘˜ï¼Œä¸å†å¼¹å‡ºå¥½å‹é€‰æ‹©å™¨
+        private int atCount = 0;    //@çš„äººæ•°
         private List<Friend> list_atFriends = new List<Friend>();
         private void txtSend_TextChanged(object sender, EventArgs e)
         {
-            #region Èº@¹¦ÄÜ
+            #region ç¾¤@åŠŸèƒ½
             if (choose_target != null && choose_target.IsGroup == 1)
             {
                 string[] sArray = txtSend.Text.Split('@');
                 if (sArray.Length > 1 && txtChangedState == 1)
                 {
-                    string addAtMember = "";    //@µÄÈºÔ±
-                    int addAtCount = 0;     //µ¥´ÎºÃÓÑÑ¡ÔñÆ÷Ìí¼ÓµÄ@ÊıÁ¿
-                    //ÊÇ·ñĞÂÊäÈëÁË@×Ö·û
+                    string addAtMember = "";    //@çš„ç¾¤å‘˜
+                    int addAtCount = 0;     //å•æ¬¡å¥½å‹é€‰æ‹©å™¨æ·»åŠ çš„@æ•°é‡
+                    //æ˜¯å¦æ–°è¾“å…¥äº†@å­—ç¬¦
                     if ((sArray.Length - 1 - atCount) > 0)
                     {
                         FrmFriendSelect frmFriendSelect = new FrmFriendSelect();
@@ -3635,14 +3715,14 @@ namespace WinFrmTalk.Controls.CustomControls
                                 list_atFriends.Add(friend);
                             }
 
-                            //Ñ¡ÔñÍêºÃÓÑºó
-                            addAtMember = addAtMember.Substring(1);     //È¥³ıµÚÒ»¸ö@·û
+                            //é€‰æ‹©å®Œå¥½å‹å
+                            addAtMember = addAtMember.Substring(1);     //å»é™¤ç¬¬ä¸€ä¸ª@ç¬¦
                             int SelectIndex = txtSend.SelectionStart;
                             txtSend.Text = txtSend.Text.Insert(txtSend.SelectionStart, addAtMember);
                             //EQPosition txtSend_CursorPosition = EQControlManager.GetRichTextPosition(txtSend);
                             atCount = sArray.Length - 1 + (addAtCount > 0 ? addAtCount - 1 : 0);
 
-                            //ĞŞ¸Ä@ÑÕÉ«
+                            //ä¿®æ”¹@é¢œè‰²
                             EQControlManager.GroupAtModifyColor(txtSend);
                             txtSend.SelectionStart = SelectIndex + addAtMember.Length;
                             txtChangedState = 1;
@@ -3653,11 +3733,11 @@ namespace WinFrmTalk.Controls.CustomControls
             }
             #endregion
 
-            #region ĞŞ¸ÄemojiCode×ªÍ¼Æ¬
-            //ÕıÔÚ×ª»¯emoji±íÇé
+            #region ä¿®æ”¹emojiCodeè½¬å›¾ç‰‡
+            //æ­£åœ¨è½¬åŒ–emojiè¡¨æƒ…
             if (!isChangingEmoji)
             {
-                //Æ¥Åä·ûºÏ¹æÔòµÄ±íÇécode
+                //åŒ¹é…ç¬¦åˆè§„åˆ™çš„è¡¨æƒ…code
                 MatchCollection matchs = Regex.Matches(txtSend.Text, @"\[[a-z_-]*\]", RegexOptions.IgnoreCase | RegexOptions.Singleline);
                 if (matchs.Count > 0)
                 {
@@ -3693,7 +3773,7 @@ namespace WinFrmTalk.Controls.CustomControls
                     }
                     catch (Exception ex)
                     {
-                        LogHelper.log.Error("----×ª»¯emoji³ö´í£¬·½·¨£¨txtSend_TextChanged£© : " + ex.Message, ex);
+                        LogHelper.log.Error("----è½¬åŒ–emojiå‡ºé”™ï¼Œæ–¹æ³•ï¼ˆtxtSend_TextChangedï¼‰ : " + ex.Message, ex);
                     }
                     isChangingEmoji = false;
                 }
@@ -3702,7 +3782,7 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ×Ô¼ºÖ÷¶¯@ÈËµÄÍ¨Öª
+        #region è‡ªå·±ä¸»åŠ¨@äººçš„é€šçŸ¥
         private void AddAtUserToTxtSend(Friend friend)
         {
             atCount++;
@@ -3712,7 +3792,7 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ÏÔÊ¾¹«¸æ
+        #region æ˜¾ç¤ºå…¬å‘Š
         private void ShowNotice()
         {
             roomNotice.RoomData = choose_target;
@@ -3721,7 +3801,7 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region »ñÈ¡Ñ¡ÖĞ¿Ø¼şµÄmsg
+        #region è·å–é€‰ä¸­æ§ä»¶çš„msg
         private MessageObject GetMsgBySelectCrl()
         {
             string messageId = selectControl.Name.Replace("talk_panel_", "");
@@ -3737,7 +3817,7 @@ namespace WinFrmTalk.Controls.CustomControls
             if (choose_target == null)
                 return null;
 
-            //»ñµÃ¿Ø¼şÃû
+            //è·å¾—æ§ä»¶å
             string c_name = "talk_panel_" + msg.messageId;
 
             var result = showInfo_Panel.Controls.Find(c_name, true);
@@ -3747,7 +3827,7 @@ namespace WinFrmTalk.Controls.CustomControls
                 return null;
         }
 
-        #region ½ØÍ¼
+        #region æˆªå›¾
         private void lblScreen_Click(object sender, EventArgs e)
         {
             if (((MouseEventArgs)e).Button == MouseButtons.Left)
@@ -3764,11 +3844,11 @@ namespace WinFrmTalk.Controls.CustomControls
                     Image image = capture.Image;
                     Clipboard.Clear();
                     Clipboard.SetImage(image);
-                    //½«Í¼Æ¬Õ³Ìùµ½Êó±ê½¹µãÎ»ÖÃ(Ñ¡ÖĞµÄ×Ö·û¶¼»á±»Í¼Æ¬¸²¸Ç)
+                    //å°†å›¾ç‰‡ç²˜è´´åˆ°é¼ æ ‡ç„¦ç‚¹ä½ç½®(é€‰ä¸­çš„å­—ç¬¦éƒ½ä¼šè¢«å›¾ç‰‡è¦†ç›–)
                     txtSend.Paste();
                     txtSend.ReadOnly = b;
 
-                    //ÒÔ¿Ø¼şµÄ·½Ê½Ìí¼Ó½ø¸»ÎÄ±¾¿òÀï
+                    //ä»¥æ§ä»¶çš„æ–¹å¼æ·»åŠ è¿›å¯Œæ–‡æœ¬æ¡†é‡Œ
                     //PictureBox pb = new PictureBox();
                     //pb.Size = new Size(30, 30);
                     //pb.SizeMode = PictureBoxSizeMode.Zoom;
@@ -3791,7 +3871,7 @@ namespace WinFrmTalk.Controls.CustomControls
                 //        //Bitmap map = EQControlManager.GetSmall(image, 5);
                 //        Clipboard.Clear();
                 //        Clipboard.SetImage(image);
-                //        //½«Í¼Æ¬Õ³Ìùµ½Êó±ê½¹µãÎ»ÖÃ(Ñ¡ÖĞµÄ×Ö·û¶¼»á±»Í¼Æ¬¸²¸Ç)
+                //        //å°†å›¾ç‰‡ç²˜è´´åˆ°é¼ æ ‡ç„¦ç‚¹ä½ç½®(é€‰ä¸­çš„å­—ç¬¦éƒ½ä¼šè¢«å›¾ç‰‡è¦†ç›–)
                 //        txtSend.Paste();
                 //    };
                 //    //shotCutWindow.ShowDialog();
@@ -3799,7 +3879,7 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ÒÆ³ıÄ³Ò»ÌõÏûÏ¢£¨Ïú»Ù£©
+        #region ç§»é™¤æŸä¸€æ¡æ¶ˆæ¯ï¼ˆé”€æ¯ï¼‰
         private void RemoveMsgOfPanel(string msgId)
         {
             MessageObject msg = targetMsgData.GetMsg(msgId);
@@ -3809,21 +3889,21 @@ namespace WinFrmTalk.Controls.CustomControls
             int rowIndex = msg.rowIndex;
             Action action = new Action(() =>
             {
-                //ÒÆ³ı¸´Ñ¡¿ò
+                //ç§»é™¤å¤é€‰æ¡†
                 if (showInfo_Panel.GetControlFromPosition(0, rowIndex) is CheckBoxEx checkBox)
                 {
                     showInfo_Panel.Controls.Remove(checkBox);
                     checkBox.Dispose();
                 }
-                //ÒÆ³ıÆøÅİ¿Ø¼ş
+                //ç§»é™¤æ°”æ³¡æ§ä»¶
                 var item = showInfo_Panel.GetControlFromPosition(1, rowIndex);
                 showInfo_Panel.Controls.Remove(item);
                 item.Dispose();
                 showInfo_Panel.RowStyles[rowIndex].Height = 0;
-                //´Ó×ÖµäÖĞÒÆ³ı
+                //ä»å­—å…¸ä¸­ç§»é™¤
                 targetMsgData.RemoveMsgData(msgId);
 
-                //É¾³ıÊı¾İ¿âÊı¾İ
+                //åˆ é™¤æ•°æ®åº“æ•°æ®
                 msg.DeleteData();
             });
             if (this.IsHandleCreated)
@@ -3831,17 +3911,17 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region Ìæ»»ÎªremindÀàĞÍÆøÅİ
+        #region æ›¿æ¢ä¸ºremindç±»å‹æ°”æ³¡
         private void ReplaceMsgToRemind(string msgId, string content)
         {
-            //²»´æÔÚ¸ÃÏûÏ¢
+            //ä¸å­˜åœ¨è¯¥æ¶ˆæ¯
             if (targetMsgData.GetMsg(msgId) == null)
                 return;
 
-            //»ñÈ¡msg
+            //è·å–msg
             MessageObject msg = targetMsgData.GetMsg(msgId);
 
-            //ĞŞ¸ÄÏûÏ¢µÄÀàĞÍ
+            //ä¿®æ”¹æ¶ˆæ¯çš„ç±»å‹
             msg.type = kWCMessageType.Remind;
             msg.content = content;
             msg.isReadDel = 0;
@@ -3857,11 +3937,11 @@ namespace WinFrmTalk.Controls.CustomControls
                 EQBaseControl talk_panel = eqBase.GetRecombinedPanel();
                 talk_panel.Name = "talk_panel_" + msg.messageId;
 
-                //ÒÆ³ıÁÄÌìÆøÅİ»»³ÉÏûÏ¢ÌáĞÑ
+                //ç§»é™¤èŠå¤©æ°”æ³¡æ¢æˆæ¶ˆæ¯æé†’
                 float item_height = showInfo_Panel.RowStyles[msg.rowIndex].Height;
-                //ÌáÊ¾ÏûÏ¢¾ÓÖĞÏÔÊ¾
+                //æç¤ºæ¶ˆæ¯å±…ä¸­æ˜¾ç¤º
                 talk_panel.Anchor = AnchorStyles.None;
-                //Ñ­»·ÁĞ£¬ÊÍ·Å¿Ø¼ş£¨¸´Ñ¡¿òºÍÁÄÌìÆøÅİ£©
+                //å¾ªç¯åˆ—ï¼Œé‡Šæ”¾æ§ä»¶ï¼ˆå¤é€‰æ¡†å’ŒèŠå¤©æ°”æ³¡ï¼‰
                 for (int col_index = 0; col_index < showInfo_Panel.ColumnCount; col_index++)
                 {
                     var item = showInfo_Panel.GetControlFromPosition(col_index, msg.rowIndex);
@@ -3871,9 +3951,9 @@ namespace WinFrmTalk.Controls.CustomControls
                         item.Dispose();
                     }
                 }
-                ////É¾³ı¸ÃĞĞ¾ÉµÄÑùÊ½
+                ////åˆ é™¤è¯¥è¡Œæ—§çš„æ ·å¼
                 //showInfo_Panel.RowStyles.RemoveAt(msg.rowIndex);
-                ////Ìí¼Ó¸ÃĞĞĞÂµÄÑùÊ½
+                ////æ·»åŠ è¯¥è¡Œæ–°çš„æ ·å¼
                 //showInfo_Panel.RowStyles.Insert(msg.rowIndex, new RowStyle(SizeType.Absolute, talk_panel.Height));
                 showInfo_Panel.RowStyles[msg.rowIndex].Height = talk_panel.Height;
 
@@ -3885,7 +3965,7 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ¼ÇÂ¼ÔÄºó¼´·ÙµÄÊ±¼ä
+        #region è®°å½•é˜…åå³ç„šçš„æ—¶é—´
         private void SaveReadDelTime()
         {
             if (isHaveReadDel == 0)
@@ -3893,12 +3973,12 @@ namespace WinFrmTalk.Controls.CustomControls
 
             foreach (var msg in targetMsgData.GetMsgList())
             {
-                //ÔÄºó¼´·ÙÏûÏ¢
+                //é˜…åå³ç„šæ¶ˆæ¯
                 if (msg.isReadDel == 1 && msg.ReadDelTime > 0)
                 {
-                    //¼ÇÂ¼µ±Ç°µÄÃëÊı
+                    //è®°å½•å½“å‰çš„ç§’æ•°
                     LocalDataUtils.SetIntData(Applicate.MyAccount.userId + "_ReadDelTime_" + msg.messageId, msg.ReadDelTime);
-                    //Í£Ö¹¼ÆÊ±Æ÷
+                    //åœæ­¢è®¡æ—¶å™¨
                     //Control eqBaseCrl = showInfo_Panel.GetControlFromPosition(1, msg.rowIndex);
                     //if(eqBaseCrl is EQBaseControl talk_panel)
                     //{
@@ -3912,26 +3992,26 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region µã»÷±êÌâ
+        #region ç‚¹å‡»æ ‡é¢˜
         private void labName_MouseDown(object sender, MouseEventArgs e)
         {
             lab_detial_MouseClick(lab_detial, e);
         }
         #endregion
 
-        #region ¿ØÖÆÊÇ·ñÏÔÊ¾ĞÂÏûÏ¢±êÊ¶
+        #region æ§åˆ¶æ˜¯å¦æ˜¾ç¤ºæ–°æ¶ˆæ¯æ ‡è¯†
         private void IsShowUnReadNumPanel(int readNum, string msgId)
         {
-            bool isShow = false;    //ÊÇ·ñÏÔÊ¾ĞÂÏûÏ¢±êÊ¶
+            bool isShow = false;    //æ˜¯å¦æ˜¾ç¤ºæ–°æ¶ˆæ¯æ ‡è¯†
 
-            //Ã»ÓĞĞÂÏûÏ¢Ö±½Ó²»ÏÔÊ¾
+            //æ²¡æœ‰æ–°æ¶ˆæ¯ç›´æ¥ä¸æ˜¾ç¤º
             if (readNum > 0 && !string.IsNullOrEmpty(msgId))
             {
                 int dataCount = targetMsgData.GetMsgList().Count;
-                //1.Èç¹ûµ±Ç°ÏÔÊ¾µÄmsgÊıÁ¿Ğ¡ÓÚÎ´¶ÁÊıÁ¿£¬ÏÔÊ¾
+                //1.å¦‚æœå½“å‰æ˜¾ç¤ºçš„msgæ•°é‡å°äºæœªè¯»æ•°é‡ï¼Œæ˜¾ç¤º
                 if (readNum > dataCount)
                     isShow = true;
-                //2.Èç¹ûÎ´¶ÁĞĞÊıµÄ×Ü¸ß¶È´óÓÚ¿ÉÏÔÊ¾ÇøÓò£¬ÏÔÊ¾
+                //2.å¦‚æœæœªè¯»è¡Œæ•°çš„æ€»é«˜åº¦å¤§äºå¯æ˜¾ç¤ºåŒºåŸŸï¼Œæ˜¾ç¤º
                 else
                 {
                     float totalHeight = 0;
@@ -3956,7 +4036,7 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ¸ù¾İmsg×·×ÙĞĞ
+        #region æ ¹æ®msgè¿½è¸ªè¡Œ
         private void SetPanelTopByMsg(MessageObject dic_msg)
         {
             int totalHeight = 0;
@@ -3965,30 +4045,30 @@ namespace WinFrmTalk.Controls.CustomControls
                 int rowHeight = (int)Math.Round(showInfo_Panel.RowStyles[index].Height);
                 totalHeight += rowHeight;
             }
-            //Èç¹ûµ±Ç°µÄtop×ã¹»ÏÔÊ¾×îĞÂµÄÏûÏ¢£¬Ôò²»½øĞĞ¹ö¶¯
+            //å¦‚æœå½“å‰çš„topè¶³å¤Ÿæ˜¾ç¤ºæœ€æ–°çš„æ¶ˆæ¯ï¼Œåˆ™ä¸è¿›è¡Œæ»šåŠ¨
             //if (totalHeight >= Math.Abs(showInfo_Panel.Top))
             //    unReadNumPanel.SendToBack();
-            ////ĞèÒª¹ö¶¯µ½ºÏÊÊÎ»ÖÃ£¬µ½ÄÜÏÔÊ¾µÚÒ»Ìõ×îĞÂÏûÏ¢
+            ////éœ€è¦æ»šåŠ¨åˆ°åˆé€‚ä½ç½®ï¼Œåˆ°èƒ½æ˜¾ç¤ºç¬¬ä¸€æ¡æœ€æ–°æ¶ˆæ¯
             //else
             //{
-            //·ÀÖ¹³öÏÖÌØÊâÇé¿öµ¼ÖÂÏûÏ¢Ãæ°å±äĞ¡£¬ËùÒÔ²»Ó¦¸Ã¹ö¶¯
+            //é˜²æ­¢å‡ºç°ç‰¹æ®Šæƒ…å†µå¯¼è‡´æ¶ˆæ¯é¢æ¿å˜å°ï¼Œæ‰€ä»¥ä¸åº”è¯¥æ»šåŠ¨
             if (showInfo_Panel.Height > Takeconter_panel.Height)
             {
                 showInfo_Panel.Top = -totalHeight;
-                //¸üĞÂ½ø¶ÈÌõÎ»ÖÃ
+                //æ›´æ–°è¿›åº¦æ¡ä½ç½®
                 ShowInfoVScroll.UpdateVScrollLocation();
-                //·ÀÖ¹¹ö¶¯ºó³öÏÖµ×²¿ÓĞ¿Õ°×
+                //é˜²æ­¢æ»šåŠ¨åå‡ºç°åº•éƒ¨æœ‰ç©ºç™½
 
             }
             //}
         }
         #endregion
 
-        #region °´@ÌáĞÑ¶¨Î»µ½¸ÃÌõĞÅÏ¢Î»ÖÃ
+        #region æŒ‰@æé†’å®šä½åˆ°è¯¥æ¡ä¿¡æ¯ä½ç½®
         private void SetPanTopByRowIndex(int rowIndex)
         {
             float topNum = 0;
-            //¼ÆËã¸ÃĞĞµÄTOP
+            //è®¡ç®—è¯¥è¡Œçš„TOP
             for (int index = 0; index < rowIndex; index++)
                 topNum += showInfo_Panel.RowStyles[index].Height;
             showInfo_Panel.Top = Convert.ToInt32(-topNum + (showInfo_Panel.Parent.Height - showInfo_Panel.RowStyles[rowIndex].Height));
@@ -3996,57 +4076,57 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region Êó±êĞü¸¡ÎÄ±¾ÌáĞÑ
+        #region é¼ æ ‡æ‚¬æµ®æ–‡æœ¬æé†’
         private void lblHistory_MouseHover(object sender, EventArgs e)
         {
-            toolTip.ShowAlways = true;//ÊÇ·ñÏÔÊ¾ÌáÊ¾¿ò
+            toolTip.ShowAlways = true;//æ˜¯å¦æ˜¾ç¤ºæç¤ºæ¡†
 
-            //  ÉèÖÃ°éËæµÄ¶ÔÏó.
-            toolTip.SetToolTip(this.lblHistory, "ÁÄÌì¼ÇÂ¼");//ÉèÖÃÌáÊ¾°´Å¥ºÍÌáÊ¾ÄÚÈİ
+            //  è®¾ç½®ä¼´éšçš„å¯¹è±¡.
+            toolTip.SetToolTip(this.lblHistory, "èŠå¤©è®°å½•");//è®¾ç½®æç¤ºæŒ‰é’®å’Œæç¤ºå†…å®¹
         }
 
         private void lblScreen_MouseHover(object sender, EventArgs e)
         {
-            toolTip.ShowAlways = true;//ÊÇ·ñÏÔÊ¾ÌáÊ¾¿ò
+            toolTip.ShowAlways = true;//æ˜¯å¦æ˜¾ç¤ºæç¤ºæ¡†
 
-            //  ÉèÖÃ°éËæµÄ¶ÔÏó.
-            toolTip.SetToolTip(this.lblScreen, "½ØÍ¼");//ÉèÖÃÌáÊ¾°´Å¥ºÍÌáÊ¾ÄÚÈİ
+            //  è®¾ç½®ä¼´éšçš„å¯¹è±¡.
+            toolTip.SetToolTip(this.lblScreen, "æˆªå›¾");//è®¾ç½®æç¤ºæŒ‰é’®å’Œæç¤ºå†…å®¹
         }
 
         private void lblSendFile_MouseHover(object sender, EventArgs e)
         {
-            toolTip.ShowAlways = true;//ÊÇ·ñÏÔÊ¾ÌáÊ¾¿ò
+            toolTip.ShowAlways = true;//æ˜¯å¦æ˜¾ç¤ºæç¤ºæ¡†
 
-            //  ÉèÖÃ°éËæµÄ¶ÔÏó.
-            toolTip.SetToolTip(this.lblSendFile, "·¢ËÍÎÄ¼ş");//ÉèÖÃÌáÊ¾°´Å¥ºÍÌáÊ¾ÄÚÈİ
+            //  è®¾ç½®ä¼´éšçš„å¯¹è±¡.
+            toolTip.SetToolTip(this.lblSendFile, "å‘é€æ–‡ä»¶");//è®¾ç½®æç¤ºæŒ‰é’®å’Œæç¤ºå†…å®¹
         }
 
         private void lblExpression_MouseHover(object sender, EventArgs e)
         {
-            toolTip.ShowAlways = true;//ÊÇ·ñÏÔÊ¾ÌáÊ¾¿ò
+            toolTip.ShowAlways = true;//æ˜¯å¦æ˜¾ç¤ºæç¤ºæ¡†
 
-            //  ÉèÖÃ°éËæµÄ¶ÔÏó.
-            toolTip.SetToolTip(this.lblExpression, "±íÇé");//ÉèÖÃÌáÊ¾°´Å¥ºÍÌáÊ¾ÄÚÈİ
+            //  è®¾ç½®ä¼´éšçš„å¯¹è±¡.
+            toolTip.SetToolTip(this.lblExpression, "è¡¨æƒ…");//è®¾ç½®æç¤ºæŒ‰é’®å’Œæç¤ºå†…å®¹
         }
 
         private void lblAudio_MouseHover(object sender, EventArgs e)
         {
-            toolTip.ShowAlways = true;//ÊÇ·ñÏÔÊ¾ÌáÊ¾¿ò
+            toolTip.ShowAlways = true;//æ˜¯å¦æ˜¾ç¤ºæç¤ºæ¡†
 
-            //  ÉèÖÃ°éËæµÄ¶ÔÏó.
-            toolTip.SetToolTip(this.lblAudio, "ÓïÒôÁÄÌì");//ÉèÖÃÌáÊ¾°´Å¥ºÍÌáÊ¾ÄÚÈİ
+            //  è®¾ç½®ä¼´éšçš„å¯¹è±¡.
+            toolTip.SetToolTip(this.lblAudio, "è¯­éŸ³èŠå¤©");//è®¾ç½®æç¤ºæŒ‰é’®å’Œæç¤ºå†…å®¹
         }
 
         private void lblVideo_MouseHover(object sender, EventArgs e)
         {
-            toolTip.ShowAlways = true;//ÊÇ·ñÏÔÊ¾ÌáÊ¾¿ò
+            toolTip.ShowAlways = true;//æ˜¯å¦æ˜¾ç¤ºæç¤ºæ¡†
 
-            //  ÉèÖÃ°éËæµÄ¶ÔÏó.
-            toolTip.SetToolTip(this.lblVideo, "ÊÓÆµÁÄÌì");//ÉèÖÃÌáÊ¾°´Å¥ºÍÌáÊ¾ÄÚÈİ
+            //  è®¾ç½®ä¼´éšçš„å¯¹è±¡.
+            toolTip.SetToolTip(this.lblVideo, "è§†é¢‘èŠå¤©");//è®¾ç½®æç¤ºæŒ‰é’®å’Œæç¤ºå†…å®¹
         }
         #endregion
 
-        #region ÏÔÊ¾@¸¡±ê
+        #region æ˜¾ç¤º@æµ®æ ‡
         private void AtMeShowPanel(Friend room)
         {
             if (choose_target == null || choose_target.IsGroup != 1 || room.UserId != choose_target.UserId)
@@ -4055,8 +4135,8 @@ namespace WinFrmTalk.Controls.CustomControls
                 return;
             }
 
-            bool isup = true;    //·½Ïò
-            //»ñÈ¡ÊÕµ½@µÄmessageId
+            bool isup = true;    //æ–¹å‘
+            //è·å–æ”¶åˆ°@çš„messageId
             string messageid = LocalDataUtils.GetStringData(room.UserId + "GROUP_AT_MESSAGEID" + Applicate.MyAccount.userId);
             if (targetMsgData.GetMsg(messageid) == null)
                 isup = false;
@@ -4066,7 +4146,7 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ÏÂÔØÎÄ¼ş
+        #region ä¸‹è½½æ–‡ä»¶
         private void DownloadFile(MessageObject msg, string localPath)
         {
             var result = selectControl.Controls.Find("image_panel", true);
@@ -4076,13 +4156,13 @@ namespace WinFrmTalk.Controls.CustomControls
                 if (image_panel.Controls[0] is FilePanelLeft panel_file)
                 {
                     #region download file
-                    //ÕıÔÚÏÂÔØ
+                    //æ­£åœ¨ä¸‹è½½
                     if (panel_file.lab_lineLime.Width > 0)
                         return;
 
-                    //¿ªÊ¼ÏÂÔØ
+                    //å¼€å§‹ä¸‹è½½
                     panel_file.isDownloading = true;
-                    //ÏÂÔØÎÄ¼ş
+                    //ä¸‹è½½æ–‡ä»¶
                     DownloadEngine.Instance.DownUrl(msg.content)
                     .DownProgress((progress) =>
                     {
@@ -4097,17 +4177,17 @@ namespace WinFrmTalk.Controls.CustomControls
                         panel_file.lblSpeed.BringToFront();
                         panel_file.lblSpeed.Text = speed + @"/s";
                     })
-                    .SavePath(localPath)    //±£´æÂ·¾¶
+                    .SavePath(localPath)    //ä¿å­˜è·¯å¾„
                     .Down((path) =>
                     {
                         panel_file.lblSpeed.Visible = false;
-                        //ÏÂÔØÍê³É
+                        //ä¸‹è½½å®Œæˆ
                         panel_file.isDownloading = false;
 
                         if (string.IsNullOrEmpty(path))
                             return;
 
-                        HttpUtils.Instance.ShowTip("ÏÂÔØÍê³É£º" + path);
+                        HttpUtils.Instance.ShowTip("ä¸‹è½½å®Œæˆï¼š" + path);
                     });
                     #endregion
                 }
@@ -4115,7 +4195,7 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ÖØĞÂÉÏ´«Í¼Æ¬
+        #region é‡æ–°ä¸Šä¼ å›¾ç‰‡
         private void ResumeUploadImageMsg(MessageObject msg)
         {
             string filePath = msg.fileName;
@@ -4123,18 +4203,18 @@ namespace WinFrmTalk.Controls.CustomControls
                 return;
 
             UploadEngine.Instance.From(filePath).
-                //ÉÏ´«ÖĞ
+                //ä¸Šä¼ ä¸­
                 UpProgress((progress) =>
                 {
 
                 }).
-                //ÉÏ´«Íê³É
+                //ä¸Šä¼ å®Œæˆ
                 UploadFile((success, url) =>
                 {
                     msg = targetMsgData.GetMsg(msg.messageId);
                     if (targetMsgData.GetMsg(msg.messageId) != null)
                     {
-                        //ĞŞ¸ÄÆøÅİµÄÍ¼Æ¬ºÍÑùÊ½
+                        //ä¿®æ”¹æ°”æ³¡çš„å›¾ç‰‡å’Œæ ·å¼
                         string name = "talk_panel_" + msg.messageId;
                         if (showInfo_Panel.Controls.Find(name, true).Length > 0 && showInfo_Panel.Controls.Find(name, true)[0] is EQImageControl imageCrl)
                             UploadImage(imageCrl, msg, url, success);
@@ -4143,7 +4223,7 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ÇëÇó½Ó¿Úµ¥ÏòÇå³ıÁÄÌì¼ÇÂ¼
+        #region è¯·æ±‚æ¥å£å•å‘æ¸…é™¤èŠå¤©è®°å½•
         public void ClearServerFriendMsg(string toUserid)
         {
             HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "tigase/emptyMyMsg")
@@ -4154,14 +4234,14 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ĞŞ¸ÄÏûÏ¢µÄ³ÉÔ±Ãû³Æ
+        #region ä¿®æ”¹æ¶ˆæ¯çš„æˆå‘˜åç§°
         private void ModifyLabName(EQBaseControl talk_panel, string userId)
         {
             if (talk_panel.lab_name != null && JudgeIsGroupOwner(Applicate.MyAccount.userId))
             {
                 if (string.IsNullOrEmpty(choose_target.RoomId))
                     return;
-                //»ñÈ¡ÈºÖ÷±¸×¢
+                //è·å–ç¾¤ä¸»å¤‡æ³¨
                 string remarkName = new RoomMember() { roomId = choose_target.RoomId, userId = userId }.GetRemarkName();
                 if (string.IsNullOrEmpty(remarkName))
                     return;
@@ -4170,8 +4250,8 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
         
-        #region ¹¤¾ßÀ¸
-        #region Ñ¡Ôñ¶¨Î»
+        #region å·¥å…·æ 
+        #region é€‰æ‹©å®šä½
         private void lblLocation_Click(object sender, EventArgs e)
         {
             FrmSedLocation frmSedLocation = FrmSedLocation.CreateInstrance();
@@ -4180,7 +4260,7 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ÅÄÕÕ
+        #region æ‹ç…§
         private void lblCamera_Click(object sender, EventArgs e)
         {
             FrmTakePhoto takephoto = FrmTakePhoto.GetInstance();
@@ -4188,23 +4268,23 @@ namespace WinFrmTalk.Controls.CustomControls
             {
                 takephoto.ConnectPhoto();
                 takephoto.Show();
-                //µã»÷·¢ËÍµÄ»Øµ÷
+                //ç‚¹å‡»å‘é€çš„å›è°ƒ
                 takephoto.takeimage = (image, localPath) =>
                 {
                     if (string.IsNullOrEmpty(localPath) || !File.Exists(localPath))
                         return;
-                    //Ìí¼ÓÆøÅİµ½ÁĞ±í
+                    //æ·»åŠ æ°”æ³¡åˆ°åˆ—è¡¨
                     MessageObject msg = ShiKuManager.SendImageMessage(choose_target, "", localPath, Convert.ToInt32(new FileInfo(localPath).Length), false);
                     JudgeMsgIsAddToPanel(msg);
 
                     UploadEngine.Instance.From(localPath).
-                        //ÉÏ´«Íê³É
+                        //ä¸Šä¼ å®Œæˆ
                         UploadFile((success, url_path) =>
                         {
                             msg = targetMsgData.GetMsg(msg.messageId);
                             if (targetMsgData.GetMsg(msg.messageId) != null)
                             {
-                                //ĞŞ¸ÄÆøÅİµÄÍ¼Æ¬ºÍÑùÊ½
+                                //ä¿®æ”¹æ°”æ³¡çš„å›¾ç‰‡å’Œæ ·å¼
                                 string name = "talk_panel_" + msg.messageId;
                                 var crls = showInfo_Panel.Controls.Find(name, true);
                                 if (crls.Length > 0 && crls[0] is EQImageControl imageCrl)
@@ -4217,33 +4297,33 @@ namespace WinFrmTalk.Controls.CustomControls
             }
             else
             {
-                HttpUtils.Instance.ShowTip("Î´·¢ÏÖÅÄÕÕÉè±¸");
-                //MessageBox.Show("Î´·¢ÏÖÅÄÕÕÉè±¸", "¾¯¸æ");
+                HttpUtils.Instance.ShowTip("æœªå‘ç°æ‹ç…§è®¾å¤‡");
+                //MessageBox.Show("æœªå‘ç°æ‹ç…§è®¾å¤‡", "è­¦å‘Š");
                 return;
             }
         }
         #endregion
 
-        #region Â¼Òô
+        #region å½•éŸ³
         private void lblSoundRecord_Click(object sender, EventArgs e)
         {
-            //ÕıÔÚÂ¼Òô
+            //æ­£åœ¨å½•éŸ³
             if (userSoundRecording.SoundState)
                 return;
-            //ÅĞ¶ÏÊÇ·ñÕıÔÚ»Ø¸´ÏûÏ¢
+            //åˆ¤æ–­æ˜¯å¦æ­£åœ¨å›å¤æ¶ˆæ¯
             if (replyPanel.ReplyMsg != null && !string.IsNullOrEmpty(replyPanel.ReplyMsg.messageId))
             {
-                var result = HttpUtils.Instance.ShowPromptBox("µ±Ç°ÕıÔÚ»Ø¸´ÏûÏ¢\r\nÊÇ·ñÈ¡Ïû»Ø¸´¿ªÆôÂ¼Òô");
+                var result = HttpUtils.Instance.ShowPromptBox("å½“å‰æ­£åœ¨å›å¤æ¶ˆæ¯\r\næ˜¯å¦å–æ¶ˆå›å¤å¼€å¯å½•éŸ³");
                 if (result)
                 {
-                    //Çå¿Õ²¢Òş²Ø»Ö¸´Ãæ°å
+                    //æ¸…ç©ºå¹¶éšè—æ¢å¤é¢æ¿
                     replyPanel.ReplyMsg = new MessageObject();
                     replyPanel.SendToBack();
                 }
                 else
                     return;
             }
-            //¿ªÆôÂ¼Òô¹¦ÄÜ
+            //å¼€å¯å½•éŸ³åŠŸèƒ½
             if (userSoundRecording.IsCanSoundRecord())
             {
                 ShowSoundRecord();
@@ -4251,8 +4331,8 @@ namespace WinFrmTalk.Controls.CustomControls
             else
             {
                 userSoundRecording.SendToBack();
-                HttpUtils.Instance.ShowTip("Î´·¢ÏÖÂ¼ÒôÉè±¸");
-                //MessageBox.Show("Î´·¢ÏÖÂ¼ÒôÉè±¸", "¾¯¸æ");
+                HttpUtils.Instance.ShowTip("æœªå‘ç°å½•éŸ³è®¾å¤‡");
+                //MessageBox.Show("æœªå‘ç°å½•éŸ³è®¾å¤‡", "è­¦å‘Š");
             }
         }
 
@@ -4263,7 +4343,7 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region Â¼Ïñ
+        #region å½•åƒ
         private void lblPhotography_Click(object sender, EventArgs e)
         {
             FrmTakeVideo frmTakeVideo = FrmTakeVideo.GetInstance();
@@ -4273,21 +4353,21 @@ namespace WinFrmTalk.Controls.CustomControls
                 frmTakeVideo.Show();
                 frmTakeVideo.videoInfo = (localPath) =>
                 {
-                    //ÎÄ¼ş²»´æÔÚ
+                    //æ–‡ä»¶ä¸å­˜åœ¨
                     if (!File.Exists(localPath))
                         return;
 
-                    //ÏÈÉú³ÉÆøÅİ
+                    //å…ˆç”Ÿæˆæ°”æ³¡
                     int fileSize = Convert.ToInt32(new FileInfo(localPath).Length);
                     MessageObject msg = ShiKuManager.SendVideoMessage(choose_target, "", localPath, fileSize, false);
                     JudgeMsgIsAddToPanel(msg);
 
-                    //»ñÈ¡ÆøÅİ
+                    //è·å–æ°”æ³¡
                     string name = "talk_panel_" + msg.messageId;
                     if (showInfo_Panel.Controls.Find(name, true).Length > 0 && showInfo_Panel.Controls.Find(name, true)[0] is EQBaseControl talk_panel)
                     {
                         UploadEngine.Instance.From(localPath).
-                        //ÉÏ´«Íê³É
+                        //ä¸Šä¼ å®Œæˆ
                         UploadFile((success, url) =>
                         {
                             UploadVideo(talk_panel, msg, url, success);
@@ -4296,15 +4376,15 @@ namespace WinFrmTalk.Controls.CustomControls
                 };
             }
             else
-                HttpUtils.Instance.ShowTip("Î´·¢ÏÖÅÄÕÕÉè±¸");
+                HttpUtils.Instance.ShowTip("æœªå‘ç°æ‹ç…§è®¾å¤‡");
         }
         #endregion
         #endregion
 
-        #region  Ìí¼Ó·¢ËÍÊ±¼ä
+        #region  æ·»åŠ å‘é€æ—¶é—´
         private bool AddSendTime(EQBaseControl eqBase, MessageObject messageObject)
         {
-            bool isAddCrl = false;  //·µ»Ø½á¹û
+            bool isAddCrl = false;  //è¿”å›ç»“æœ
             //if (lastMsgTime > 0)
             //{
                 Label lab_sendTime = eqBase.DrawSendTime(lastMsgTime);
@@ -4318,48 +4398,48 @@ namespace WinFrmTalk.Controls.CustomControls
                     isAddCrl = true;
                 }
             //}
-            //±£´æ×îºóÒ»ÌõÏûÏ¢µÄ·¢ËÍÊ±¼ä
+            //ä¿å­˜æœ€åä¸€æ¡æ¶ˆæ¯çš„å‘é€æ—¶é—´
             if (messageObject.timeSend > lastMsgTime)
                 lastMsgTime = messageObject.timeSend;
             return isAddCrl;
         }
 
         /// <summary>
-        /// ÏûÏ¢±»ÒÆ³ıĞèÒª¸üĞÂÆøÅİµÄÊ±¼ä
+        /// æ¶ˆæ¯è¢«ç§»é™¤éœ€è¦æ›´æ–°æ°”æ³¡çš„æ—¶é—´
         /// </summary>
         private void UpdateSendTime(MessageObject msg)
         {
-            //Èç¹ûÊÇ³·»ØÏûÏ¢£¬Ôò²»ĞèÒª±ä»¯Ê±¼ä¿Ø¼ş
+            //å¦‚æœæ˜¯æ’¤å›æ¶ˆæ¯ï¼Œåˆ™ä¸éœ€è¦å˜åŒ–æ—¶é—´æ§ä»¶
             if (msg.isRecall == 1)
                 return;
 
-            //Èç¹û¸ÃÏûÏ¢´æÔÚÊ±¼ä¿Ø¼ş£¬ÔòÏÂÒ»ÌõÏûÏ¢Ó¦¸ÃÅĞ¶ÏÊÇ·ñĞèÒª¸üĞÂ
-            string crlName = "lab_sendTime_" + msg.messageId;   //Ê±¼ä¿Ø¼şÃû
-            var result = showInfo_Panel.Controls.Find(crlName, true); //²éÕÒ¿Ø¼şÊÇ·ñ´æÔÚ
+            //å¦‚æœè¯¥æ¶ˆæ¯å­˜åœ¨æ—¶é—´æ§ä»¶ï¼Œåˆ™ä¸‹ä¸€æ¡æ¶ˆæ¯åº”è¯¥åˆ¤æ–­æ˜¯å¦éœ€è¦æ›´æ–°
+            string crlName = "lab_sendTime_" + msg.messageId;   //æ—¶é—´æ§ä»¶å
+            var result = showInfo_Panel.Controls.Find(crlName, true); //æŸ¥æ‰¾æ§ä»¶æ˜¯å¦å­˜åœ¨
             if (result.Length > 0 && result[0] is Label lab_sendTime)
             {
-                //²éÑ¯ÏÂÒ»¸ö¿Ø¼şÎªÏûÏ¢ÆøÅİ»¹ÊÇÊ±¼ä¿Ø¼ş
+                //æŸ¥è¯¢ä¸‹ä¸€ä¸ªæ§ä»¶ä¸ºæ¶ˆæ¯æ°”æ³¡è¿˜æ˜¯æ—¶é—´æ§ä»¶
                 var next_crl = showInfo_Panel.GetControlFromPosition(1, msg.rowIndex + 1);
-                //Èç¹ûÏÂÒ»ĞĞÃ»ÓĞ¿Ø¼ş´æÔÚ£¬Ö±½ÓÒÆ³ıÊ±¼ä¿Ø¼ş
+                //å¦‚æœä¸‹ä¸€è¡Œæ²¡æœ‰æ§ä»¶å­˜åœ¨ï¼Œç›´æ¥ç§»é™¤æ—¶é—´æ§ä»¶
                 if (next_crl == null)
                 {
                     RemoveSendTime(lab_sendTime, msg.rowIndex - 1);
                     return;
                 }
-                //Èç¹ûÏÂÒ»ĞĞ¿Ø¼şÎªÆøÅİ¿Ø¼ş
+                //å¦‚æœä¸‹ä¸€è¡Œæ§ä»¶ä¸ºæ°”æ³¡æ§ä»¶
                 if(next_crl is EQBaseControl talk_panel)
                 {
                     MessageObject next_msg = targetMsgData.GetMsg(talk_panel.Name.Replace("talk_panel_", ""));
                     if(next_msg != null)
                     {
-                        lab_sendTime.Name = "lab_sendTime_" + next_msg.messageId;   //ĞŞ¸Ä¿Ø¼şÃû
-                        string time_format = lab_sendTime.Tag.ToString();   //Ê±¼äµÄ¸ñÊ½
-                        DateTime dt_timeSend = Helpers.StampToDatetime(next_msg.timeSend);     //ĞÅÏ¢·¢ËÍÊ±¼ä
-                        string send_time = dt_timeSend.ToString(time_format);   //·¢ËÍÊ±¼ä
-                        lab_sendTime.Text = send_time;      //ĞŞ¸ÄÎÄ±¾ÄÚÈİ
+                        lab_sendTime.Name = "lab_sendTime_" + next_msg.messageId;   //ä¿®æ”¹æ§ä»¶å
+                        string time_format = lab_sendTime.Tag.ToString();   //æ—¶é—´çš„æ ¼å¼
+                        DateTime dt_timeSend = Helpers.StampToDatetime(next_msg.timeSend);     //ä¿¡æ¯å‘é€æ—¶é—´
+                        string send_time = dt_timeSend.ToString(time_format);   //å‘é€æ—¶é—´
+                        lab_sendTime.Text = send_time;      //ä¿®æ”¹æ–‡æœ¬å†…å®¹
                     }
                 }
-                //ÏÂÒ»ĞĞÎªÊ±¼ä¿Ø¼ş»òÕßÆäËû£¬ÒÆ³ı
+                //ä¸‹ä¸€è¡Œä¸ºæ—¶é—´æ§ä»¶æˆ–è€…å…¶ä»–ï¼Œç§»é™¤
                 else
                     RemoveSendTime(lab_sendTime, msg.rowIndex - 1);
             }
@@ -4374,20 +4454,20 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ¸üĞÂÉè±¸µÄ×´Ì¬
+        #region æ›´æ–°è®¾å¤‡çš„çŠ¶æ€
         private void UpdateDeviceState(string userId)
         {
             if (choose_target == null || choose_target.IsDevice != 1)
                 return;
 
-            //ĞŞ¸ÄÔÚÏß×´Ì¬
+            //ä¿®æ”¹åœ¨çº¿çŠ¶æ€
             bool isOnline = MultiDeviceManager.Instance.IsDeviceLine(choose_target.UserId);
-            labName.Text = choose_target.NickName + (isOnline ? "£¨ÔÚÏß£©" : "£¨ÀëÏß£©");
+            labName.Text = choose_target.NickName + (isOnline ? "ï¼ˆåœ¨çº¿ï¼‰" : "ï¼ˆç¦»çº¿ï¼‰");
         }
         #endregion
 
-        #region ÁĞ±í¿Ø¼şµÄÖØ»æ
-        //ÉèÖÃÁËmarginRight=20£¬·ÀÖ¹Í·ÏñÏÔÊ¾Ö»ÓĞÒ»°ë
+        #region åˆ—è¡¨æ§ä»¶çš„é‡ç»˜
+        //è®¾ç½®äº†marginRight=20ï¼Œé˜²æ­¢å¤´åƒæ˜¾ç¤ºåªæœ‰ä¸€åŠ
         private void showInfo_Panel_Paint(object sender, PaintEventArgs e)
         {
 
@@ -4395,7 +4475,7 @@ namespace WinFrmTalk.Controls.CustomControls
 
         private void showInfo_Panel_SizeChanged(object sender, EventArgs e)
         {
-            //·ÀÖ¹ÓÒ±ß¾à´íÎó×ÔÊÊÓ¦£¨ÕæÊÇÆæ¹ÖµÄBUG£©
+            //é˜²æ­¢å³è¾¹è·é”™è¯¯è‡ªé€‚åº”ï¼ˆçœŸæ˜¯å¥‡æ€ªçš„BUGï¼‰
             int rightMargin = Takeconter_panel.Width - (showInfo_Panel.Location.X + showInfo_Panel.Width);
             if (rightMargin < 20)
                 showInfo_Panel.Width -= 20 - rightMargin;

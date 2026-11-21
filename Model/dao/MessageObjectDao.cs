@@ -224,6 +224,7 @@ namespace WinFrmTalk.Model.dao
                   Where(it => it.deleteTime > TimeUtils.CurrentIntTime() || it.deleteTime <= 0).
                   Where(it => it.type != kWCMessageType.IsRead).
                   Where(it => it.type != kWCMessageType.Withdraw).
+                  Where(it => it.type != kWCMessageType.EditMessage).
                   Where(it => it.type != kWCMessageType.RoomLiveForceStop).
                   Where(it => it.type != kWCMessageType.RoomLiveStart).
                   Where(it => it.type != kWCMessageType.RoomLiveStop).
@@ -239,6 +240,7 @@ namespace WinFrmTalk.Model.dao
                   Where(it => it.deleteTime > TimeUtils.CurrentIntTime() || it.deleteTime <= 0).
                   Where(it => it.type != kWCMessageType.IsRead).
                   Where(it => it.type != kWCMessageType.Withdraw).
+                  Where(it => it.type != kWCMessageType.EditMessage).
                   Where(it => it.type != kWCMessageType.RoomLiveForceStop).
                   Where(it => it.type != kWCMessageType.RoomLiveStart).
                   Where(it => it.type != kWCMessageType.RoomLiveStop).
@@ -268,6 +270,7 @@ namespace WinFrmTalk.Model.dao
                     Where(it => it.timeSend < endtime).
                     Where(it => it.type != kWCMessageType.IsRead).
                     Where(it => it.type != kWCMessageType.Withdraw).
+                    Where(it => it.type != kWCMessageType.EditMessage).
                     Where(it => it.deleteTime > TimeUtils.CurrentIntTime() || it.deleteTime <= 0).
                     OrderBy(it => it.timeSend, OrderByType.Desc).
                     OrderBy(it => it.insertId, OrderByType.Desc)
@@ -289,6 +292,7 @@ namespace WinFrmTalk.Model.dao
                 var list = DBSetting.SQLiteDBContext.Queryable<MessageObject>().AS(tabName).
                     Where(it => it.type != kWCMessageType.IsRead).
                     Where(it => it.type != kWCMessageType.Withdraw).
+                    Where(it => it.type != kWCMessageType.EditMessage).
                     Where(it => it.timeSend > time).
                     Where(it => it.deleteTime > TimeUtils.CurrentIntTime() || it.deleteTime <= 0).
                     OrderBy(it => it.timeSend, OrderByType.Desc).
@@ -311,6 +315,7 @@ namespace WinFrmTalk.Model.dao
                 var list = DBSetting.SQLiteDBContext.Queryable<MessageObject>().AS(tabName).
                     Where(it => it.type != kWCMessageType.IsRead).
                     Where(it => it.type != kWCMessageType.Withdraw).
+                    Where(it => it.type != kWCMessageType.EditMessage).
                     Where(it => it.timeSend < time).
                     Where(it => it.deleteTime > TimeUtils.CurrentIntTime() || it.deleteTime <= 0).
                     OrderBy(it => it.timeSend, OrderByType.Desc).

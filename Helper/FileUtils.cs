@@ -66,7 +66,8 @@ public class FileUtils
             if (name.Contains("?") || name.Contains("="))
             {
                 var ext = GetFileExtension(url);
-                return Math.Abs(url.GetHashCode()).ToString() + ext;
+                // v23.12: 用无符号哈希，避免 Math.Abs(int.MinValue) 抛异常导致文件名异常
+                return ((uint)url.GetHashCode()).ToString() + ext;
             }
 
             return name;
@@ -163,6 +164,19 @@ public class FileUtils
     {
         try
         {
+            if (string.IsNullOrEmpty(filePath))
+            {
+                return "";
+            }
+
+            // v23.12: 去掉 URL 查询串（如 ?v=123），否则扩展名会变成 ".jpg?v=123"，
+            // 生成非法文件名导致缓存落盘失败
+            int queryIndex = filePath.IndexOf('?');
+            if (queryIndex >= 0)
+            {
+                filePath = filePath.Substring(0, queryIndex);
+            }
+
             return Path.GetExtension(filePath);
         }
         catch (Exception)
@@ -171,6 +185,56 @@ public class FileUtils
             return "";
         }
 
+    }
+
+    /// <summary>
+    /// v23.12 新增：从头像 URL 里取出 userId
+    /// （头像 URL 现在带 ?v=版本号，不能再直接用 GetFileName 反推 userId）
+    /// </summary>
+    internal static string GetUserIdFromAvatarUrl(string url)
+    {
+        try
+        {
+            if (UIUtils.IsNull(url))
+            {
+                return "";
+            }
+
+            int queryIndex = url.IndexOf('?');
+            if (queryIndex >= 0)
+            {
+                url = url.Substring(0, queryIndex);
+            }
+
+            int start = url.LastIndexOf("/");
+            if (start == -1)
+            {
+                start = url.LastIndexOf("\\");
+            }
+
+            string name = url.Substring(start + 1);
+            if (UIUtils.IsNull(name))
+            {
+                return "";
+            }
+
+            int dotIndex = name.LastIndexOf('.');
+            if (dotIndex > 0)
+            {
+                name = name.Substring(0, dotIndex);
+            }
+
+            if (UIUtils.IsNull(name) || name.Length >= 40)
+            {
+                return "";
+            }
+
+            return name;
+        }
+        catch (Exception)
+        {
+            return "";
+        }
     }
 
     internal static void DeleteFile(string filePath)

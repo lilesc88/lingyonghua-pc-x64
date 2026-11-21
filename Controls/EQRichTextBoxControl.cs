@@ -35,6 +35,12 @@ namespace WinFrmTalk.Controls
         //private Color bg_color = JXBaseControl.bg_color;
 
         RichTextBoxEx richTextBox = new RichTextBoxEx() { Size = new Size(260, 40) };
+
+        // 2026-11-19 消息就地编辑状态
+        private bool isInlineEditing = false;
+        private Action<string> inlineEditCommit;
+        private string inlineEditOriginal = string.Empty;
+        private Color inlineEditBackColor = Color.Transparent;
         public override Control ContentControl()
         {
             //阅后即焚
@@ -119,6 +125,68 @@ namespace WinFrmTalk.Controls
             return richTextBox;
         }
 
+
+        /// <summary>
+        /// 进入就地编辑（气泡直接变成可输入框）
+        /// </summary>
+        public bool BeginInlineEdit(Action<string> commit)
+        {
+            if (isInlineEditing) return true;
+            if (messageObject == null) return false;
+            if (!richTextBox.IsHandleCreated) return false;
+            isInlineEditing = true;
+            inlineEditCommit = commit;
+            inlineEditOriginal = messageObject.content;
+            inlineEditBackColor = richTextBox.BackColor;
+            richTextBox.SetWriteMode();   // 2026-11-19 fix: clear readonly flag so caret shows
+            richTextBox.ScrollBars = RichTextBoxScrollBars.Vertical;
+            richTextBox.BackColor = Color.White;
+            if (IsHandleCreated)
+            {
+                BeginInvoke((Action)(() => { richTextBox.Focus(); richTextBox.SelectionStart = richTextBox.TextLength; richTextBox.ScrollToCaret(); }));
+            }
+            richTextBox.SelectionStart = richTextBox.TextLength;
+            return true;
+        }
+
+        private void EndInlineEdit()
+        {
+            isInlineEditing = false;
+            richTextBox.SetReadMode();   // 2026-11-19 restore readonly
+            richTextBox.ScrollBars = RichTextBoxScrollBars.None;
+            richTextBox.BackColor = inlineEditBackColor;
+        }
+
+            /// <summary>
+            /// 2026-11-19 编辑保存成功后刷新气泡内容与尺寸
+            /// </summary>
+            public void ApplyEditedContent(string newText)
+        {
+            if (messageObject == null) return;
+            messageObject.content = newText;
+            // 尺寸交给刷新流程重算，这里只保证文字替换
+            messageObject.BubbleWidth = 0;
+            messageObject.BubbleHeight = 0;
+            try
+            {
+                richTextBox.Text = newText + " ";
+                richTextBox.Tag = newText + " ";
+                richTextBox.Invalidate();
+            }
+            catch (Exception ex) { Console.WriteLine("ApplyEditedContent error: " + ex.Message); }
+        }
+
+            /// <summary>
+            /// 2026-11-19 编辑失败时把气泡恢复为原内容
+            /// </summary>
+            public void RestoreContent(string text)
+            {
+                if (!richTextBox.IsHandleCreated) return;
+                richTextBox.Text = text + " ";
+                richTextBox.Tag = text + " ";
+                richTextBox.Invalidate();
+            }
+
         private void RichTextBox_DoubleClick(object sender, EventArgs e)
         {
             //双击链接不弹出
@@ -151,6 +219,26 @@ namespace WinFrmTalk.Controls
         int time = 0;
         private void RichTextBox_KeyDown(object sender, KeyEventArgs e)
         {
+            // 2026-11-19 就地编辑：Enter 直接保存，Esc 放弃
+            if (isInlineEditing)
+            {
+                if (e.KeyCode == Keys.Enter && !e.Shift)
+                {
+                    e.SuppressKeyPress = true;
+                    string newText = this.richTextBox.Text == null ? "" : this.richTextBox.Text.Trim();
+                    EndInlineEdit();
+                    if (null != inlineEditCommit) inlineEditCommit(newText);
+                    return;
+                }
+                if (e.KeyCode == Keys.Escape)
+                {
+                    e.SuppressKeyPress = true;
+                    this.richTextBox.Text = inlineEditOriginal;
+                    EndInlineEdit();
+                    return;
+                }
+                return;
+            }
             if (sender is RichTextBoxEx richTextBox)
             {
                 //Ctrl + C

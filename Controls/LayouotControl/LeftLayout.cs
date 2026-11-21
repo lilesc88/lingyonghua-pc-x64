@@ -220,13 +220,56 @@ namespace WinFrmTalk
                 {
                     // 修改禅道 #8760
                     Thread.Sleep(600);
-                    ImageLoader.Instance.DisplayAvatar(Applicate.MyAccount.userId, pic_myIcon);//设置头像
+                    LoadMyAvatar();
                 });
             }
             else
             {
-                ImageLoader.Instance.DisplayAvatar(Applicate.MyAccount.userId, pic_myIcon);//设置头像
+                LoadMyAvatar();
             }
+        }
+
+        // 2026-08-31 v23.6 修复：pic_myIcon 的 SizeMode=StretchImage 只对 Image 属性生效，
+        // DisplayAvatar 链式 .Background() 设置的是 BackgroundImage → 头像设置后不显示（灰色/空白）。
+        // 改用回调方式设置 Image 属性，配合 StretchImage 正确显示头像。
+        private void LoadMyAvatar()
+        {
+            ImageLoader.Instance.DisplayAvatar(Applicate.MyAccount.userId, (bitmap) =>
+            {
+                if (bitmap == null || pic_myIcon == null || pic_myIcon.IsDisposed)
+                {
+                    return;
+                }
+                // v23.10 修复（代码审查 B1）：回调可能来自下载/线程池线程，直接设置控件会跨线程更新
+                // 且 CheckForIllegalCrossThreadCalls=false 掩盖问题导致头像偶发不刷新/GDI+ 异常；
+                // 统一切回 pic_myIcon 所属 UI 线程再设置。
+                Action setAvatar = () =>
+                {
+                    try
+                    {
+                        if (pic_myIcon == null || pic_myIcon.IsDisposed || pic_myIcon.Disposing)
+                        {
+                            return;
+                        }
+                        pic_myIcon.Image = bitmap;
+                    }
+                    catch (Exception ex)
+                    {
+                        ConsoleLog.Output("LoadMyAvatar set image error: " + ex.Message);
+                    }
+                };
+                if (pic_myIcon.InvokeRequired)
+                {
+                    if (pic_myIcon.IsHandleCreated)
+                    {
+                        pic_myIcon.BeginInvoke(setAvatar);
+                    }
+                }
+                else
+                {
+                    setAvatar();
+                }
+            });
         }
         #endregion
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -339,15 +339,18 @@ namespace WinFrmTalk
                 MessageObject local = new MessageObject() { FromId = friend.UserId }.GetLastMessage();
                 if (local == null || UIUtils.IsNull(local.messageId) || UIUtils.IsNull(local.content) || local.type == kWCMessageType.kWCMessageTypeNone)
                 {
-                    friend.Content = string.Empty;
-                    friend.UpdateLastContent(string.Empty, TimeUtils.CurrentTimeDouble());
+                    // 2026-11-21 修复：本地无消息时不清空、不把时间改成"现在"
+                    if (UIUtils.IsNull(friend.Content))
+                    {
+                        friend.Content = string.Empty;
+                    }
                 }
                 else
                 {
                     string lastContent = friend.ToLastContentTip(local.type, local.content, local.fromUserId, local.fromUserName, local.toUserName);
                     lastContent = local.isReadDel == 1 ? "[阅后即焚消息]" : lastContent;
                     friend.Content = lastContent;
-                    friend.UpdateLastContent(lastContent, TimeUtils.CurrentTimeDouble());
+                    // 2026-11-21 修复：会话列表内容以登录同步的服务器数据为准，打开会话不回写本地库（避免覆盖最新消息）
                 }
 
                 recentListLayout.SendMessageToFriend(friend);//发送消息
@@ -630,6 +633,11 @@ namespace WinFrmTalk
         {
             TimeUtils.SyscHttpTime();
             //UpdateMyInfo();
+
+            // 2026-08-31 v23.4 修复：登录后清理头像本地缓存，强制重新下载最新头像
+            // （好友更换头像后 URL 不变，本地缓存命中旧图导致新旧头像不一致）
+            ClearAvatarLocalCache();
+
             recentListLayout.LoadData();
             friendListLayout.LoadData();
             groupListLayout.LoadRoomList();
@@ -640,6 +648,45 @@ namespace WinFrmTalk
             });
 
             LocalDataUtils.SetIntData("just_forgetpwd" + phone, 0);
+        }
+
+        // 2026-08-31 v23.4 新增：清理头像本地缓存文件（仅数字 userId 头像，保留聊天图片）
+        private void ClearAvatarLocalCache()
+        {
+            try
+            {
+                string dir = Applicate.LocalConfigData.ImageFolderPath;
+                if (!string.IsNullOrEmpty(dir) && System.IO.Directory.Exists(dir))
+                {
+                    string[] files = System.IO.Directory.GetFiles(dir, "*.jpg");
+                    foreach (string file in files)
+                    {
+                        try
+                        {
+                            string name = System.IO.Path.GetFileNameWithoutExtension(file);
+                            // 头像文件名 = 纯数字 userId（聊天图片为 MD5/其他名称，不清理）
+                            if (!string.IsNullOrEmpty(name) && name.Length <= 12)
+                            {
+                                long userId = 0;
+                                if (long.TryParse(name, out userId) && userId > 0)
+                                {
+                                    System.IO.File.Delete(file);
+                                }
+                            }
+                        }
+                        catch (Exception)
+                        {
+                        }
+                    }
+                }
+
+                // 清空内存图片缓存（登录后重新加载，避免旧头像内存命中）
+                ImageCacheManager.Instance.ClearAllImageCache();
+            }
+            catch (Exception ex)
+            {
+                LogUtils.Log("清头像缓存异常: " + ex.Message);
+            }
         }
 
         //private void UpdateMyInfo()

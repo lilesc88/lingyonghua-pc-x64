@@ -358,6 +358,9 @@
     <Compile Include="Communicate\PublicKeyManager.cs" />
     <Compile Include="Communicate\SyncBean.cs" />
     <Compile Include="Communicate\XmppManager.cs" />
+    <Compile Include="Communicate\MsgReadSync.cs" />
+    <Compile Include="Communicate\MsgChangeRetry.cs" />
+    <Compile Include="Helper\MsgChangeSync.cs" />
     <Compile Include="Communicate\XmppReceiptManager.cs" />
     <Compile Include="Controls\CustomControls\AddGroupItem.cs">
       <SubType>UserControl</SubType>
@@ -1203,6 +1206,7 @@
     <Compile Include="Helper\DownMsgRecord.cs" />
     <Compile Include="Helper\ExpressionUlUtils.cs" />
     <Compile Include="Helper\FileUtils.cs" />
+    <Compile Include="Helper\AvatarVersion.cs" />
     <Compile Include="Helper\ImageHandle.cs" />
     <Compile Include="Helper\InputFileUtils.cs" />
     <Compile Include="Helper\ISpeechRecorder.cs" />

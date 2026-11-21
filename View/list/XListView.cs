@@ -1165,6 +1165,29 @@ namespace TestListView
             }
         }
 
+        /// <summary>
+        /// 2026-08-25 方案A：强制刷新全部已创建的项（重建控件，重新走 LoadImage 命中缓存）
+        /// 解决首次进入会话时图片/视频“加载中”不显示的问题
+        /// </summary>
+        public void RefreshAll()
+        {
+            if (mAdapter == null)
+            {
+                return;
+            }
+
+            int count = mAdapter.GetItemCount();
+            for (int i = 0; i < count; i++)
+            {
+                if (DataCreated(i))
+                {
+                    RefreshItem(i);
+                }
+            }
+
+            RefreshFillControl();
+        }
+
 
         #endregion
 

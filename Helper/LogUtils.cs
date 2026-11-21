@@ -7,7 +7,7 @@ using WinFrmTalk;
 public class LogUtils
 {
 
-    private const bool SAVE_OUTPUT = false;
+    private const bool SAVE_OUTPUT = false; // 2026-08-31 调试：落盘 PD1/OnCompte1 日志
 
     public static void Log(string msg)
     {

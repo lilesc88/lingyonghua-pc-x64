@@ -1671,29 +1671,29 @@ namespace WinFrmTalk.Model
                     .OrderBy(it => it.LastMsgTime, OrderByType.Desc)
                     .ToPageList(0, 100);
                 // 修复：LastMsgTime 为 0 的好友（本地有聊天记录时）用最新消息时间补上，保证最近聊天排序正确
-                if (list != null)
+            if (list != null)
+            {
+                foreach (var f in list)
                 {
-                    foreach (var f in list)
+                    if (f.LastMsgTime <= 0)
                     {
-                        if (f.LastMsgTime <= 0)
+                        try
                         {
-                            try
+                            double lastMs = new MessageObject() { FromId = f.UserId, ToId = Applicate.MyAccount.userId }.GetLastTimeStamp();
+                            if (lastMs > 0)
                             {
-                                double lastMs = new MessageObject() { FromId = f.UserId, ToId = Applicate.MyAccount.userId }.GetLastTimeStamp();
-                                if (lastMs > 0)
-                                {
-                                    f.LastMsgTime = lastMs / 1000.0;
-                                    f.UpdateLastContent(f.Content, f.LastMsgTime);
-                                }
+                                f.LastMsgTime = lastMs / 1000.0;
+                                f.UpdateLastContent(f.Content, f.LastMsgTime);
                             }
-                            catch (Exception ex)
-                            {
-                                ConsoleLog.Output(ex.Message);
-                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            ConsoleLog.Output(ex.Message);
                         }
                     }
                 }
-                return list;
+            }
+            return list;
             }
             return new List<Friend>();
         }

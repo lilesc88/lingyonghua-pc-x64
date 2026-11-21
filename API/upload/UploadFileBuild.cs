@@ -1,345 +1,386 @@
-using Newtonsoft.Json;
-using RestSharp;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Timers;
-using WinFrmTalk;
-using WinFrmTalk.Helper;
+using Newtonsoft.Json;
+using RestSharp;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Threading.Tasks;
+using System.Timers;
+using WinFrmTalk;
+using WinFrmTalk.Helper;
+
+public class UploadFileBuild
+{
+    private string filePath;
+    private string messageId;
+    private Action<int> progressListener;
+    private Action<string> speedListener;
+    private Action<bool, string> UploadListener;
+
+    private System.Timers.Timer SpeedTime;
+    private long lastupsize; // Ï´ØµÄ´Ğ¡
+    private bool isCancel { set; get; } // Ç·Ñ¾È¡
+
+
+    public UploadFileBuild(string path)
+    {
+        filePath = path;
+    }
+
+    public UploadFileBuild(string path, string messageId)
+    {
+        filePath = path;
+        this.messageId = messageId;
+    }
+
+
+    internal UploadFileBuild UpProgress(Action<int> action)
+    {
+        progressListener = action;
+        return this;
+    }
+
+    internal UploadFileBuild UpSpeed(Action<string> action)
+    {
+        speedListener = action;
+
+        SpeedTime = new System.Timers.Timer();
+        SpeedTime.Interval = 1000; // 1 Ë¢Ò»Ù¶
+        SpeedTime.Elapsed += new ElapsedEventHandler(OnSpeed);
+        SpeedTime.AutoReset = true;
+        SpeedTime.Enabled = true;
+
+        return this;
+    }
+
+
+    private void OnSpeed(object source, System.Timers.ElapsedEventArgs e)
+    {
+        //Console.WriteLine("Ù¶" + lastupsize);
+
+        if (speedListener != null)
+        {
+            string size = UIUtils.FromatFileSize(lastupsize);
+            HttpUtils.Instance.Invoke(speedListener, size);
+        }
+
+        lastupsize = 0;
+
+    }
+
+
+    // 2026-08-16 Ï´Í¬Ê±2Ï´Í¼/ÆµÊ§Ü£
+    // 2026-08-26 æ–¹æ¡ˆAï¼šè·¨è¿›ç¨‹ä¸Šä¼ é™æµï¼ˆ5ä¸ªPCç«¯è¿›ç¨‹åŒæ—¶è¿è¡Œï¼‰
+    // å‘½å Semaphore å…¨å±€ï¼ˆè·¨è¿›ç¨‹ï¼‰å¹¶å‘é™åˆ¶ï¼šåŒæ—¶æœ€å¤š3ä¸ªä¸Šä¼ ï¼›å¤§æ–‡ä»¶ï¼ˆ>10MBï¼‰é¢å¤–å…¨å±€ä¸²è¡Œ
+    // static åˆå§‹åŒ–æ”¾é™æ€æ„é€ å‡½æ•°å¸¦ try-catch å…œåº•ï¼šGlobal\ ä¸å¯ç”¨æ—¶é€€å›è¿›ç¨‹å†…ä¿¡å·é‡ï¼Œä¿è¯ä¸Šä¼ åŠŸèƒ½å¯ç”¨
+    private static System.Threading.Semaphore _uploadSemaphore;
+    private static System.Threading.Semaphore _uploadBigFileSemaphore;
+    private const long BIG_FILE_THRESHOLD = 10 * 1024 * 1024; // 10MB
 
-public class UploadFileBuild
-{
-    private string filePath;
-    private string messageId;
-    private Action<int> progressListener;
-    private Action<string> speedListener;
-    private Action<bool, string> UploadListener;
-
-    private System.Timers.Timer SpeedTime;
-    private long lastupsize; // ÉÏ´ÎÏÂÔØµÄ´óĞ¡
-    private bool isCancel { set; get; } // ÊÇ·ñÒÑ¾­È¡ÏûÈÎÎñ
-
-
-    public UploadFileBuild(string path)
+    static UploadFileBuild()
     {
-        filePath = path;
-    }
-
-    public UploadFileBuild(string path, string messageId)
-    {
-        filePath = path;
-        this.messageId = messageId;
-    }
-
-
-    internal UploadFileBuild UpProgress(Action<int> action)
-    {
-        progressListener = action;
-        return this;
-    }
-
-    internal UploadFileBuild UpSpeed(Action<string> action)
-    {
-        speedListener = action;
-
-        SpeedTime = new System.Timers.Timer();
-        SpeedTime.Interval = 1000; // 1Ãë Ë¢ĞÂÒ»´ÎÏÂÔØËÙ¶È
-        SpeedTime.Elapsed += new ElapsedEventHandler(OnSpeed);
-        SpeedTime.AutoReset = true;
-        SpeedTime.Enabled = true;
-
-        return this;
-    }
-
-
-    private void OnSpeed(object source, System.Timers.ElapsedEventArgs e)
-    {
-        //Console.WriteLine("ÏÂÔØËÙ¶È" + lastupsize);
-
-        if (speedListener != null)
-        {
-            string size = UIUtils.FromatFileSize(lastupsize);
-            HttpUtils.Instance.Invoke(speedListener, size);
-        }
-
-        lastupsize = 0;
-
-    }
-
-
-    // 2026-08-16 ÉÏ´«²¢·¢ÏŞÁ÷£ºÍ¬Ê±×î¶à2¸öÉÏ´«£¨Á¬Ğø·¢Í¼/ÊÓÆµ·À¾ºÕùÊ§°Ü£©
-    private static System.Threading.SemaphoreSlim _uploadSemaphore = new System.Threading.SemaphoreSlim(2);
-
-    internal void UploadFile(Action<bool, string> action, bool start = true)
-    {
-        if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
-        {
-            LogUtils.Log("ÎÄ¼ş´íÎó");
-            action(false, "ÎÄ¼ş´íÎó");
-            DisposeTimer();
-
-
-            UploadEngine.Instance.Pop(messageId);
-
-            return;
-        }
-
-        UploadListener = action;
-        if (start)
-        {
-            HttpUploadFile();
-        }
-
-    }
-
-
-
-    internal void UploadAvatar(string userId, Action<bool> action)
-    {
-        if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
-        {
-            LogUtils.Log("ÎÄ¼ş´íÎó");
-            action(false);
-
-
-            return;
-        }
-
         try
         {
-            var request = new RestRequest(Method.POST);
-            request.AddHeader("Content-Disposition", "form-data");
-            request.AddFile("file1", filePath, "application/octet-stream");
-            request.AddParameter("userId", userId, ParameterType.GetOrPost);
-
-            //calling server with restClient
-            var restClient = new RestClient
-            {
-                BaseUrl = new Uri(Applicate.URLDATA.data.uploadUrl + "upload/UploadAvatarServlet")
-            };
-            restClient.ExecuteAsync(request, (response) =>
-            {
-
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    HttpUtils.Instance.Invoke(action, true);
-                }
-                else
-                {
-                    HttpUtils.Instance.Invoke(action, false);
-                }
-            });
+            _uploadSemaphore = new System.Threading.Semaphore(3, 3, @"Global\ShikuIM_Upload_Semaphore");
+            _uploadBigFileSemaphore = new System.Threading.Semaphore(1, 1, @"Global\ShikuIM_Upload_BigFile");
         }
         catch (Exception)
         {
-            action(false);
+            _uploadSemaphore = new System.Threading.Semaphore(3, 3);
+            _uploadBigFileSemaphore = new System.Threading.Semaphore(1, 1);
         }
     }
 
-
-
-    //private void UploadFileAsyc(Action<bool, string> action)
-    //{
-    //    try
-    //    {
-    //        var request = new RestRequest(Method.POST);
-    //        request.AddHeader("Content-Disposition", "form-data");
-    //        request.AddFile("file", filePath, "application/octet-stream");
-
-    //        //calling server with restClient
-    //        var restClient = new RestClient
-    //        {
-    //            BaseUrl = new Uri(Applicate.URLDATA.data.uploadUrl + "upload/UploadServlet")
-    //        };
-    //        restClient.ExecuteAsync(request, (response) =>
-    //        {
-    //            if (response.StatusCode == HttpStatusCode.OK)
-    //            {
-    //                var result = JsonConvert.DeserializeObject<JsonFileinfo>(response.Content);
-
-    //                if (result.resultCode == BaseCall.CODE_SUCCESS && result.data != null)
-    //                {
-    //                    string path = GetFileUpPath(result);
-    //                    action(true, path);
-    //                }
-    //                else
-    //                {
-    //                    action(false, "ÎÄ¼şÉÏ´«Ê§°Ü·şÎñÆ÷±¨´í");
-    //                }
-    //            }
-    //            else
-    //            {
-    //                action(false, "ÎÄ¼şÉÏ´«Ê§°Ü½âÎö³ö´í");
-    //            }
-    //        });
-    //    }
-    //    catch (Exception)
-    //    {
-    //        action(false, "ÎÄ¼şÉÏ´«Ê§°ÜÍøÂçÔ­Òò");
-    //    }
-    //}
-
-    private void HttpUploadFile()
+    private bool IsBigFile()
     {
-        Task.Factory.StartNew(() =>
+        try
         {
-            _uploadSemaphore.Wait();
-            if (SpeedTime != null)
+            return new FileInfo(filePath).Length > BIG_FILE_THRESHOLD;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
+    internal void UploadFile(Action<bool, string> action, bool start = true)
+    {
+        if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+        {
+            LogUtils.Log("Ä¼");
+            action(false, "Ä¼");
+            DisposeTimer();
+
+
+            UploadEngine.Instance.Pop(messageId);
+
+            return;
+        }
+
+        UploadListener = action;
+        if (start)
+        {
+            HttpUploadFile();
+        }
+
+    }
+
+
+
+    internal void UploadAvatar(string userId, Action<bool> action)
+    {
+        if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+        {
+            LogUtils.Log("Ä¼");
+            action(false);
+
+
+            return;
+        }
+
+        try
+        {
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("Content-Disposition", "form-data");
+            request.AddFile("file1", filePath, "application/octet-stream");
+            request.AddParameter("userId", userId, ParameterType.GetOrPost);
+
+            //calling server with restClient
+            var restClient = new RestClient
+            {
+                BaseUrl = new Uri(Applicate.URLDATA.data.uploadUrl + "upload/UploadAvatarServlet")
+            };
+            restClient.ExecuteAsync(request, (response) =>
+            {
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    HttpUtils.Instance.Invoke(action, true);
+                }
+                else
+                {
+                    HttpUtils.Instance.Invoke(action, false);
+                }
+            });
+        }
+        catch (Exception)
+        {
+            action(false);
+        }
+    }
+
+
+
+    //private void UploadFileAsyc(Action<bool, string> action)
+    //{
+    //    try
+    //    {
+    //        var request = new RestRequest(Method.POST);
+    //        request.AddHeader("Content-Disposition", "form-data");
+    //        request.AddFile("file", filePath, "application/octet-stream");
+
+    //        //calling server with restClient
+    //        var restClient = new RestClient
+    //        {
+    //            BaseUrl = new Uri(Applicate.URLDATA.data.uploadUrl + "upload/UploadServlet")
+    //        };
+    //        restClient.ExecuteAsync(request, (response) =>
+    //        {
+    //            if (response.StatusCode == HttpStatusCode.OK)
+    //            {
+    //                var result = JsonConvert.DeserializeObject<JsonFileinfo>(response.Content);
+
+    //                if (result.resultCode == BaseCall.CODE_SUCCESS && result.data != null)
+    //                {
+    //                    string path = GetFileUpPath(result);
+    //                    action(true, path);
+    //                }
+    //                else
+    //                {
+    //                    action(false, "Ä¼Ï´Ê§Ü·");
+    //                }
+    //            }
+    //            else
+    //            {
+    //                action(false, "Ä¼Ï´Ê§Ü½");
+    //            }
+    //        });
+    //    }
+    //    catch (Exception)
+    //    {
+    //        action(false, "Ä¼Ï´Ê§Ô­");
+    //    }
+    //}
+
+    private void HttpUploadFile()
+    {
+        Task.Factory.StartNew(() =>
+        {
+            // 2026-08-26 æ–¹æ¡ˆAï¼šå¤§æ–‡ä»¶å…¨å±€ä¸²è¡Œ + å…¨å±€å¹¶å‘é™æµ
+            bool isBig = IsBigFile();
+            if (isBig)
             {
-                SpeedTime.Start();
+                _uploadBigFileSemaphore.WaitOne();
             }
-
-            string saveName = FileUtils.GetFileName(filePath);
-            FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            BinaryReader r = new BinaryReader(fs);
-            // Ê±¼ä´Á
-            string strBoundary = "--------------" + DateTime.Now.Ticks.ToString("x");
-            byte[] boundaryBytes = Encoding.ASCII.GetBytes("\r\n--" + strBoundary + "--\r\n");     //ÇëÇóÍ·²¿ĞÅÏ¢ ??
-            StringBuilder sb = new StringBuilder();
-            sb.Append("--");
-            sb.Append(strBoundary);
-            sb.Append("\r\n");
-            sb.Append("Content-Disposition: form-data; name=\"");
-            sb.Append("file");
-            sb.Append("\"; filename=\"");
-            sb.Append(saveName);
-            sb.Append("\";");
-            sb.Append("\r\n");
-            sb.Append("Content-Type: ");
-            //sb.Append("text/plain");
-            sb.Append("application/octet-stream");
-            sb.Append("\r\n");
-            sb.Append("\r\n");
-            string strPostHeader = sb.ToString();
-            byte[] postHeaderBytes = Encoding.UTF8.GetBytes(strPostHeader);     // ¸ù¾İuri´´½¨HttpWebRequest¶ÔÏó ??
-
-            var BaseUrl = new Uri(Applicate.URLDATA.data.uploadUrl + "upload/UploadServlet");
-            HttpWebRequest httpReq = (HttpWebRequest)WebRequest.Create(BaseUrl);
-            httpReq.Method = "POST";     //¶Ô·¢ËÍµÄÊı¾İ²»Ê¹ÓÃ»º´æ ??
-            httpReq.AllowWriteStreamBuffering = false;     //ÉèÖÃ»ñµÃÏìÓ¦µÄ³¬Ê±Ê±¼ä£¨300Ãë£© ??
-            httpReq.Timeout = 300000;
-            httpReq.ContentType = "multipart/form-data; boundary=" + strBoundary;
-            long length = fs.Length + postHeaderBytes.Length + boundaryBytes.Length;
-            long fileLength = fs.Length;
-            httpReq.ContentLength = length;
-
-            long total = 0;
-            try
-            {
-                //Ã¿´ÎÉÏ´«4k ?
-                int bufferLength = 2048 * 10;
-                byte[] buffer = new byte[bufferLength];
-                int size = r.Read(buffer, 0, bufferLength);
-                Stream postStream = httpReq.GetRequestStream();         //·¢ËÍÇëÇóÍ·²¿ÏûÏ¢ ??
-                postStream.Write(postHeaderBytes, 0, postHeaderBytes.Length);
-
-                while (size > 0)
-                {
-                    if (isCancel)
-                    {
-                        postStream.Close();
-                        return;
-                    }
-
-                    postStream.Write(buffer, 0, size);
-                    size = r.Read(buffer, 0, bufferLength);
-
-                    lastupsize += size;
-                    if (size > 0 && progressListener != null)
-                    {
-                        total += size;
-                        int pro = (int)(total / (float)fileLength * 100);
-                        HttpUtils.Instance.Invoke(progressListener, pro);
-                    }
-                }
-
-                //Ìí¼ÓÎ²²¿µÄÊ±¼ä´Á ??
-                postStream.Write(boundaryBytes, 0, boundaryBytes.Length);
-                postStream.Close();     //»ñÈ¡·şÎñÆ÷¶ËµÄÏìÓ¦ ??
-
-                HttpUtils.Instance.Invoke(progressListener, 100);
-
-                WebResponse webRespon = httpReq.GetResponse();
-                Stream s = webRespon.GetResponseStream();
-                //¶ÁÈ¡·şÎñÆ÷¶Ë·µ»ØµÄÏûÏ¢ ?
-                StreamReader sr = new StreamReader(s);
-
-                string response = sr.ReadLine().Replace("\\\"", "'");
-
-                var result = JsonConvert.DeserializeObject<JsonFileinfo>(response);
-                if (result.resultCode == BaseCall.CODE_SUCCESS && result.data != null)
-                {
-                    string path = GetFileUpPath(result);
-                    HttpUtils.Instance.Invoke(UploadListener, true, path);
-                }
-                else
-                {
-                    HttpUtils.Instance.Invoke(UploadListener, false, "");
-                }
-
-                CloseUtils.Close(s);
-                CloseUtils.Close(sr);
-      
-            }
-            catch (Exception ex)
-            {
-                HttpUtils.Instance.Invoke(UploadListener, false, ex.Message);
-            }
-            finally
-            {
-                CloseUtils.Close(fs);
-                CloseUtils.Close(r);
-
-                UploadEngine.Instance.Pop(messageId);
-
-                DisposeTimer();
-
+            _uploadSemaphore.WaitOne();
+            if (SpeedTime != null)
+            {
+                SpeedTime.Start();
+            }
+
+            string saveName = FileUtils.GetFileName(filePath);
+            FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            BinaryReader r = new BinaryReader(fs);
+            // Ê±
+            string strBoundary = "--------------" + DateTime.Now.Ticks.ToString("x");
+            byte[] boundaryBytes = Encoding.ASCII.GetBytes("\r\n--" + strBoundary + "--\r\n");     //Í·Ï¢ ??
+            StringBuilder sb = new StringBuilder();
+            sb.Append("--");
+            sb.Append(strBoundary);
+            sb.Append("\r\n");
+            sb.Append("Content-Disposition: form-data; name=\"");
+            sb.Append("file");
+            sb.Append("\"; filename=\"");
+            sb.Append(saveName);
+            sb.Append("\";");
+            sb.Append("\r\n");
+            sb.Append("Content-Type: ");
+            //sb.Append("text/plain");
+            sb.Append("application/octet-stream");
+            sb.Append("\r\n");
+            sb.Append("\r\n");
+            string strPostHeader = sb.ToString();
+            byte[] postHeaderBytes = Encoding.UTF8.GetBytes(strPostHeader);     // uriHttpWebRequest ??
+
+            var BaseUrl = new Uri(Applicate.URLDATA.data.uploadUrl + "upload/UploadServlet");
+            HttpWebRequest httpReq = (HttpWebRequest)WebRequest.Create(BaseUrl);
+            httpReq.Method = "POST";     //Ô·Íµİ²Ê¹Ã» ??
+            httpReq.AllowWriteStreamBuffering = false;     //Ã»Ó¦Ä³Ê±Ê±ä£¨300ë£© ??
+            httpReq.Timeout = 300000;
+            httpReq.ContentType = "multipart/form-data; boundary=" + strBoundary;
+            long length = fs.Length + postHeaderBytes.Length + boundaryBytes.Length;
+            long fileLength = fs.Length;
+            httpReq.ContentLength = length;
+
+            long total = 0;
+            try
+            {
+                //Ã¿Ï´4k ?
+                int bufferLength = 2048 * 10;
+                byte[] buffer = new byte[bufferLength];
+                int size = r.Read(buffer, 0, bufferLength);
+                Stream postStream = httpReq.GetRequestStream();         //Í·Ï¢ ??
+                postStream.Write(postHeaderBytes, 0, postHeaderBytes.Length);
+
+                while (size > 0)
+                {
+                    if (isCancel)
+                    {
+                        postStream.Close();
+                        return;
+                    }
+
+                    postStream.Write(buffer, 0, size);
+                    size = r.Read(buffer, 0, bufferLength);
+
+                    lastupsize += size;
+                    if (size > 0 && progressListener != null)
+                    {
+                        total += size;
+                        int pro = (int)(total / (float)fileLength * 100);
+                        HttpUtils.Instance.Invoke(progressListener, pro);
+                    }
+                }
+
+                //Î²Ê± ??
+                postStream.Write(boundaryBytes, 0, boundaryBytes.Length);
+                postStream.Close();     //È¡ËµÓ¦ ??
+
+                HttpUtils.Instance.Invoke(progressListener, 100);
+
+                WebResponse webRespon = httpReq.GetResponse();
+                Stream s = webRespon.GetResponseStream();
+                //È¡Ë·ØµÏ¢ ?
+                StreamReader sr = new StreamReader(s);
+
+                string response = sr.ReadLine().Replace("\\\"", "'");
+
+                var result = JsonConvert.DeserializeObject<JsonFileinfo>(response);
+                if (result.resultCode == BaseCall.CODE_SUCCESS && result.data != null)
+                {
+                    string path = GetFileUpPath(result);
+                    HttpUtils.Instance.Invoke(UploadListener, true, path);
+                }
+                else
+                {
+                    HttpUtils.Instance.Invoke(UploadListener, false, "");
+                }
+
+                CloseUtils.Close(s);
+                CloseUtils.Close(sr);
+      
+            }
+            catch (Exception ex)
+            {
+                HttpUtils.Instance.Invoke(UploadListener, false, ex.Message);
+            }
+            finally
+            {
+                CloseUtils.Close(fs);
+                CloseUtils.Close(r);
+
+                UploadEngine.Instance.Pop(messageId);
+
+                DisposeTimer();
+
                 _uploadSemaphore.Release();
-            }
-        });
-    }
-
-
-    private void DisposeTimer()
-    {
-        LogUtils.Log("DisposeTimer");
-
-        if (SpeedTime != null)
-        {
-            SpeedTime.Stop();
-            SpeedTime.Dispose();
-        }
-    }
-
-    private string GetFileUpPath(JsonFileinfo result)
-    {
-
-        if (result.data.images.Count > 0)
-        {
-            return result.getImageUpPath();
-        }
-
-        if (result.data.videos.Count > 0)
-        {
-            return result.data.videos[0].oUrl;
-        }
-
-        if (result.data.audios.Count > 0)
-        {
-            return result.data.audios[0].oUrl;
-        }
-
-        if (result.data.others.Count > 0)
-        {
-            return result.data.others[0].oUrl;
-        }
-
-        return "²»¿ÉÄÜµ½ÕâÀï";
-
-    }
-
-}
+                if (isBig)
+                {
+                    _uploadBigFileSemaphore.Release();
+                }
+            }
+        });
+    }
+
+
+    private void DisposeTimer()
+    {
+        LogUtils.Log("DisposeTimer");
+
+        if (SpeedTime != null)
+        {
+            SpeedTime.Stop();
+            SpeedTime.Dispose();
+        }
+    }
+
+    private string GetFileUpPath(JsonFileinfo result)
+    {
+
+        if (result.data.images.Count > 0)
+        {
+            return result.getImageUpPath();
+        }
+
+        if (result.data.videos.Count > 0)
+        {
+            return result.data.videos[0].oUrl;
+        }
+
+        if (result.data.audios.Count > 0)
+        {
+            return result.data.audios[0].oUrl;
+        }
+
+        if (result.data.others.Count > 0)
+        {
+            return result.data.others[0].oUrl;
+        }
+
+        return "Üµ";
+
+    }
+
+}

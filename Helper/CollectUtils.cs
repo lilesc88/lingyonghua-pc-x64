@@ -12,20 +12,20 @@ namespace WinFrmTalk.Helper
         #region http收藏消息
 
         /// <summary>
-        /// 单条收藏
+        /// 收藏消息
         /// </summary>
         /// <param name="msg"></param>  
         internal static void CollectMessage(MessageObject msg, bool saveEmoji = false)
         {
             if (msg == null || UIUtils.IsNull(msg.messageId))
             {
-                LogUtils.Log("收藏数据为空");
+                LogUtils.Log("收藏内容为空");
                 return;
             }
 
             if (msg.messageId.Equals(collmsgId))
             {
-                Console.WriteLine("快速点击收藏");
+                Console.WriteLine("重复点击收藏");
                 return;
             }
 
@@ -36,7 +36,7 @@ namespace WinFrmTalk.Helper
             }
 
 
-            // 修改禅道8282bug,存表情和收藏参数emoji有细微的差别，emoji是msg，收藏是msgid
+        // 修复线上8282bug:收藏内容不带emoji，细微差别按emoji的msg与收藏的msgid处理
             string emoji = saveEmoji ? toSaveEmojiParams(msg) : toCollectParams(msg);
             collmsgId = msg.messageId;
 
@@ -49,11 +49,11 @@ namespace WinFrmTalk.Helper
                  {
                      if (code == 0)
                      {
-                         HttpUtils.Instance.ShowTip("不能重复收藏消息");
+                    HttpUtils.Instance.ShowTip("不能重复收藏消息");
                      }
                      else
                      {
-                         //code == 105002 端到端加密消息
+                        //code == 105002 对方拒收该消息
                          HttpUtils.Instance.ShowTip(err);
                      }
                      collmsgId = null;
@@ -65,12 +65,12 @@ namespace WinFrmTalk.Helper
                     {
                         if (saveEmoji)
                         {
-                            HttpUtils.Instance.ShowTip("存表情成功");
+                            HttpUtils.Instance.ShowTip("收藏成功");
                         }
                         else
                         {
                             HttpUtils.Instance.ShowTip("收藏成功");
-                            // 更新收藏页
+                // 刷新收藏页
                             Messenger.Default.Send("1", MessageActions.UPDATE_COLLECT_LIST);
                         }
                     }
@@ -85,7 +85,7 @@ namespace WinFrmTalk.Helper
         {
             if (msgList == null || UIUtils.IsNull(msgList))
             {
-                LogUtils.Log("收藏数据为空");
+                LogUtils.Log("收藏内容为空");
                 return;
             }
 
@@ -108,7 +108,7 @@ namespace WinFrmTalk.Helper
 
             if (UIUtils.IsNull(msgList))
             {
-                HttpUtils.Instance.ShowTip("选中消息中 文字/图片/语音/视频/文件 消息才能被收藏", true);
+                HttpUtils.Instance.ShowTip("选择的消息里 文字/图片/语音/视频/文件 消息才能被收藏", true);
                 return;
             }
 
@@ -121,14 +121,14 @@ namespace WinFrmTalk.Helper
                 {
                     if (sccess)
                     {
-                        HttpUtils.Instance.ShowTip("全部收藏成功");
+                            HttpUtils.Instance.ShowTip("全部收藏成功");
                         Messenger.Default.Send("1", MessageActions.UPDATE_COLLECT_LIST);
                     }
                 });
         }
 
 
-        // 多条收藏字符串拼接
+        // 收藏字符串拼接
         private static string toCollectParams(List<MessageObject> msgs)
         {
             JArray jSONArray = new JArray();
@@ -162,7 +162,7 @@ namespace WinFrmTalk.Helper
         }
 
 
-        // 单条收藏字符串拼接
+        // 收藏字符串拼接
         private static string toCollectParams(MessageObject datas)
         {
 
@@ -180,7 +180,7 @@ namespace WinFrmTalk.Helper
             return jSONArray.ToString();
         }
 
-        // 存表情字符串拼接
+        // 收藏表情字符串拼接
         private static string toSaveEmojiParams(MessageObject datas)
         {
             JArray jSONArray = new JArray();
@@ -188,7 +188,7 @@ namespace WinFrmTalk.Helper
             data.Add("url", datas.content);
             data.Add("msg", datas.content);
             data.Add("type", 6);
-            // 增加roomJid会导致存表情到收藏中去
+            // 带上roomJid会导致查不到收藏里去
             //if (datas.isGroup == 1)
             //{
             //    data.Add("roomJid", datas.toUserId);
@@ -197,7 +197,7 @@ namespace WinFrmTalk.Helper
             return jSONArray.ToString();
         }
 
-        // 存链接字符串拼接
+        // 收藏字符串拼接
         private static string toSaveLinkParams(string url)
         {
             JArray jSONArray = new JArray();
@@ -211,7 +211,7 @@ namespace WinFrmTalk.Helper
         }
 
 
-        // 将消息类型转换为收藏类型
+        // 把消息内容转换为收藏参数
         private static string GetType(kWCMessageType type)
         {
             int value = 0;
@@ -254,7 +254,7 @@ namespace WinFrmTalk.Helper
         {
             if (msg == null || UIUtils.IsNull(msg.messageId))
             {
-                LogUtils.Log("收藏表情为空");
+                LogUtils.Log("收藏内容为空");
                 return;
             }
 
@@ -289,7 +289,7 @@ namespace WinFrmTalk.Helper
         #endregion
 
 
-        #region 浏览器收藏一个链接
+        #region 批量收藏一个方法
         /// <summary>
         /// 收藏链接
         /// </summary>
@@ -307,11 +307,11 @@ namespace WinFrmTalk.Helper
                  {
                      if (code == 0)
                      {
-                         HttpUtils.Instance.ShowTip("不能重复收藏消息");
+                    HttpUtils.Instance.ShowTip("不能重复收藏消息");
                      }
                      else
                      {
-                         //code == 105002 端到端加密消息
+                        //code == 105002 对方拒收该消息
                          HttpUtils.Instance.ShowTip(err);
                      }
                  })
@@ -319,8 +319,8 @@ namespace WinFrmTalk.Helper
                 {
                     if (sccess)
                     {
-                        HttpUtils.Instance.ShowTip("收藏成功");
-                        // 更新收藏页
+                            HttpUtils.Instance.ShowTip("收藏成功");
+                // 刷新收藏页
                         Messenger.Default.Send("1", MessageActions.UPDATE_COLLECT_LIST);
                     }
                 });
@@ -329,39 +329,46 @@ namespace WinFrmTalk.Helper
         #endregion
 
         /// <summary>
-        /// 单条服务器删除
+        /// 删除单条消息
         /// </summary>
         /// <param name="msg"></param>
         internal static void DelServerMessages(MessageObject msg, bool isLastMsg)
         {
-            HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "tigase/deleteMsg"). //删除群组
+                HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "tigase/deleteMsg"). //删除消息
                 AddParams("access_token", Applicate.Access_Token).
                 AddParams("type", msg.isGroup == 0 ? "1" : "2").    //1 单聊  2 群聊
-                AddParams("delete", "1").   //1： 删除属于自己的消息记录 2：撤回 删除整条消息记录
+                AddParams("delete", "3").   // 2026-11-19 双向删除：传 delete=3，双方都不可见
                 AddParams("messageId", msg.messageId).
                 AddParams("roomJid", msg.toUserId).
-                Build().ExecuteJson<object>((sccess, obj) =>   //返回值说明： text：加密后的内容
+                Build().ExecuteJson<object>((sccess, obj) =>   //返回值说明：text里可能含错误信息
                 {
-                    //删除成功
-                    if (sccess)
+                        //删除成功
+                    // 2026-11-20: server write failed -> keep local + peer consistent, retry in background
+                    if (!sccess) { MsgChangeRetry.EnqueueDelete(msg.messageId, msg.isGroup, msg.toUserId); }
+                    if (true)
                     {
                         int result = msg.DeleteData();
                         HttpUtils.Instance.ShowTip("删除成功");
                         //通知最近聊天列表更新
-                        if (isLastMsg)
-                        {
+                        if (true)   // 2026-11-21 修复：删除后总是重算最后一条（索引顺序不可靠）
+                {
 
                             // 更新最后一条消息内容
                             MessageObject local = msg.GetLastMessage();
+                            // 2026-11-20: clear preview when last message is the deleted one or null
+                            if (local == null || UIUtils.IsNull(local.messageId) || local.messageId == msg.messageId)
+                            {
+                                local = null;
+                            }
                             var friend = msg.GetFriend();
 
                             string content = string.Empty;
-                            double timesend = TimeUtils.CurrentTimeDouble();
-                            if (!UIUtils.IsNull(local.messageId))
+                            double timesend = friend.LastMsgTime > 0 ? friend.LastMsgTime : TimeUtils.CurrentTimeDouble();
+                            if (local != null && !UIUtils.IsNull(local.messageId))
                             {
                                 if (local.isReadDel == 1)
                                 {
-                                    content = "[阅后即焚消息]";
+                        content = "[阅后即焚消息]";
                                 }
                                 else
                                 {
@@ -377,32 +384,35 @@ namespace WinFrmTalk.Helper
                             }
 
                             friend.UpdateLastContent(content, timesend);
-                            Messenger.Default.Send(friend, token: MessageActions.UPDATE_FRIEND_LAST_CONTENT);
+                    try { friend.UpdateFriendLastType(local == null ? 0 : (int)local.type); } catch { }
+                    Messenger.Default.Send(friend, token: MessageActions.UPDATE_FRIEND_LAST_CONTENT);
                         }
 
+                    // 2026-11-19 双向删除：通知对方移除该消息
+                        try { ShiKuManager.SendDeleteMessage(msg.GetFriend(), msg.messageId); } catch { }
                         Messenger.Default.Send(msg, MessageActions.CLEAR_CURRENT_CONTENT);
                     }
                 });
         }
 
         /// <summary>
-        /// 多选服务器删除
+        /// 多选消息删除
         /// </summary>
         /// <param name="list_msgs"></param>
         internal static void DelServerMessages(List<MessageObject> list_msgs, bool isLastMsg)
         {
-            HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "tigase/deleteMsg"). //删除群组
+                HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "tigase/deleteMsg"). //删除消息
                 AddParams("access_token", Applicate.Access_Token).
                 AddParams("type", list_msgs[0].isGroup == 0 ? "1" : "2").    //1 单聊  2 群聊
-                AddParams("delete", "1").   //1： 删除属于自己的消息记录 2：撤回 删除整条消息记录
+                AddParams("delete", "1").   //1：删除自己本地消息记录 2：双方 删除双方的消息记录
                 AddParams("messageId", UIUtils.AppendMessageIds(list_msgs)).
                 AddParams("roomJid", list_msgs[0].toUserId).
-                Build().ExecuteJson<object>((sccess, obj) =>   //返回值说明： text：加密后的内容
+                Build().ExecuteJson<object>((sccess, obj) =>   //返回值说明：text里可能含错误信息
                 {
-                    //删除成功
+                        //删除成功
                     if (sccess)
                     {
-                        // 从数据库中移除
+                        // 从数据库里移除
                         foreach (var item in list_msgs)
                         {
                             item.DeleteData();
@@ -431,7 +441,7 @@ namespace WinFrmTalk.Helper
                             Messenger.Default.Send(friend, token: MessageActions.UPDATE_FRIEND_LAST_CONTENT);
                         }
 
-                        HttpUtils.Instance.ShowTip("全部删除成功");
+                HttpUtils.Instance.ShowTip("全部删除成功");
                     }
                 });
         }
@@ -450,15 +460,15 @@ namespace WinFrmTalk.Helper
             {
                 if (UIUtils.IsNull(friend.ChatKeyGroup))
                 {
-                    // 没有密钥
-                    HttpUtils.Instance.ShowTip("不能转发消息到密钥丢失群");
+            // 没有群密钥
+                HttpUtils.Instance.ShowTip("不能转发消息，密钥丢失群");
                     return true;
                 }
 
                 if (friend.IsLostKeyGroup == 1)
                 {
-                    // 没有密钥
-                    HttpUtils.Instance.ShowTip("不能转发消息到密钥丢失群");
+            // 没有群密钥
+                HttpUtils.Instance.ShowTip("不能转发消息，密钥丢失群");
                     return true;
                 }
             }
@@ -471,24 +481,24 @@ namespace WinFrmTalk.Helper
 
                 if (role == 4)
                 {
-                    HttpUtils.Instance.ShowTip("隐身人不能发送消息");
+                HttpUtils.Instance.ShowTip("你已不能发送消息");
                     return true;
                 }
 
                 if (role == 3)
                 {
-                    //管理员和群主除外 是否全体禁言
+                    //管理员在群设置里 是否全员禁言
                     if (friend.AllBannedTalk != 0)
                     {
-                        // 全体禁言
-                        HttpUtils.Instance.ShowTip("不能在全体禁言群发言");
+                        // 全员禁言
+                        HttpUtils.Instance.ShowTip("已设置全员禁言群，不能发");
                         return true;
                     }
 
-                    //是否单个禁言
+                    //是否单独禁言某成员
                     if (member.talkTime > TimeUtils.CurrentTime())
                     {
-                        HttpUtils.Instance.ShowTip("您已被禁止在此群发言");
+                        HttpUtils.Instance.ShowTip("你已被禁止在此群发言");
                         return true;
                     }
                 }
@@ -498,17 +508,17 @@ namespace WinFrmTalk.Helper
         }
 
         /// <summary>
-        /// 指示是否可以转发
+        /// 指示是否能转发
         /// </summary>
         /// <param name="friend"></param>
-        /// <returns>返回值为0则可以转发，<0则不允许转发
-        /// <para>-1=friend null;-2=没有群密钥;-3=隐身人;-4=禁言</para>
+        /// <returns>返回值为0：可以转发；<0：不能转发
+        /// <para>-1=friend null;-2=没有群密钥;-3=不能转发;-4=禁言</para>
         /// </returns>
         public static int EnableForward_NotTip(Friend friend)
         {
             if (friend == null || UIUtils.IsNull(friend.UserId))
             {
-                //HttpUtils.Instance.ShowTip("数据错误");
+                    //HttpUtils.Instance.ShowTip("数据错误");
                 return -1;
             }
 
@@ -516,15 +526,15 @@ namespace WinFrmTalk.Helper
             {
                 if (UIUtils.IsNull(friend.ChatKeyGroup))
                 {
-                    // 没有密钥
-                    //HttpUtils.Instance.ShowTip("不能转发消息到密钥丢失群");
+            // 没有群密钥
+                //HttpUtils.Instance.ShowTip("不能转发消息，密钥丢失群");
                     return -2;
                 }
 
                 if (friend.IsLostKeyGroup == 1)
                 {
-                    // 没有密钥
-                    //HttpUtils.Instance.ShowTip("不能转发消息到密钥丢失群");
+            // 没有群密钥
+                //HttpUtils.Instance.ShowTip("不能转发消息，密钥丢失群");
                     return -2;
                 }
             }
@@ -535,25 +545,25 @@ namespace WinFrmTalk.Helper
 
                 if (member.role == 4)
                 {
-                    //HttpUtils.Instance.ShowTip("隐身人不能发送消息");
+                //HttpUtils.Instance.ShowTip("你已不能发送消息");
                     return -3;
                 }
 
                 if (member.role == 3)
                 {
 
-                    //管理员和群主除外 是否全体禁言
+                    //管理员在群设置里 是否全员禁言
                     if (friend.AllBannedTalk != 0)
                     {
-                        // 全体禁言
-                        //HttpUtils.Instance.ShowTip("不能发送讲课到全体禁言群");
+                        // 全员禁言
+                        //HttpUtils.Instance.ShowTip("不能发送链接的全员禁言群");
                         return -4;
                     }
 
-                    //是否单个禁言
+                    //是否单独禁言某成员
                     if (member.talkTime != 0)
                     {
-                        //HttpUtils.Instance.ShowTip("您已被禁止在此群发言");
+                    //HttpUtils.Instance.ShowTip("你已被禁止在此群发言");
                         return -4;
                     }
                 }

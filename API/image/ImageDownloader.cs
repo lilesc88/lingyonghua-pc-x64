@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -23,6 +24,10 @@ namespace WinFrmTalk.API.image
 
         // 2026-08-16 并发限流：同时最多 3 个下载（原 lock 无效，Task 全并发导致连续发图时下载失败）
         private static SemaphoreSlim _semaphore = new SemaphoreSlim(5);
+
+        // v23.10 修复（代码审查 B3）：按路径粒度的写锁，防止同一头像路径并发下载时互相截断覆盖
+        // （File.Exists 判断与 FileMode.Create 写入之间非原子 → 头像文件被截断 → FileToBitmap 失败 → 灰头像）
+        private static readonly ConcurrentDictionary<string, object> _fileLocks = new ConcurrentDictionary<string, object>();
 
         public void DownloadImage(string url, string path, Action<string> action)
         {
@@ -75,28 +80,48 @@ namespace WinFrmTalk.API.image
                 var result = new HTTP().GetHtml(httpitem);
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)//服务器返回正常才处理字节
                 {
-                    if (!File.Exists(path))
+                    // v23.10 修复（代码审查 B3）：同路径写入加锁 + 先写唯一临时文件再原子替换，
+                    // 避免 File.Exists→FileMode.Create 竞态导致头像文件被截断/半写
+                    object pathLock = _fileLocks.GetOrAdd(path, k => new object());
+                    lock (pathLock)
                     {
-                        //创建一个文件流
-                        using (FileStream fs = new FileStream(path, FileMode.Create))
+                        if (!File.Exists(path))
                         {
-                            if (result.ResultByte != null)
+                            //创建一个临时文件（唯一名，避免并发写入同一路径）
+                            string tmpPath = path + ".dl" + Guid.NewGuid().ToString("N").Substring(0, 8);
+                            try
                             {
-                                //将byte数组写入文件中
-                                fs.Write(result.ResultByte, 0, result.ResultByte.Length);
-                                HttpUtils.Instance.Invoke(action, path);
-                                return true;
+                                using (FileStream fs = new FileStream(tmpPath, FileMode.Create))
+                                {
+                                    if (result.ResultByte != null)
+                                    {
+                                        //将byte数组写入文件中
+                                        fs.Write(result.ResultByte, 0, result.ResultByte.Length);
+                                        fs.Flush();
+                                    }
+                                    else
+                                    {
+                                        return false;
+                                    }
+                                }
+                                // 完整落盘后再替换为目标路径
+                                File.Move(tmpPath, path);
                             }
-                            else
+                            catch (Exception)
                             {
-                                return false;
+                                try { if (File.Exists(tmpPath)) File.Delete(tmpPath); } catch (Exception) { }
+                                throw;
                             }
+                            // 2026-09-01 v23.8 修复：回调必须在文件流关闭（Dispose→Flush→落盘）之后，
+                            // 否则 ProcessDownloaded→FileToBitmap 读取到未落盘的不完整文件 → 解析失败 → 显示默认灰色头像
+                            HttpUtils.Instance.Invoke(action, path);
+                            return true;
                         }
-                    }
-                    else
-                    {
-                        HttpUtils.Instance.Invoke(action, path);
-                        return true;
+                        else
+                        {
+                            HttpUtils.Instance.Invoke(action, path);
+                            return true;
+                        }
                     }
                 }
                 else

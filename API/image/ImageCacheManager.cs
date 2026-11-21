@@ -109,4 +109,13 @@ public class ImageCacheManager
 
        
     }
+
+    // 2026-08-31 v23.4 新增：清空全部内存缓存
+    public void ClearAllImageCache()
+    {
+        lock (_lock)
+        {
+            images.Clear();
+        }
+    }
 }

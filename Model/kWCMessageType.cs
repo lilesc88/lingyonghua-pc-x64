@@ -317,6 +317,11 @@ namespace WinFrmTalk
         /// 消息撤回
         /// </summary>
         Withdraw = 202,
+
+        /// <summary>
+        /// 消息被编辑（2026-11-19 编辑通知）
+        /// </summary>
+        EditMessage = 203,
         #endregion
 
         #region 聘吧(无用)

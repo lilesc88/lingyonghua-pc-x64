@@ -1,4 +1,4 @@
-
+ï»¿
 namespace WinFrmTalk
 {
     using System;
@@ -23,7 +23,7 @@ namespace WinFrmTalk
 
 
     /// <summary>
-    /// µÇÂ¼´°¿Ú
+    /// ç™»å½•çª—å£
     /// </summary>
     public partial class FrmLogin : FrmBase
     {
@@ -41,7 +41,7 @@ namespace WinFrmTalk
 
             LoadLanguageText();
             this.isClose = true;
-            this.Icon = (Icon)Properties.Resources.Icon.Clone();//¼ÓÔØiconÍ¼±ê£¨¶ÀÁ¢¸±±¾£¬±ÜÃâ¹²Ïí¾ä±ú±»ÊÍ·Åµ¼ÖÂÉÁÍË£©//¼ÓÔØiconÍ¼±ê
+            this.Icon = (Icon)Properties.Resources.Icon.Clone();//åŠ è½½iconå›¾æ ‡ï¼ˆç‹¬ç«‹å‰¯æœ¬ï¼Œé¿å…å…±äº«å¥æŸ„è¢«é‡Šæ”¾å¯¼è‡´é—ªé€€ï¼‰//åŠ è½½iconå›¾æ ‡
             this.isClose = true;
             Messenger.Default.Register<string>(this, MessageActions.UPDATE_CONFIG, item => NeedUpdateConfig(item));
             Messenger.Default.Register<string>(this, MessageActions.SHOW_LOGINFORM, item => OnRecvShow(item));
@@ -51,7 +51,7 @@ namespace WinFrmTalk
 #if (DEBUG)
             picServer.Visible = false;
 #endif
-            Applicate.SyncMainContext = SynchronizationContext.Current; //Í¬²½Ö÷Ïß³Ì¸øËü
+            Applicate.SyncMainContext = SynchronizationContext.Current; //åŒæ­¥ä¸»çº¿ç¨‹ç»™å®ƒ
             Applicate.MainThreadId = Thread.CurrentThread.ManagedThreadId;
         }
 
@@ -69,10 +69,10 @@ namespace WinFrmTalk
             login_tip.Text = LanguageXmlUtils.GetValue("downloading_data", login_tip.Text);
             lblRegister.Text = LanguageXmlUtils.GetValue("user_register", lblRegister.Text);
             //lbliconPassword.Location = new Point(txtPassword.Location.X - lbliconPassword.Width - 2, lbliconPassword.Location.Y);
-            //ÕûÌå¾ÓÖĞ
+            //æ•´ä½“å±…ä¸­
             if (lbliconPassword.Text.Length > 4)
             {
-                int right_width = this.Width - txtPassword.Location.X - txtPassword.Width;  // ÓÒ±ß¾à
+                int right_width = this.Width - txtPassword.Location.X - txtPassword.Width;  // å³è¾¹è·
                 int left_width = lbliconPassword.Location.X;
                 int avg = (right_width + left_width) / 2;
                 int diff = avg - left_width;
@@ -100,7 +100,7 @@ namespace WinFrmTalk
         }
 
         /// <summary>
-        /// ÊÇ·ñĞèÒª¸üĞÂconfig½Ó¿Ú
+        /// æ˜¯å¦éœ€è¦æ›´æ–°configæ¥å£
         /// </summary>
         private void NeedUpdateConfig(string str)
         {
@@ -108,7 +108,7 @@ namespace WinFrmTalk
         }
 
         /// <summary>
-        /// ÏÔÊ¾µÇÂ½´°¿Ú£¬´Ó×¢²á£¬Íü¼ÇÃÜÂë·µ»ØµÇÂ½´°¿ÚÊÂ¼ş
+        /// æ˜¾ç¤ºç™»é™†çª—å£ï¼Œä»æ³¨å†Œï¼Œå¿˜è®°å¯†ç è¿”å›ç™»é™†çª—å£äº‹ä»¶
         /// </summary>
         private void OnRecvShow(string str)
         {
@@ -124,7 +124,7 @@ namespace WinFrmTalk
             this.Show();
             if ("regist_success".Equals(str))
             {
-                ShowTip("×¢²á³É¹¦");
+                ShowTip("æ³¨å†ŒæˆåŠŸ");
 
                 if (!string.IsNullOrEmpty(Applicate.MyAccount.areaCode))
                 {
@@ -140,13 +140,13 @@ namespace WinFrmTalk
 
             if ("reset_success".Equals(str))
             {
-                ShowTip("ÕÒ»ØÃÜÂë³É¹¦");
+                ShowTip("æ‰¾å›å¯†ç æˆåŠŸ");
                 return;
             }
 
             if ("regist_err".Equals(str))
             {
-                ShowTip("×¢²áÊ§°Ü");
+                ShowTip("æ³¨å†Œå¤±è´¥");
                 return;
             }
 
@@ -154,13 +154,13 @@ namespace WinFrmTalk
         }
 
         /// <summary>
-        /// »ñÈ¡ÅäÖÃ
+        /// è·å–é…ç½®
         /// </summary>
         private void GetHttpConfig()
         {
             if (!UIUtils.GetDotNetVersion(Applicate.CURRET_VERSION.ToString()))
             {
-                ShowTip("µ±Ç° windows È±ÉÙ.net ÔËĞĞ¿â£¬²»ÄÜÔËĞĞ´Ë°æ±¾£¬ÇëÇ°Íù¹ÙÍøÏÂÔØĞÂ°æ±¾");
+                ShowTip("å½“å‰ windows ç¼ºå°‘.net è¿è¡Œåº“ï¼Œä¸èƒ½è¿è¡Œæ­¤ç‰ˆæœ¬ï¼Œè¯·å‰å¾€å®˜ç½‘ä¸‹è½½æ–°ç‰ˆæœ¬");
                 return;
             }
             isUpdateConfig = false;
@@ -168,17 +168,17 @@ namespace WinFrmTalk
             HttpUtils.Instance.Get().Url(url).Build()
                 .AddErrorListener((code, msg) =>
                 {
-                    ShowTip("Î´ÄÜ»ñÈ¡ÍøÂçÅäÖÃ£¬ÒÑÆôÓÃÄ¬ÈÏÅäÖÃ");
+                    ShowTip("æœªèƒ½è·å–ç½‘ç»œé…ç½®ï¼Œå·²å¯ç”¨é»˜è®¤é…ç½®");
                     Applicate.URLDATA = new JsonConfigData();
                     Applicate.URLDATA.data = Applicate.GetDefConfig();
-                    btnLogin.Enabled = true; //Íê³É»ñÈ¡ÅäÖÃºóÆôÓÃµÇÂ¼°´Å¥
+                    btnLogin.Enabled = true; //å®Œæˆè·å–é…ç½®åå¯ç”¨ç™»å½•æŒ‰é’®
                     btnLogin.ForeColor = Color.White;
-                    btnLogin.Text = "Ä¬ÈÏÅäÖÃµÇÂ¼";
+                    btnLogin.Text = "é»˜è®¤é…ç½®ç™»å½•";
                     isEnter = true;
                     lblRegister.Enabled = true;
                     btnForgetPwd.Enabled = true;
 
-                    // ÓÃ»§ÃûµÇÂ¼
+                    // ç”¨æˆ·åç™»å½•
                     if (Applicate.URLDATA.data.regeditPhoneOrName == 1)
                     {
                         lblContry.Visible = false;
@@ -211,15 +211,15 @@ namespace WinFrmTalk
                             Applicate.ENABLE_ASY_ENCRYPT = false;
                         }
 
-                        LogUtils.Log("ÅäÖÃ»ñÈ¡³É¹¦   " + Applicate.URLDATA.data.apiUrl);
-                        btnLogin.Enabled = true; //Íê³É»ñÈ¡ÅäÖÃºóÆôÓÃµÇÂ¼°´Å¥
+                        LogUtils.Log("é…ç½®è·å–æˆåŠŸ   " + Applicate.URLDATA.data.apiUrl);
+                        btnLogin.Enabled = true; //å®Œæˆè·å–é…ç½®åå¯ç”¨ç™»å½•æŒ‰é’®
                         btnLogin.ForeColor = Color.White;
-                        btnLogin.Text = "µÇÂ¼";
+                        btnLogin.Text = "ç™»å½•";
                         isEnter = true;
                         lblRegister.Enabled = true;
                         btnForgetPwd.Enabled = true;
 
-                        //ÓÃ»§ÃûµÇÂ¼
+                        //ç”¨æˆ·åç™»å½•
                         if (Applicate.URLDATA.data.regeditPhoneOrName == 1)
                         {
                             lblContry.Visible = false;
@@ -240,9 +240,9 @@ namespace WinFrmTalk
                         }
                         if (!string.IsNullOrEmpty(config.pcVersion))
                         {
-                            //¼ì²â¸üĞÂ
+                            //æ£€æµ‹æ›´æ–°
                             if (string.IsNullOrEmpty(config.pcVersion) && Applicate.APP_VERSION.Replace(".", "") != config.pcVersion && string.IsNullOrEmpty(Applicate.URLDATA.data.pcAppUrl) &&
-                                MessageBox.Show("ÓĞĞÂµÄ°æ±¾ÊÇ·ñĞèÒª½øĞĞ¸üĞÂ", "ÏµÍ³¸üĞÂ", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                                MessageBox.Show("æœ‰æ–°çš„ç‰ˆæœ¬æ˜¯å¦éœ€è¦è¿›è¡Œæ›´æ–°", "ç³»ç»Ÿæ›´æ–°", MessageBoxButtons.YesNo) == DialogResult.Yes)
                             {
                                 File.Delete("Download.config");
                                 FileStream fsWrite = new FileStream("Download.config", FileMode.OpenOrCreate);
@@ -252,7 +252,7 @@ namespace WinFrmTalk
                                 string path = Applicate.AppCurrentDirectory;
                                 Process process = new Process();
                                 process.StartInfo.FileName = "update.exe";
-                                process.StartInfo.WorkingDirectory = path; //ÒªµôÓÃµÃexeÂ·¾¶ÀıÈç:"C:\windows";               
+                                process.StartInfo.WorkingDirectory = path; //è¦æ‰ç”¨å¾—exeè·¯å¾„ä¾‹å¦‚:"C:\windows";               
                                 process.StartInfo.CreateNoWindow = true;
                                 process.Start();
                                 Application.Exit();
@@ -262,7 +262,7 @@ namespace WinFrmTalk
                 });
         }
 
-        #region ´°¿Ú¼ÓÔØÊÂ¼ş
+        #region çª—å£åŠ è½½äº‹ä»¶
         private void FrmLogin_Load(object sender, EventArgs e)
         {
 
@@ -271,12 +271,12 @@ namespace WinFrmTalk
 
             if (string.IsNullOrEmpty(txtTelephone.Text))
             {
-                this.ActiveControl = this.txtTelephone;// »ñÈ¡ÊäÈëÕËºÅ½¹µã
+                this.ActiveControl = this.txtTelephone;// è·å–è¾“å…¥è´¦å·ç„¦ç‚¹
                 txtTelephone.Select(txtTelephone.TextLength, 0);
             }
             else if (string.IsNullOrEmpty(txtPassword.Text))
             {
-                this.ActiveControl = txtPassword; // »ñÈ¡ÊäÈëÃÜÂë½¹µã
+                this.ActiveControl = txtPassword; // è·å–è¾“å…¥å¯†ç ç„¦ç‚¹
                 txtPassword.Select(txtPassword.TextLength, 0);
             }
             else
@@ -287,7 +287,7 @@ namespace WinFrmTalk
 
             if (Applicate.URLDATA.data.apiUrl != null)
             {
-                btnLogin.Enabled = true;//Íê³É»ñÈ¡ÅäÖÃºóÆôÓÃµÇÂ¼°´Å¥
+                btnLogin.Enabled = true;//å®Œæˆè·å–é…ç½®åå¯ç”¨ç™»å½•æŒ‰é’®
                 isEnter = true;
                 lblRegister.Enabled = true;
                 btnForgetPwd.Enabled = true;
@@ -298,16 +298,16 @@ namespace WinFrmTalk
             //    lblRegister.Visible = false;
             //}
 
-            // Ë¢ĞÂÊı¾İ¿â
+            // åˆ·æ–°æ•°æ®åº“
 
 
-            EmojiCodeDictionary.GetEmojiDataNotMine();//ÑÓÊ±²Ù×÷
+            EmojiCodeDictionary.GetEmojiDataNotMine();//å»¶æ—¶æ“ä½œ
         }
         #endregion
 
-        #region ¼ÓÔØ×ÖÌåÍ¼±ê
+        #region åŠ è½½å­—ä½“å›¾æ ‡
         /// <summary>
-        /// ¼ÓÔØ×ÖÌåÍ¼±ê
+        /// åŠ è½½å­—ä½“å›¾æ ‡
         /// </summary>
         private void LoadIconFonts()
         {
@@ -317,67 +317,67 @@ namespace WinFrmTalk
         }
         #endregion
 
-        #region µÇÂ¼°´Å¥µã»÷
+        #region ç™»å½•æŒ‰é’®ç‚¹å‡»
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
             if (!UIUtils.GetDotNetVersion(Applicate.CURRET_VERSION.ToString()))
             {
-                ShowTip("µ±Ç° windows È±ÉÙ.net ÔËĞĞ¿â£¬³ÌĞò²»ÄÜÔËĞĞ");
+                ShowTip("å½“å‰ windows ç¼ºå°‘.net è¿è¡Œåº“ï¼Œç¨‹åºä¸èƒ½è¿è¡Œ");
                 return;
             }
 
             if (!isEnter)
             {
-                ShowTip("ÕıÔÚ»ñÈ¡ÅäÖÃÖĞ£¬µ±Ç°ÍøÂçÂı£¬ÇëÉÔºó");
+                ShowTip("æ­£åœ¨è·å–é…ç½®ä¸­ï¼Œå½“å‰ç½‘ç»œæ…¢ï¼Œè¯·ç¨å");
                 return;
             }
 
             //if (Math.Abs(TimeUtils.SyncTimeDiff()) > 10)
             //{
-            //    ShowTip("±¾µØÊ±¼äºÍ·şÎñÆ÷Ê±¼ä²îÒì¹ı´ó£¬ÇëÁªÏµ¹ÜÀíÔ±");
+            //    ShowTip("æœ¬åœ°æ—¶é—´å’ŒæœåŠ¡å™¨æ—¶é—´å·®å¼‚è¿‡å¤§ï¼Œè¯·è”ç³»ç®¡ç†å‘˜");
             //    return;
             //}
 
             if (string.IsNullOrEmpty(txtTelephone.Text))
             {
-                ShowTip("ÕËºÅ²»ÄÜÎª¿Õ");
+                ShowTip("è´¦å·ä¸èƒ½ä¸ºç©º");
                 return;
             }
 
             if (string.IsNullOrEmpty(txtPassword.Text))
             {
-                ShowTip("ÃÜÂë²»ÄÜÎª¿Õ");
+                ShowTip("å¯†ç ä¸èƒ½ä¸ºç©º");
                 return;
             }
 
             if (!btnLogin.Visible)
             {
-                return; // ·ÀÖ¹¹ı¿ìµã»÷
+                return; // é˜²æ­¢è¿‡å¿«ç‚¹å‡»
             }
 
             btnLogin.Visible = false;
             lblRegister.Visible = false;
 
-            // ÏÔÊ¾µÈ´ı·û
+            // æ˜¾ç¤ºç­‰å¾…ç¬¦
             OpenLoading();
 
 
-            // Çå³ıÊı¾İ¿âĞ£Ñé
+            // æ¸…é™¤æ•°æ®åº“æ ¡éªŒ
             var acc = Applicate.MyAccount;
             Applicate.MyAccount.Telephone = txtTelephone.Text.Trim();
             Applicate.MyAccount.areaCode = lblContry.Text.ToString().Remove(0, 1);
             Applicate.RefreshDataBase();
 
-            //¿ªÆôÊÂÎñ
+            //å¼€å¯äº‹åŠ¡
             DBContextTransaction.Start();
 
-            // ÆôÓÃĞÂ°æµÇÂ½¼Ó¹ÌÏµÍ³
+            // å¯ç”¨æ–°ç‰ˆç™»é™†åŠ å›ºç³»ç»Ÿ
             RequestLoginCode();
 
         }
 
-        #region ÇëÇóµÇÂ¼Âë
+        #region è¯·æ±‚ç™»å½•ç 
 
         private void RequestLoginCode()
         {
@@ -398,7 +398,7 @@ namespace WinFrmTalk
                 .AddParams("deviceId", "pc")
                 .Build(true).AddErrorListener((code, msg) =>
                 {
-                    Console.WriteLine("»ñÈ¡codeÊ§°Ü");
+                    Console.WriteLine("è·å–codeå¤±è´¥");
                     loding.stop();
                     btnLogin.Visible = true;
                     if (Applicate.URLDATA.data.isOpenRegister == 0)
@@ -414,7 +414,7 @@ namespace WinFrmTalk
                 {
                     if (sccess)
                     {
-                        // ÄÜ×ßµ½ÕâÀïËµÃ÷µÇÂ½ÕËºÅºÍÃÜÂë¶¼Ã»ÎÊÌâ
+                        // èƒ½èµ°åˆ°è¿™é‡Œè¯´æ˜ç™»é™†è´¦å·å’Œå¯†ç éƒ½æ²¡é—®é¢˜
                         string loginuser = UIUtils.DecodeString(data, "userId");
 
                         string code = UIUtils.DecodeString(data, "code");
@@ -429,7 +429,7 @@ namespace WinFrmTalk
                     }
                     else
                     {
-                        Console.WriteLine("»ñÈ¡codeÊ§°Ü");
+                        Console.WriteLine("è·å–codeå¤±è´¥");
                         loding.stop();
                         btnLogin.Visible = true;
                         lblRegister.Visible = true;
@@ -437,7 +437,7 @@ namespace WinFrmTalk
                 });
         }
 
-        // ·şÎñÆ÷Ã»ÓĞµÇÂ½codeĞèÒªÉÏ´«Ò»¶Ô
+        // æœåŠ¡å™¨æ²¡æœ‰ç™»é™†codeéœ€è¦ä¸Šä¼ ä¸€å¯¹
         private void UpLoadRsaKeypair(string userId)
         {
             string password = txtPassword.Text.Trim();
@@ -467,24 +467,24 @@ namespace WinFrmTalk
                     loding.stop();
                     btnLogin.Visible = true;
                     lblRegister.Visible = true;
-                    Console.WriteLine("»ñÈ¡codeÊ§°Ü");
+                    Console.WriteLine("è·å–codeå¤±è´¥");
 
                 }).Execute((sccess, data) =>
                 {
                     if (sccess)
                     {
-                        // ÖØĞÂÈ¥ÇëÇó
+                        // é‡æ–°å»è¯·æ±‚
                         RequestLoginCode();
                     }
                     else
                     {
-                        Console.WriteLine("»ñÈ¡codeÊ§°Ü");
+                        Console.WriteLine("è·å–codeå¤±è´¥");
                     }
                 });
         }
         #endregion
 
-        #region ÇëÇóµÇÂ¼ÂëË½Ô¿
+        #region è¯·æ±‚ç™»å½•ç ç§é’¥
         private void RequestCodePrivateKey(string encryptCode, string userId)
         {
             string password = txtPassword.Text.Trim();
@@ -498,11 +498,11 @@ namespace WinFrmTalk
                 .AddParams("salt", salt)
                 .Build(true).AddErrorListener((code, msg) =>
                 {
-                    Console.WriteLine("RequestCodePrivateKey Ê§°Ü");
+                    Console.WriteLine("RequestCodePrivateKey å¤±è´¥");
                     loding.stop();
                     btnLogin.Visible = true;
                     lblRegister.Visible = true;
-                    Console.WriteLine("Ê§°Ü");
+                    Console.WriteLine("å¤±è´¥");
 
                 }).Execute((sccess, data) =>
                 {
@@ -510,7 +510,7 @@ namespace WinFrmTalk
                     {
                         string aeskey = UIUtils.DecodeString(data, "privateKey");
 
-                        // ½âÃÜcode
+                        // è§£å¯†code
                         byte[] logincode;
                         try
                         {
@@ -521,7 +521,7 @@ namespace WinFrmTalk
                         catch (Exception)
                         {
                             logincode = null;
-                            Console.WriteLine("½âÃÜÊ§°Ü");
+                            Console.WriteLine("è§£å¯†å¤±è´¥");
                             return;
                         }
 
@@ -536,7 +536,7 @@ namespace WinFrmTalk
         }
         #endregion
 
-        #region µÇÂ¼ÂëË½Ô¿µÇÂ½ÏµÍ³
+        #region ç™»å½•ç ç§é’¥ç™»é™†ç³»ç»Ÿ
 
         public void RequestLoginChat(byte[] logincode, string userId)
         {
@@ -551,10 +551,10 @@ namespace WinFrmTalk
             pairs.Add("xmppVersion", "1");
             pairs.Add("serial", UIUtils.Getpcid());
 
-            // ×éºÏÑé²Î
+            // ç»„åˆéªŒå‚
             string mac = MAC.EncodeBase64((Applicate.API_KEY + userId + Parameter.JoinValues(pairs) + salt + hexpwd), logincode);
 
-            // aes ¼ÓÃÜ
+            // aes åŠ å¯†
             pairs.Add("mac", mac);
             string content = JsonConvert.SerializeObject(pairs);
             string data = AES.EncryptBase64(content, logincode);
@@ -567,11 +567,11 @@ namespace WinFrmTalk
                .AddParams("salt", salt)
                .Build(true).AddErrorListener((code, msg) =>
                {
-                   Console.WriteLine("RequestLoginChat Ê§°Ü");
+                   Console.WriteLine("RequestLoginChat å¤±è´¥");
                    loding.stop();
                    btnLogin.Visible = true;
                    lblRegister.Visible = true;
-                   Console.WriteLine("Ê§°Ü");
+                   Console.WriteLine("å¤±è´¥");
 
                }).Execute((sccess, resultdata) =>
                {
@@ -582,17 +582,17 @@ namespace WinFrmTalk
 
                        if (!UIUtils.IsNull(result))
                        {
-                           // ½âÃÜ³É¹¦
+                           // è§£å¯†æˆåŠŸ
                            var userinfo = JsonConvert.DeserializeObject<UserInfo>(result);
-                           //Î´ÊÚÈ¨µÇÂ¼
+                           //æœªæˆæƒç™»å½•
                            if (userinfo.access_token == null)
                            {
-                               Console.WriteLine("RequestLoginChat Ê§°Ü");
+                               Console.WriteLine("RequestLoginChat å¤±è´¥");
                                loding.stop();
                                btnLogin.Visible = true;
                                lblRegister.Visible = true;
-                               Console.WriteLine("Ê§°Ü");
-                               ShowTip("Î´ÊÚÈ¨");
+                               Console.WriteLine("å¤±è´¥");
+                               ShowTip("æœªæˆæƒ");
                                return;
                            }
 
@@ -615,7 +615,7 @@ namespace WinFrmTalk
 
                        }
 
-                       Console.WriteLine("µÇÂ¼³É¹¦" + result);
+                       Console.WriteLine("ç™»å½•æˆåŠŸ" + result);
                    }
                    else
                    {
@@ -626,7 +626,7 @@ namespace WinFrmTalk
         }
 
         /// <summary>
-        /// ÏÂÔØ×Ô¼ºµÄÊı¾İ
+        /// ä¸‹è½½è‡ªå·±çš„æ•°æ®
         /// </summary>
         /// <param name="userInfo"></param>
         private void UpdateMyInfo(UserInfo userInfo)
@@ -660,16 +660,16 @@ namespace WinFrmTalk
                        if (userInfo.isupdate == 1 || IsNeedUpdate(Applicate.MyAccount.userId))
                        {
                            login_tip.Visible = true;
-                           // µ÷ÓÃÊı¾İÏÂÔØ£¬È¥Í¬²½ÎÒµÄºÃÓÑºÍÈº×é
+                           // è°ƒç”¨æ•°æ®ä¸‹è½½ï¼Œå»åŒæ­¥æˆ‘çš„å¥½å‹å’Œç¾¤ç»„
                            SyncDataDownlad download = new SyncDataDownlad();
                            download.StartDown((success) =>
                            {
-                               // Í¬²½Íê³É, Ìø×ªµ½Ö÷½çÃæ
+                               // åŒæ­¥å®Œæˆ, è·³è½¬åˆ°ä¸»ç•Œé¢
                                JumpMainUI();
 
                                loding.stop();
                                login_tip.Visible = false;
-                               LogUtils.Log("Êı¾İÍ¬²½Íê³É Ìø×ªµ½Ö÷½çÃæ");
+                               LogUtils.Log("æ•°æ®åŒæ­¥å®Œæˆ è·³è½¬åˆ°ä¸»ç•Œé¢");
                            }, account);
                        }
                        else
@@ -685,7 +685,7 @@ namespace WinFrmTalk
 
         private bool IsNeedUpdate(string userId)
         {
-            // ÓÃ»§Êı¾İ¿âËùÔÚÎ»ÖÃ
+            // ç”¨æˆ·æ•°æ®åº“æ‰€åœ¨ä½ç½®
             string dbPaht = Applicate.AppCurrentPerson + userId + ".db";
             if (!File.Exists(dbPaht))
             {
@@ -693,7 +693,7 @@ namespace WinFrmTalk
                 return true;
             }
 
-            // ±£´æÓÃ»§ÍË³öÊ±¼ä
+            // ä¿å­˜ç”¨æˆ·é€€å‡ºæ—¶é—´
             string quitTime = LocalDataUtils.GetStringData(Applicate.QUIT_TIME);
             if (UIUtils.IsNull(quitTime))
             {
@@ -714,7 +714,7 @@ namespace WinFrmTalk
                 return true;
             }
 
-            // ÇĞ»»ÁË·şÎñÆ÷µØÖ·Ò²Òª¸üĞÂÊı¾İ
+            // åˆ‡æ¢äº†æœåŠ¡å™¨åœ°å€ä¹Ÿè¦æ›´æ–°æ•°æ®
             string lasturl = LocalDataUtils.GetStringData("last_login_service");
             if (!string.Equals(lasturl, UIUtils.GetServer()))
             {
@@ -726,10 +726,10 @@ namespace WinFrmTalk
 
         #endregion
 
-        #region µÇÂ¼´ò¿ªµÈ´ı·û
+        #region ç™»å½•æ‰“å¼€ç­‰å¾…ç¬¦
 
         /// <summary>
-        /// µÇÂ¼´ò¿ªµÈ´ı·û
+        /// ç™»å½•æ‰“å¼€ç­‰å¾…ç¬¦
         /// </summary>
         private LodingUtils loding = new LodingUtils();
         private void OpenLoading()
@@ -742,9 +742,9 @@ namespace WinFrmTalk
 
         #endregion
 
-        #region ´°¿Ú¹Ø±ÕÊ±×¢ÏúMessenger
+        #region çª—å£å…³é—­æ—¶æ³¨é”€Messenger
         /// <summary>
-        /// ´°¿Ú¹Ø±ÕÊ±×¢ÏúMessenger
+        /// çª—å£å…³é—­æ—¶æ³¨é”€Messenger
         /// </summary>
         /// <param name="e"></param>
         protected override void OnClosing(CancelEventArgs e)
@@ -753,10 +753,10 @@ namespace WinFrmTalk
         }
         #endregion
 
-        #region ×¢²á°´Å¥µã»÷ÊÂ¼ş
+        #region æ³¨å†ŒæŒ‰é’®ç‚¹å‡»äº‹ä»¶
 
         /// <summary>
-        /// ×¢²á°´Å¥µã»÷ÊÂ¼ş
+        /// æ³¨å†ŒæŒ‰é’®ç‚¹å‡»äº‹ä»¶
         /// </summary>
         private void lblRegister_Click(object sender, EventArgs e)
         {
@@ -767,9 +767,9 @@ namespace WinFrmTalk
 
         #endregion
 
-        #region ÇĞ»»·şÎñÆ÷°´Å¥µã»÷ÊÂ¼ş
+        #region åˆ‡æ¢æœåŠ¡å™¨æŒ‰é’®ç‚¹å‡»äº‹ä»¶
         /// <summary>
-        /// ÇĞ»»·şÎñÆ÷°´Å¥µã»÷ÊÂ¼ş
+        /// åˆ‡æ¢æœåŠ¡å™¨æŒ‰é’®ç‚¹å‡»äº‹ä»¶
         /// </summary>
         private void picServer_Click(object sender, EventArgs e)
         {
@@ -780,10 +780,10 @@ namespace WinFrmTalk
 
         #endregion
 
-        #region ÕËºÅ¿òÈ«Ñ¡¡¢¸´ÖÆ¡¢Õ³Ìù¡¢¼ôÇĞÊÂ¼ş¼àÌı
+        #region è´¦å·æ¡†å…¨é€‰ã€å¤åˆ¶ã€ç²˜è´´ã€å‰ªåˆ‡äº‹ä»¶ç›‘å¬
 
         /// <summary>
-        /// ÎÄ±¾¿ò¿ÉÊ¹ÓÃÈ«Ñ¡¡¢¸´ÖÆ¡¢Õ³Ìù¡¢¼ôÇĞ
+        /// æ–‡æœ¬æ¡†å¯ä½¿ç”¨å…¨é€‰ã€å¤åˆ¶ã€ç²˜è´´ã€å‰ªåˆ‡
         /// </summary>
         private void txtTelephone_KeyUp(object sender, KeyEventArgs e)
         {
@@ -798,18 +798,18 @@ namespace WinFrmTalk
             //            tvBox.SelectAll();
             //            break;
             //        case Keys.C:
-            //            // ¸´ÖÆ
+            //            // å¤åˆ¶
             //            Clipboard.SetDataObject(tvBox.SelectedText);
             //            break;
             //        case Keys.V:
-            //            // Õ³Ìù
+            //            // ç²˜è´´
             //            if (Clipboard.ContainsText())
             //            {
             //                try
             //                {
-            //                    // ¼ì²éÊÇ·ñÊı×Ö£¬Ö»ÄÜÕ³ÌùÊı×Ö£¬²»ÄÜÕ³ÌùÎÄ±¾
+            //                    // æ£€æŸ¥æ˜¯å¦æ•°å­—ï¼Œåªèƒ½ç²˜è´´æ•°å­—ï¼Œä¸èƒ½ç²˜è´´æ–‡æœ¬
             //                    Convert.ToInt64(Clipboard.GetText());
-            //                    tvBox.SelectedText = Clipboard.GetText().Trim(); //Ctrl+V Õ³Ìù  
+            //                    tvBox.SelectedText = Clipboard.GetText().Trim(); //Ctrl+V ç²˜è´´  
             //                }
             //                catch (Exception)
             //                {
@@ -828,11 +828,11 @@ namespace WinFrmTalk
             //            break;
             //    }
             //}
-            //DZJ£ºÊÂ¼şÓ¦¸ÃĞ´ÔÚdown¶ø²»ÊÇup£¬Èç¹û×éºÏ¼ü²»ÊÇÍ¬Ê±ËÉ¿ª£¬»á´¥·¢²»ÁË
+            //DZJï¼šäº‹ä»¶åº”è¯¥å†™åœ¨downè€Œä¸æ˜¯upï¼Œå¦‚æœç»„åˆé”®ä¸æ˜¯åŒæ—¶æ¾å¼€ï¼Œä¼šè§¦å‘ä¸äº†
         }
 
         /// <summary>
-        /// ÎÄ±¾¿ò¿ÉÊ¹ÓÃÈ«Ñ¡¡¢¸´ÖÆ¡¢Õ³Ìù¡¢¼ôÇĞ
+        /// æ–‡æœ¬æ¡†å¯ä½¿ç”¨å…¨é€‰ã€å¤åˆ¶ã€ç²˜è´´ã€å‰ªåˆ‡
         /// </summary>
         private void txtTelephone_KeyDown(object sender, KeyEventArgs e)
         {
@@ -847,23 +847,23 @@ namespace WinFrmTalk
                         tvBox.SelectAll();
                         break;
                     case Keys.C:
-                        // ¸´ÖÆ
+                        // å¤åˆ¶
                         Clipboard.SetDataObject(tvBox.SelectedText);
                         break;
                     case Keys.V:
-                        // Õ³Ìù
+                        // ç²˜è´´
                         if (Clipboard.ContainsText())
                         {
                             try
                             {
-                                // ¼ì²éÊÇ·ñÊı×Ö£¬Ö»ÄÜÕ³ÌùÊı×Ö£¬²»ÄÜÕ³ÌùÎÄ±¾
-                                if (Applicate.URLDATA.data.regeditPhoneOrName == 0)//Ê¹ÓÃÊÖ»úºÅµÇÂ¼
+                                // æ£€æŸ¥æ˜¯å¦æ•°å­—ï¼Œåªèƒ½ç²˜è´´æ•°å­—ï¼Œä¸èƒ½ç²˜è´´æ–‡æœ¬
+                                if (Applicate.URLDATA.data.regeditPhoneOrName == 0)//ä½¿ç”¨æ‰‹æœºå·ç™»å½•
                                 {
                                 Convert.ToInt64(Clipboard.GetText());
                                 }
-                                // ¼ì²éÊÇ·ñÊı×Ö£¬Ö»ÄÜÕ³ÌùÊı×Ö£¬²»ÄÜÕ³ÌùÎÄ±¾
+                                // æ£€æŸ¥æ˜¯å¦æ•°å­—ï¼Œåªèƒ½ç²˜è´´æ•°å­—ï¼Œä¸èƒ½ç²˜è´´æ–‡æœ¬
 
-                                tvBox.SelectedText = Clipboard.GetText().Trim(); //Ctrl+V Õ³Ìù  
+                                tvBox.SelectedText = Clipboard.GetText().Trim(); //Ctrl+V ç²˜è´´  
                             }
                             catch (Exception)
                             {
@@ -891,10 +891,10 @@ namespace WinFrmTalk
 
         #endregion
 
-        #region ÕËºÅ¿òÎÄ±¾ÏŞÖÆÊÂ¼ş
+        #region è´¦å·æ¡†æ–‡æœ¬é™åˆ¶äº‹ä»¶
 
         /// <summary>
-        /// ÕËºÅÏŞÖÆÊı×Ö
+        /// è´¦å·é™åˆ¶æ•°å­—
         /// </summary>
         private void txtTelephone_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -908,7 +908,7 @@ namespace WinFrmTalk
 
             if (Applicate.URLDATA.data.regeditPhoneOrName == 1)
             {
-                // ·¶Î§£¨0x4e00¡«0x9fa5£©×ª»»³Éint£¨chfrom¡«chend£©
+                // èŒƒå›´ï¼ˆ0x4e00ï½0x9fa5ï¼‰è½¬æ¢æˆintï¼ˆchfromï½chendï¼‰
                 int chfrom = Convert.ToInt32("4e00", 16);
                 int chend = Convert.ToInt32("9fa5", 16);
                 if (e.KeyChar >= (Char)chfrom && e.KeyChar <= (Char)chend)
@@ -919,7 +919,7 @@ namespace WinFrmTalk
                 {
                     e.Handled = true;
                 }
-                if (e.KeyChar == (Char)22) //Õ³Ìù
+                if (e.KeyChar == (Char)22) //ç²˜è´´
                 {
                     e.Handled = true;
             }
@@ -928,24 +928,24 @@ namespace WinFrmTalk
 
         #endregion
 
-        #region ÕËºÅ¿òÎÄ±¾³¤¶ÈÏŞÖÆ
+        #region è´¦å·æ¡†æ–‡æœ¬é•¿åº¦é™åˆ¶
         private void txtTelephone_TextChanged(object sender, EventArgs e)
         {
-            //ÓÃ»§ÃûµÇÂ¼ÏŞÖÆ³¤¶È
+            //ç”¨æˆ·åç™»å½•é™åˆ¶é•¿åº¦
             //if (txtTelephone.TextLength > 10 && Applicate.URLDATA.data.regeditPhoneOrName == 1)
             //{
             //    txtTelephone.Text = txtTelephone.Text.Remove(10, 1);
             //    txtTelephone.Select(10, 0);
-            //    ShowTip("ÕËºÅ²»ÄÜÎª³¬¹ı10Î»");
+            //    ShowTip("è´¦å·ä¸èƒ½ä¸ºè¶…è¿‡10ä½");
             //}
         }
 
         #endregion
 
-        #region Íü¼ÇÃÜÂë°´Å¥µã»÷ÊÂ¼ş
+        #region å¿˜è®°å¯†ç æŒ‰é’®ç‚¹å‡»äº‹ä»¶
 
         /// <summary>
-        /// Íü¼ÇÃÜÂë
+        /// å¿˜è®°å¯†ç 
         /// </summary>
         private void btnForgetPwd_Click(object sender, EventArgs e)
         {
@@ -956,9 +956,9 @@ namespace WinFrmTalk
         }
         #endregion
 
-        #region ÇøºÅµã»÷ÊÂ¼ş
+        #region åŒºå·ç‚¹å‡»äº‹ä»¶
         /// <summary>
-        /// ÇøºÅÑ¡ÖĞÊÂ¼ş
+        /// åŒºå·é€‰ä¸­äº‹ä»¶
         /// </summary>
         private void cmbAreaCode_Click(object sender, EventArgs e)
         {
@@ -975,10 +975,10 @@ namespace WinFrmTalk
 
         #endregion
 
-        #region »Ø³µ¼ü¼àÌı
+        #region å›è½¦é”®ç›‘å¬
 
         /// <summary>
-        /// ¼àÌı»Ø³µ¼ü
+        /// ç›‘å¬å›è½¦é”®
         /// </summary>
         private void LoginKeyDown(object sender, KeyEventArgs e)
         {
@@ -986,22 +986,22 @@ namespace WinFrmTalk
             {
                 if (!string.IsNullOrEmpty(Applicate.URLDATA.data.apiUrl))
                 {
-                    this.btnLogin_Click(btnLogin, e); //Enter¼üµÇÂ¼
+                    this.btnLogin_Click(btnLogin, e); //Enteré”®ç™»å½•
                 }
             }
         }
 
         #endregion
 
-        #region µÇÂ½Íê³ÉÌø×ªÖ÷´°¿Ú
+        #region ç™»é™†å®Œæˆè·³è½¬ä¸»çª—å£
         private void JumpMainUI()
         {
             LogUtils.Save("=============================" + TimeUtils.FromatCurrtTime() + "=============================\r\n");
-            LogUtils.Save("=====µÇÂ¼ÕËºÅ:" + (lblContry.Text + txtTelephone.Text) + "======\r\n");
-            LogUtils.Save("=====ÓÃ»§Ãû  :" + Applicate.MyAccount.nickname + "======\r\n");
-            LogUtils.Save("=====ÓÃ»§id  :" + Applicate.MyAccount.userId + "======\r\n");
-            LogUtils.Save("=====ÏµÍ³.net°æ±¾:" + UIUtils.GetDotNetVersion() + "======\r\n");
-            LogUtils.Save("=====³ÌĞò°æ±¾:" + Applicate.APP_VERSION + "-" + Applicate.CURRET_VERSION + "======\r\n");
+            LogUtils.Save("=====ç™»å½•è´¦å·:" + (lblContry.Text + txtTelephone.Text) + "======\r\n");
+            LogUtils.Save("=====ç”¨æˆ·å  :" + Applicate.MyAccount.nickname + "======\r\n");
+            LogUtils.Save("=====ç”¨æˆ·id  :" + Applicate.MyAccount.userId + "======\r\n");
+            LogUtils.Save("=====ç³»ç»Ÿ.netç‰ˆæœ¬:" + UIUtils.GetDotNetVersion() + "======\r\n");
+            LogUtils.Save("=====ç¨‹åºç‰ˆæœ¬:" + Applicate.APP_VERSION + "-" + Applicate.CURRET_VERSION + "======\r\n");
             LocalDataUtils.SetStringData("last_login_service", UIUtils.GetServer());
             LogUtils.Save("=====last_login_service:" + UIUtils.GetServer() + "======\r\n");
 
@@ -1024,15 +1024,15 @@ namespace WinFrmTalk
         }
         #endregion
 
-        #region ¼Ç×¡ÃÜÂë&»ØÏÔÕËºÅ
+        #region è®°ä½å¯†ç &å›æ˜¾è´¦å·
         /// <summary>
-        /// ±£´æµÇÂ½ÕËºÅÊı¾İ,¼Ç×¡ÕËºÅ
+        /// ä¿å­˜ç™»é™†è´¦å·æ•°æ®,è®°ä½è´¦å·
         /// </summary>
         private void SaveAccountInfo()
         {
             Configuration cfa = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            cfa.AppSettings.Settings["areaCodeIndex"].Value = lblContry.Text.ToString(); // ÕËºÅ£¨Ä¬ÈÏ¼Ç×¡£©
-            cfa.AppSettings.Settings["userId"].Value = txtTelephone.Text.Trim(); // ÕËºÅ£¨Ä¬ÈÏ¼Ç×¡£©
+            cfa.AppSettings.Settings["areaCodeIndex"].Value = lblContry.Text.ToString(); // è´¦å·ï¼ˆé»˜è®¤è®°ä½ï¼‰
+            cfa.AppSettings.Settings["userId"].Value = txtTelephone.Text.Trim(); // è´¦å·ï¼ˆé»˜è®¤è®°ä½ï¼‰
 
             if (chkRememberPwd.Checked)
             {
@@ -1045,13 +1045,13 @@ namespace WinFrmTalk
                 cfa.AppSettings.Settings["passWord"].Value = string.Empty;
             }
 
-            cfa.AppSettings.Settings["rememberPwd"].Value = (this.chkRememberPwd.Checked.ToString()); // ×Ô¶¯¸³Öµ
+            cfa.AppSettings.Settings["rememberPwd"].Value = (this.chkRememberPwd.Checked.ToString()); // è‡ªåŠ¨èµ‹å€¼
             cfa.Save();
         }
 
 
         /// <summary>
-        /// »ØÏÔ×îºóÒ»´ÎµÇÂ½µÄÕËºÅ
+        /// å›æ˜¾æœ€åä¸€æ¬¡ç™»é™†çš„è´¦å·
         /// </summary>
         private void ShowUserAccess()
         {
@@ -1060,7 +1060,7 @@ namespace WinFrmTalk
             {
                 lblContry.Text = ConfigurationManager.AppSettings["areaCodeIndex"];
                 txtTelephone.Text = userphone;
-                //Èç¹û¼Ç×¡ÃÜÂëÎªtrue ÄÇÃ´°ÑÖµ¸³¸øÎÄ±¾¿ò
+                //å¦‚æœè®°ä½å¯†ç ä¸ºtrue é‚£ä¹ˆæŠŠå€¼èµ‹ç»™æ–‡æœ¬æ¡†
                 if (ConfigurationManager.AppSettings["rememberPwd"].Equals("True"))
                 {
                     string pwd = ConfigurationManager.AppSettings["passWord"];
@@ -1074,7 +1074,7 @@ namespace WinFrmTalk
         private void pictureBox1_Click(object sender, EventArgs e)
         {
 
-            // ²âÊÔÕâÀïÊÇÖ÷·ÖÖ§live 2020-4-15 12:04:301111111
+            // æµ‹è¯•è¿™é‡Œæ˜¯ä¸»åˆ†æ”¯live 2020-4-15 12:04:301111111
             // ddd
             // eee
         }

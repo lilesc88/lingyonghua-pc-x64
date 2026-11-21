@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -47,7 +47,7 @@ namespace WinFrmTalk.Controls.CustomControls
             InitializeComponent();
             LoadLanguageText();
             //roomId = friend.roomId;
-            //friend = friend.GetByUserId();//Ë¢ĞÂÒ»ÏÂ»ñÈ¡×îĞÂµÄÊı¾İ¿â
+            //friend = friend.GetByUserId();//åˆ·æ–°ä¸€ä¸‹è·å–æœ€æ–°çš„æ•°æ®åº“
             //mFriend = friend;
             lblQRCode.lblleft.MouseDown += infoGroupQRCode_MouseDown;
             lblFile.lblleft.MouseDown += infoCard18_MouseDown;
@@ -56,73 +56,73 @@ namespace WinFrmTalk.Controls.CustomControls
             lblDes.MaxLenth = 50;
         }
 
-        private string GroupName;//ÈºÃû³Æ
-        private string GroupTips;//Èº¹«¸æ
-        private string MynickName;//ÎÒÔÚÈºÀïµÄêÇ³Æ
-        private string GroupDiscription;//Èº×éÃèÊö
+        private string GroupName;//ç¾¤åç§°
+        private string GroupTips;//ç¾¤å…¬å‘Š
+        private string MynickName;//æˆ‘åœ¨ç¾¤é‡Œçš„æ˜µç§°
+        private string GroupDiscription;//ç¾¤ç»„æè¿°
 
-        //µ±Ç°ÈºÈËÊı
+        //å½“å‰ç¾¤äººæ•°
         private int RoomUserCount = 0;
-        //ÈºÈËÊıÉÏÏŞ
+        //ç¾¤äººæ•°ä¸Šé™
         private int RoomUserMax = 20;
 
-        private List<Control> controlLst = new List<Control>();//¼ÓÈëÃæ°åÖĞÊı¾İµÄ¼¯ºÏ
-        private List<RoomMember> roommemberLst = new List<RoomMember>();//Èº³ÉÔ±ÁĞ±í
+        private List<Control> controlLst = new List<Control>();//åŠ å…¥é¢æ¿ä¸­æ•°æ®çš„é›†åˆ
+        private List<RoomMember> roommemberLst = new List<RoomMember>();//ç¾¤æˆå‘˜åˆ—è¡¨
         private string CurrentUserid = Applicate.MyAccount.userId;
-        private int CurrentRole;//µ±Ç°ÓÃ»§½ÇÉ«
-        private bool isChangeChatKey;//ÊÇ·ñ¿ÉÒÔÖØÖÃÈº×éÃÜÔ¿
+        private int CurrentRole;//å½“å‰ç”¨æˆ·è§’è‰²
+        private bool isChangeChatKey;//æ˜¯å¦å¯ä»¥é‡ç½®ç¾¤ç»„å¯†é’¥
         private Friend mFriend;
-        private LodingUtils loding;//µÈ´ı·û
-        private Friend RoleHoste = new Friend();//ÈºÖ÷
-        int isNeedVerify = 0;//ÅĞ¶ÏÊÇ·ñ¿ªÆôÑûÇëºÃÓÑÑéÖ¤
-        int showMember = 0;//ÊÇ·ñÏÔÊ¾Èº³ÉÔ±
-        int allowInviteFriend = 0;//ÊÇ·ñÔÊĞíÑûÇëºÃÓÑ
+        private LodingUtils loding;//ç­‰å¾…ç¬¦
+        private Friend RoleHoste = new Friend();//ç¾¤ä¸»
+        int isNeedVerify = 0;//åˆ¤æ–­æ˜¯å¦å¼€å¯é‚€è¯·å¥½å‹éªŒè¯
+        int showMember = 0;//æ˜¯å¦æ˜¾ç¤ºç¾¤æˆå‘˜
+        int allowInviteFriend = 0;//æ˜¯å¦å…è®¸é‚€è¯·å¥½å‹
         private RoomMember getnoticeinfo;
-        Dictionary<string, Friend> Selectdata = new Dictionary<string, Friend>();//ÑûÇëºÃÓÑµÄ¼¯ºÏ
+        Dictionary<string, Friend> Selectdata = new Dictionary<string, Friend>();//é‚€è¯·å¥½å‹çš„é›†åˆ
 
         /// <summary>
-        /// ÉèÖÃµ±Ç°roonµÄfriend
+        /// è®¾ç½®å½“å‰roonçš„friend
         /// </summary>
         /// <param name="friend"></param>
         internal void SetRoomData(Friend friend)
         {
-            friend = friend.GetByUserId();//Ë¢ĞÂÒ»ÏÂ»ñÈ¡×îĞÂµÄÊı¾İ¿â
+            friend = friend.GetByUserId();//åˆ·æ–°ä¸€ä¸‹è·å–æœ€æ–°çš„æ•°æ®åº“
             mFriend = friend;
 
         }
 
-        #region ÏÔÊ¾µÈ´ı·û
+        #region æ˜¾ç¤ºç­‰å¾…ç¬¦
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="control">µÈ´ı·ûËùÔÚµÄ¸¸ÈİÆ÷</param>
+        /// <param name="control">ç­‰å¾…ç¬¦æ‰€åœ¨çš„çˆ¶å®¹å™¨</param>
         private void ShowLodingDialog(Control control)
         {
             this.loding = new LodingUtils { };
 
 
             this.loding.parent = control;
-            this.loding.Title = LanguageXmlUtils.GetValue("loading", "¼ÓÔØÖĞ");
+            this.loding.Title = LanguageXmlUtils.GetValue("loading", "åŠ è½½ä¸­");
             this.loding.start();
         }
-        #endregion »ñÈ¡½çÃæÉÏµÄËùÓĞÊı¾İ
+        #endregion è·å–ç•Œé¢ä¸Šçš„æ‰€æœ‰æ•°æ®
 
-        #region Ìî³äÈºÉèÖÃÒ³ÃæÉÏµÄÊı¾İ
+        #region å¡«å……ç¾¤è®¾ç½®é¡µé¢ä¸Šçš„æ•°æ®
         /// <summary>
-        /// Ìî³äÈºÉèÖÃÒ³ÃæÉÏµÄÊı¾İ
+        /// å¡«å……ç¾¤è®¾ç½®é¡µé¢ä¸Šçš„æ•°æ®
         /// </summary>
         public void FillData()
         {
-            LoadGroupData(true);//µÚÒ»´Î¼ÓÔØÊı¾İ
+            LoadGroupData(true);//ç¬¬ä¸€æ¬¡åŠ è½½æ•°æ®
 
-            RegistNotiy();//¼àÌı
+            RegistNotiy();//ç›‘å¬
             RegistAdd();
         }
         #endregion
 
-        #region  ×¢²áÌí¼ÓÈº³ÉÔ±
+        #region  æ³¨å†Œæ·»åŠ ç¾¤æˆå‘˜
         /// <summary>
-        /// ×¢²áÌí¼ÓÈº³ÉÔ±
+        /// æ³¨å†Œæ·»åŠ ç¾¤æˆå‘˜
         /// </summary>
 
         private void RegistAdd()
@@ -131,10 +131,10 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ×¢²áÈº¿ØÖÆÏûÏ¢
+        #region æ³¨å†Œç¾¤æ§åˆ¶æ¶ˆæ¯
         private void RegistNotiy()
         {
-            //°´»ØÖ´¸üĞÂÒÑ¶ÁÏûÏ¢×´Ì¬
+            //æŒ‰å›æ‰§æ›´æ–°å·²è¯»æ¶ˆæ¯çŠ¶æ€
             Messenger.Default.Register<MessageObject>(this, MessageActions.XMPP_UPDATE_ROOM_CHANGE_MESSAGE, item => Getmonitor(item));
 
         }
@@ -146,32 +146,32 @@ namespace WinFrmTalk.Controls.CustomControls
             LoadGroupData(false);
         }
 
-        #region ½Ó¿Ú¼ÓÔØÊı¾İ
+        #region æ¥å£åŠ è½½æ•°æ®
 
         /// <summary>
-        /// ½Ó¿Ú¼ÓÔØÊı¾İ
+        /// æ¥å£åŠ è½½æ•°æ®
         /// </summary>
-        /// <param name="a">ÊÇ·ñÊÇ´Ë½çÃæµÚÒ»´Î¼ÓÔØÊı¾İ</param>
+        /// <param name="a">æ˜¯å¦æ˜¯æ­¤ç•Œé¢ç¬¬ä¸€æ¬¡åŠ è½½æ•°æ®</param>
         private void LoadGroupData(bool a)
         {
-            ShowLodingDialog(this);//ÏÔÊ¾µÈ´ı·û
-            //http getÇëÇó»ñµÃÊı¾İ
+            ShowLodingDialog(this);//æ˜¾ç¤ºç­‰å¾…ç¬¦
+            //http getè¯·æ±‚è·å¾—æ•°æ®
             HttpUtils.Instance.InitHttp(this);
-            //½«Êı¾İ±£´æ
-            HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/get") //»ñÈ¡ÈºÏêÇé
+            //å°†æ•°æ®ä¿å­˜
+            HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/get") //è·å–ç¾¤è¯¦æƒ…
                 .AddParams("access_token", Applicate.Access_Token)
                 .AddParams("roomId", mFriend.RoomId)
                 .AddParams("pageSize", "15")
                  .Build().AddErrorListener((code, err) =>
                  {
-                     loding.stop();//¹Ø±ÕµÈ´ı·û
+                     loding.stop();//å…³é—­ç­‰å¾…ç¬¦
                  })
                  .Execute((sccess, room) =>
                  {
                      if (sccess)
                      {
-                         //¼ÓÔØÊı¾İ
-                         FillListData(room, a);//½«Êı¾İÌî³äµ½½çÃæÖĞ
+                         //åŠ è½½æ•°æ®
+                         FillListData(room, a);//å°†æ•°æ®å¡«å……åˆ°ç•Œé¢ä¸­
                      }
                      else
                      {
@@ -183,9 +183,9 @@ namespace WinFrmTalk.Controls.CustomControls
         #endregion
 
         /// <summary>
-        /// Í¬²½¸üĞÂÊı¾İ£¬µ±Êı¾İ±»¸ü¸ÄÊ±Ë¢ĞÂUI
+        /// åŒæ­¥æ›´æ–°æ•°æ®ï¼Œå½“æ•°æ®è¢«æ›´æ”¹æ—¶åˆ·æ–°UI
         /// </summary>
-        /// <param name="msg">´«ÈëµÄÏûÏ¢</param>
+        /// <param name="msg">ä¼ å…¥çš„æ¶ˆæ¯</param>
         public void Getmonitor(MessageObject msg)
         {
             if (this.IsHandleCreated)
@@ -197,35 +197,35 @@ namespace WinFrmTalk.Controls.CustomControls
                 }));
             }
         }
-        #region ÏûÏ¢¼àÌı
+        #region æ¶ˆæ¯ç›‘å¬
         /// <summary>
-        /// ÏûÏ¢¼àÌı
+        /// æ¶ˆæ¯ç›‘å¬
         /// </summary>
-        /// <param name="msg">´«ÈëµÄÏûÏ¢</param>
+        /// <param name="msg">ä¼ å…¥çš„æ¶ˆæ¯</param>
         public void MainNotiy(MessageObject msg)
         {
             if (mFriend != null && !string.Equals(msg.ChatJid, mFriend.UserId))
             {
-                Console.WriteLine("²»ÊôÓÚÕâ¸öÈºµÄ¿ØÖÆÏûÏ¢");
+                Console.WriteLine("ä¸å±äºè¿™ä¸ªç¾¤çš„æ§åˆ¶æ¶ˆæ¯");
                 return;
             }
 
 
             switch (msg.type)
             {
-                case kWCMessageType.RoomNameChange://¸ÄÈºÃû
+                case kWCMessageType.RoomNameChange://æ”¹ç¾¤å
 
                     lblName.FunctionInfo = msg.content;
                     break;
-                case kWCMessageType.RoomDismiss://½âÉ¢
+                case kWCMessageType.RoomDismiss://è§£æ•£
 
-                    //ÈºÖ÷½âÉ¢ºÍÖ÷¶¯ÍË³ö,µ±ÎÒ´ò¿ªÈºÉèÖÃÒ³Ãæ£¬ÎÒ±»Ìá³ö»òÍË³öÊ±
-                    //ÎÒ×Ô¼ºÍËÈº
+                    //ç¾¤ä¸»è§£æ•£å’Œä¸»åŠ¨é€€å‡º,å½“æˆ‘æ‰“å¼€ç¾¤è®¾ç½®é¡µé¢ï¼Œæˆ‘è¢«æå‡ºæˆ–é€€å‡ºæ—¶
+                    //æˆ‘è‡ªå·±é€€ç¾¤
                     if (msg.myUserId.Equals(msg.fromUserId))
                     {
 
                     }
-                    else//±»Ìß
+                    else//è¢«è¸¢
                     {
                         FrmSMPGroupSet frmgroupset = (FrmSMPGroupSet)this.Parent;
                         frmgroupset.IsClose = true;
@@ -234,10 +234,10 @@ namespace WinFrmTalk.Controls.CustomControls
                     }
 
                     break;
-                case kWCMessageType.RoomExit://ÍËÈº
-                    if (msg.toUserId == Applicate.MyAccount.userId)//ÎÒÖ÷¶¯ÍËÈº
+                case kWCMessageType.RoomExit://é€€ç¾¤
+                    if (msg.toUserId == Applicate.MyAccount.userId)//æˆ‘ä¸»åŠ¨é€€ç¾¤
                     {
-                        if (msg.FromId == CurrentUserid)//´ò¿ªµÄÊÇµ±Ç°½çÃæ£¬½«Ëü¹Ø±Õ
+                        if (msg.FromId == CurrentUserid)//æ‰“å¼€çš„æ˜¯å½“å‰ç•Œé¢ï¼Œå°†å®ƒå…³é—­
                         {
                             FrmSMPGroupSet frmgroupset = (FrmSMPGroupSet)this.Parent;
                             frmgroupset.IsClose = true;
@@ -246,19 +246,19 @@ namespace WinFrmTalk.Controls.CustomControls
                     }
                     else
                     {
-                        //¼àÌıµ½ÓĞÈËÍËÈº£¬ÏÖÔÚµÄ´¦ÀíÊÇµ÷Ò»±é½Ó¿Ú
+                        //ç›‘å¬åˆ°æœ‰äººé€€ç¾¤ï¼Œç°åœ¨çš„å¤„ç†æ˜¯è°ƒä¸€éæ¥å£
                         LoadGroupData(false);
                     }
                     break;
-                case kWCMessageType.RoomNotice://¹«¸æ
+                case kWCMessageType.RoomNotice://å…¬å‘Š
 
                     lblNotice.FunctionInfo = msg.content;
                     break;
-                case kWCMessageType.RoomInvite://½øÈº
+                case kWCMessageType.RoomInvite://è¿›ç¾¤
                     LoadGroupData(false);
 
                     break;
-                case kWCMessageType.RoomMemberNameChange://¸ÄÈºÄÚêÇ³Æ
+                case kWCMessageType.RoomMemberNameChange://æ”¹ç¾¤å†…æ˜µç§°
 
                     if (CurrentUserid == msg.fromUserId)
                     {
@@ -266,35 +266,35 @@ namespace WinFrmTalk.Controls.CustomControls
                     }
                     break;
 
-                case kWCMessageType.RoomInsideVisiblity://ÔÊĞíÏÔÊ¾Èº³ÉÔ±
+                case kWCMessageType.RoomInsideVisiblity://å…è®¸æ˜¾ç¤ºç¾¤æˆå‘˜
                     showMember = Convert.ToInt32(msg.content);
                     mFriend.ShowMember = showMember;
-                    if (showMember == 0)//²»ÔÊĞíÏÔÊ¾Èº³ÉÔ±
+                    if (showMember == 0)//ä¸å…è®¸æ˜¾ç¤ºç¾¤æˆå‘˜
                     {
-                        if (CurrentRole == 3 || CurrentRole == 4)//ÆÕÍ¨³ÉÔ±ºÍÒşÉíÈË
+                        if (CurrentRole == 3 || CurrentRole == 4)//æ™®é€šæˆå‘˜å’Œéšèº«äºº
                         {
                             AdddataTopal(roommemberLst, false);
                         }
                     }
                     else
                     {
-                        AdddataTopal(roommemberLst, true);//ÈºÖ÷ºÍ¹ÜÀíÔ±
+                        AdddataTopal(roommemberLst, true);//ç¾¤ä¸»å’Œç®¡ç†å‘˜
                     }
                     break;
-                case kWCMessageType.RoomIsVerify://ÈºÑéÖ¤
-                    isNeedVerify = Convert.ToInt32(msg.content);//ÊÇ·ñ¿ªÆôÈºÑéÖ¤
-                    mFriend.IsNeedVerify = isNeedVerify;//¸üĞÂÊı¾İ¿â
+                case kWCMessageType.RoomIsVerify://ç¾¤éªŒè¯
+                    isNeedVerify = Convert.ToInt32(msg.content);//æ˜¯å¦å¼€å¯ç¾¤éªŒè¯
+                    mFriend.IsNeedVerify = isNeedVerify;//æ›´æ–°æ•°æ®åº“
                     mFriend.UpdateNeedVerify();
                     break;
-                case kWCMessageType.RoomManagerTransfer://ÈºÖ÷×ªÈÃ
-                    if (showMember == 0)//²»ÏÔÊ¾Èº³ÉÔ±£¬panelÖĞÖ»ÓĞµ±Ç°³ÉÔ±ºÍÈºÖ÷£¬Ë¢ĞÂÈºÖ÷
+                case kWCMessageType.RoomManagerTransfer://ç¾¤ä¸»è½¬è®©
+                    if (showMember == 0)//ä¸æ˜¾ç¤ºç¾¤æˆå‘˜ï¼Œpanelä¸­åªæœ‰å½“å‰æˆå‘˜å’Œç¾¤ä¸»ï¼Œåˆ·æ–°ç¾¤ä¸»
                     {
                         for (int i = 0; i < controlLst.Count; i++)
                         {
                             USEpicAddName use = (USEpicAddName)controlLst[i];
-                            if (msg.toUserId == CurrentUserid)//Èç¹û×Ô¼º±»×ªÈÃÎªÈºÖ÷
+                            if (msg.toUserId == CurrentUserid)//å¦‚æœè‡ªå·±è¢«è½¬è®©ä¸ºç¾¤ä¸»
                             {
-                                CurrentRole = 1;//µ±Ç°µÄ½ÇÉ«
+                                CurrentRole = 1;//å½“å‰çš„è§’è‰²
                                 LoadGroupData(false);
                             }
                             else
@@ -311,7 +311,7 @@ namespace WinFrmTalk.Controls.CustomControls
                     }
                     else
                     {
-                        if (msg.toUserId == CurrentUserid)//Èç¹û×Ô¼º±»×ªÈÃÎªÈºÖ÷
+                        if (msg.toUserId == CurrentUserid)//å¦‚æœè‡ªå·±è¢«è½¬è®©ä¸ºç¾¤ä¸»
                         {
                             CurrentRole = 1;
                             LoadGroupData(false);
@@ -322,23 +322,23 @@ namespace WinFrmTalk.Controls.CustomControls
                     //member.userId = msg.fromUserId;
                     //member.role = 1;
                     break;
-                case kWCMessageType.RoomAllowMemberInvite://ÔÊĞíÆÕÍ¨ºÃÓÑÑûÇë
+                case kWCMessageType.RoomAllowMemberInvite://å…è®¸æ™®é€šå¥½å‹é‚€è¯·
                     allowInviteFriend = Convert.ToInt32(msg.content);
                     break;
                 case kWCMessageType.RoomAdmin:
                     if (msg.toUserId == CurrentUserid)
                     {
                         CurrentRole = 2;
-                        LoadGroupData(false);//ÎÒ×Ô¼º³ÉÎª¹ÜÀíÔ±
+                        LoadGroupData(false);//æˆ‘è‡ªå·±æˆä¸ºç®¡ç†å‘˜
                     }
                     else
                     {
 
                     }
                     break;
-                case kWCMessageType.RoomAllowUploadFile://ÔÊĞíÉÏ´«ÎÄ¼ş
+                case kWCMessageType.RoomAllowUploadFile://å…è®¸ä¸Šä¼ æ–‡ä»¶
                     int allowupdatefile = Convert.ToInt32(msg.content);
-                    mFriend.UpdateAllowUploadFile(allowupdatefile);//±£´æÊı¾İ¿â
+                    mFriend.UpdateAllowUploadFile(allowupdatefile);//ä¿å­˜æ•°æ®åº“
                     break;
                 case kWCMessageType.RoomUserRecommend:
                     mFriend.AllowSendCard = Convert.ToInt32(msg.content);
@@ -350,12 +350,12 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ´Ó½Ó¿Ú»ñµÃµÄÊı¾İÏÔÊ¾ÔÚ½çÃæÖĞ
+        #region ä»æ¥å£è·å¾—çš„æ•°æ®æ˜¾ç¤ºåœ¨ç•Œé¢ä¸­
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="keys">j½Ó¿Ú»ñµÃµÄ×Öµä¼¯ºÏ</param>
-        /// <param name="isFrist">ÊÇ²»ÊÇµÚÒ»´Îµ÷È¡½Ó¿Ú</param>
+        /// <param name="keys">jæ¥å£è·å¾—çš„å­—å…¸é›†åˆ</param>
+        /// <param name="isFrist">æ˜¯ä¸æ˜¯ç¬¬ä¸€æ¬¡è°ƒå–æ¥å£</param>
         private void FillListData(Dictionary<string, object> keys, bool isFrist)
         {
             var iconfont = Program.ApplicationFontCollection.Families.Last();
@@ -368,11 +368,11 @@ namespace WinFrmTalk.Controls.CustomControls
             roommemberLst = roomMember.TransToMember(keys, mFriend.RoomId);
             mFriend.TransToMember(keys);
             string save = UIUtils.DecodeString(keys, "chatRecordTimeOut");
-            //ÏûÏ¢¹ıÆÚ
+            //æ¶ˆæ¯è¿‡æœŸ
             LocalDataUtils.SetStringData(mFriend.UserId + "chatRecordTimeOut" + Applicate.MyAccount.userId, save);
             OverdueDate(save, false);
 
-            // ¸üĞÂ×Ô¼ºÔÚÈºÀïÃæµÄÊı¾İ
+            // æ›´æ–°è‡ªå·±åœ¨ç¾¤é‡Œé¢çš„æ•°æ®
             string roomByme = UIUtils.DecodeString(keys, "member");
             if (!UIUtils.IsNull(roomByme))
             {
@@ -387,7 +387,7 @@ namespace WinFrmTalk.Controls.CustomControls
                     RoomMemberDao.Instance.UpdateNickname(mFriend.RoomId, member.userId, MynickName);
                 }
 
-                // ÖÃ¶¥ÁÄÌì
+                // ç½®é¡¶èŠå¤©
                 if (member.openTopChatTime != mFriend.TopTime)
                 {
                     int time = member.openTopChatTime;
@@ -397,7 +397,7 @@ namespace WinFrmTalk.Controls.CustomControls
                 }
 
 
-                // ÏûÏ¢Ãâ´òÈÅ
+                // æ¶ˆæ¯å…æ‰“æ‰°
                 if (member.offlineNoPushMsg != mFriend.Nodisturb)
                 {
                     mFriend.Nodisturb = member.offlineNoPushMsg;
@@ -415,12 +415,12 @@ namespace WinFrmTalk.Controls.CustomControls
             mFriend.IsSecretGroup = UIUtils.DecodeInt(keys, "isSecretGroup");
             mFriend.IsSecretGroup = UIUtils.DecodeInt(keys, "isSecretGroup");
 
-            // ÊÇ·ñÊÇ¶Ëµ½¶Ë¼ÓÃÜÈº×é
+            // æ˜¯å¦æ˜¯ç«¯åˆ°ç«¯åŠ å¯†ç¾¤ç»„
             if (mFriend.IsSecretGroup == 1)
             {
                 if (CurrentRole == 1)
                 {
-                    lblQRCode.FunctionName = LanguageXmlUtils.GetValue("reset_key", "ÖØÖÃÈº×éÍ¨ĞÅÃÜÔ¿");
+                    lblQRCode.FunctionName = LanguageXmlUtils.GetValue("reset_key", "é‡ç½®ç¾¤ç»„é€šä¿¡å¯†é’¥");
                     isChangeChatKey = true;
                 }
                 else
@@ -430,22 +430,22 @@ namespace WinFrmTalk.Controls.CustomControls
             }
 
 
-            // È¥Ë¢ĞÂÈºÍ·Ïñ
-            Messenger.Default.Send(mFriend.UserId, MessageActions.UPDATE_HEAD);//·¢ËÍË¢ĞÂÍ·ÏñÍ¨Öª
+            // å»åˆ·æ–°ç¾¤å¤´åƒ
+            Messenger.Default.Send(mFriend.UserId, MessageActions.UPDATE_HEAD);//å‘é€åˆ·æ–°å¤´åƒé€šçŸ¥
 
-            //ÏûÏ¢¹ıÆÚ½öÈºÖ÷¿É¼û
+            //æ¶ˆæ¯è¿‡æœŸä»…ç¾¤ä¸»å¯è§
             if (CurrentRole != 1)
             {
                 panel3.Visible = false;
             }
-            //Ö»ÓĞÈºÖ÷ÄÜ½âÉ¢£¬ÆäÓàÖ»ÄÜÊÇÍË³öÈº
+            //åªæœ‰ç¾¤ä¸»èƒ½è§£æ•£ï¼Œå…¶ä½™åªèƒ½æ˜¯é€€å‡ºç¾¤
             if (CurrentRole == 1)
             {
-                btnexite.Text = LanguageXmlUtils.GetValue("btn_dissolve_group", "½âÉ¢¸ÃÈº");
+                btnexite.Text = LanguageXmlUtils.GetValue("btn_dissolve_group", "è§£æ•£è¯¥ç¾¤");
             }
             else
             {
-                btnexite.Text = LanguageXmlUtils.GetValue("btn_delete_and_exit", "É¾³ı²¢ÍË³ö ");
+                btnexite.Text = LanguageXmlUtils.GetValue("btn_delete_and_exit", "åˆ é™¤å¹¶é€€å‡º ");
             }
             Padding pading = new Padding();
             pading = btnexite.Margin;
@@ -454,15 +454,15 @@ namespace WinFrmTalk.Controls.CustomControls
             // btnexite.Margin = new Padding(left, pading.Top, pading.Right, pading.Bottom);
 
             allowInviteFriend = mFriend.AllowInviteFriend;
-            if (isFrist)//µÚÒ»´Î´Ó½Ó¿Ú»ñÈ¡Êı¾İ
+            if (isFrist)//ç¬¬ä¸€æ¬¡ä»æ¥å£è·å–æ•°æ®
             {
                 lblNotice.lblInfo.Click -= lblNotice.lblInfo_Click;
-                //Ìí¼Ó°´Å¥
+                //æ·»åŠ æŒ‰é’®
 
-                btnAdd.pics.Click -= btnAdd.pics_Click;//È¡Ïûµã»÷Í¼Æ¬µÄÊÂ¼ş
+                btnAdd.pics.Click -= btnAdd.pics_Click;//å–æ¶ˆç‚¹å‡»å›¾ç‰‡çš„äº‹ä»¶
                 btnAdd.pics.Size = new Size(35, 35);
 
-                btnAdd.lblName.Text = LanguageXmlUtils.GetValue("add", "Ìí¼Ó");
+                btnAdd.lblName.Text = LanguageXmlUtils.GetValue("add", "æ·»åŠ ");
 
                 btnAdd.lblName.Location = new Point(10, btnAdd.pics.Size.Height + 8);
                 btnAdd.lblName.Font = new Font(Applicate.SetFont, 8F);
@@ -472,27 +472,27 @@ namespace WinFrmTalk.Controls.CustomControls
 
                 btnAdd.pics.Click += BtnAdd_Click1;
                 btnAdd.Visible = true;
-                //É¾³ı°´Å¥
+                //åˆ é™¤æŒ‰é’®
 
                 btnDel.pics.Click -= btnDel.pics_Click;
                 //  btnDel.pics.Size = new Size(35, 35);
-                btnDel.lblName.Text = LanguageXmlUtils.GetValue("delete", "É¾³ı");
+                btnDel.lblName.Text = LanguageXmlUtils.GetValue("delete", "åˆ é™¤");
 
 
                 btnDel.lblName.Location = new Point(10, btnDel.pics.Size.Height + 8);
                 btnDel.lblName.Font = new Font(Applicate.SetFont, 8F);
 
-                // btnDel.NickName = "É¾³ı";
+                // btnDel.NickName = "åˆ é™¤";
                 btnDel.pics.Image = WinFrmTalk.Properties.Resources.Aum;
                 btnDel.Visible = true;
 
-                if (CurrentRole == 3 || CurrentRole == 4)//ÆÕÍ¨³ÉÔ±ºÍÓ°ÉíÈË
+                if (CurrentRole == 3 || CurrentRole == 4)//æ™®é€šæˆå‘˜å’Œå½±èº«äºº
                 {
                     btnDel.Visible = false;
                 }
                 btnDel.pics.Click += BtnDel_Click1;
 
-                //ÖÃ¶¥
+                //ç½®é¡¶
                 if (mFriend.TopTime == 0)
                 {
                     lblTop.checkData.Checked = false;
@@ -502,9 +502,9 @@ namespace WinFrmTalk.Controls.CustomControls
                     lblTop.checkData.Checked = true;
                 }
 
-                isNeedVerify = mFriend.IsNeedVerify;//ÈºÑéÖ¤
+                isNeedVerify = mFriend.IsNeedVerify;//ç¾¤éªŒè¯
 
-                //¶Ô×Ô¶¨Òå¿Ø¼şÖĞµÄ×Ó¿Ø¼ş°ó¶¨£¬±ÜÃâµã»÷×Ó¿Ø¼şÃ»ÓĞÊÂ¼şÏìÓ¦
+                //å¯¹è‡ªå®šä¹‰æ§ä»¶ä¸­çš„å­æ§ä»¶ç»‘å®šï¼Œé¿å…ç‚¹å‡»å­æ§ä»¶æ²¡æœ‰äº‹ä»¶å“åº”
                 lblFile.lblleft.MouseDown += infoCard18_MouseDown;
                 lblMenge.lblleft.MouseDown += infoMenge_MouseDown;
                 lblMenge.lblfeatures.MouseDown += infoMenge_MouseDown;
@@ -516,12 +516,12 @@ namespace WinFrmTalk.Controls.CustomControls
                 // infoMenge.MouseHover += InfoMenge_MouseHover;
                 //  infoMenge.MouseMove += InfoMenge_MouseMove;
 
-                //ÏûÏ¢Ãâ´òÈÅ
+                //æ¶ˆæ¯å…æ‰“æ‰°
                 lblNoDisturbing.checkData.Checked = mFriend.Nodisturb == 1; // LocalDataUtils.GetBoolData(mFriend.userId + "NOT_DISTURB" + CurrentUserid);
                 lblTop.checkData.Click += CheckData_Click;
                 lblNoDisturbing.checkData.Click += CheckData_Click;
 
-                showMember = mFriend.ShowMember;//ÏÔÊ¾Èº³ÉÔ±
+                showMember = mFriend.ShowMember;//æ˜¾ç¤ºç¾¤æˆå‘˜
 
                 ShowmembertTopal(showMember);
 
@@ -530,7 +530,7 @@ namespace WinFrmTalk.Controls.CustomControls
                 GroupName = lblName.FunctionInfo;
                 //if (CurrentRole == 3 || CurrentRole == 4)
                 //{
-                //    lblName.lblInfo.Click -= lblName.lblInfo_Click;//ÆÕÍ¨³ÉÔ±²»¿ÉĞŞ¸ÄÈºÃûÆ¬
+                //    lblName.lblInfo.Click -= lblName.lblInfo_Click;//æ™®é€šæˆå‘˜ä¸å¯ä¿®æ”¹ç¾¤åç‰‡
                 //}
                 //else
                 //{
@@ -542,12 +542,12 @@ namespace WinFrmTalk.Controls.CustomControls
                 roomMember.userId = CurrentUserid;
                 roomMember.GetRoomMember();
 
-                //ÈºÃèÊö
+                //ç¾¤æè¿°
 
                 lblDes.FunctionInfo = mFriend.Description;
                 GroupDiscription = lblDes.FunctionInfo;
                 GroupTips = lblNotice.lblInfo.Text;
-                //êÇ³Æ
+                //æ˜µç§°
                 lblNickname.txtinfo.Visible = false;
                 lblNickname.lblInfo.Click += Txtinfo_Click1;
                 lblNickname.txtinfo.ReadOnly = true;
@@ -560,8 +560,8 @@ namespace WinFrmTalk.Controls.CustomControls
 
                 if (roomMember.NoticeLst.Count == 0 || roomMember.NoticeLst == null)
                 {
-                    //Ã»ÓĞ¹«¸æµÄÆÕÍ¨³ÉÔ±ºÍÒşÉíÈË¶¼²»¿Éµã»÷
-                    lblNotice.lblInfo.Text = LanguageXmlUtils.GetValue("none_notice", "ÔİÎŞ¹«¸æ");
+                    //æ²¡æœ‰å…¬å‘Šçš„æ™®é€šæˆå‘˜å’Œéšèº«äººéƒ½ä¸å¯ç‚¹å‡»
+                    lblNotice.lblInfo.Text = LanguageXmlUtils.GetValue("none_notice", "æš‚æ— å…¬å‘Š");
 
                 }
 
@@ -579,14 +579,14 @@ namespace WinFrmTalk.Controls.CustomControls
                     lblNotice.txtinfo.ReadOnly = true;
                     lblNotice.txtinfo.Visible = false;
                 }
-                //ÅĞ¶Ï
+                //åˆ¤æ–­
                 if (MynickName != null)
                 {
                     lblNickname.FunctionInfo = MynickName.ToString();
                 }
 
             }
-            else//²»ÊÇÊ×´Î¼ÓÔØ
+            else//ä¸æ˜¯é¦–æ¬¡åŠ è½½
             {
                 // AdddataTopal(roommemberLst, true);
                 ShowmembertTopal(showMember);
@@ -644,7 +644,7 @@ namespace WinFrmTalk.Controls.CustomControls
                   if (sccess)
                   {
                       loding.stop();
-                      //±£´æÊı¾İ¿â
+                      //ä¿å­˜æ•°æ®åº“
 
                       RoomMemberDao.Instance.UpdateCardname(mFriend.RoomId, CurrentUserid, MynickName);
 
@@ -658,8 +658,8 @@ namespace WinFrmTalk.Controls.CustomControls
                 frmprent.IsClose = true;
             });
 
-            string title = LanguageXmlUtils.GetValue("title_modify_groupnickname", "ĞŞ¸ÄÈºÄÚêÇ³Æ");
-            string name = LanguageXmlUtils.GetValue("name_group_nickname", "ÈºÄÚêÇ³Æ", true);
+            string title = LanguageXmlUtils.GetValue("title_modify_groupnickname", "ä¿®æ”¹ç¾¤å†…æ˜µç§°");
+            string name = LanguageXmlUtils.GetValue("name_group_nickname", "ç¾¤å†…æ˜µç§°", true);
             frm.ShowThis(title, name, false);
 
         }
@@ -672,7 +672,7 @@ namespace WinFrmTalk.Controls.CustomControls
             if (CurrentRole == 3 || CurrentRole == 4)
             {
                 var main = HttpUtils.Instance.FindFrm(typeof(FrmMain));
-                main.ShowTip("·Ç¹ÜÀíÈËÔ±²»ÔÊĞíĞŞ¸Ä");
+                main.ShowTip("éç®¡ç†äººå‘˜ä¸å…è®¸ä¿®æ”¹");
                 frmprent.IsClose = true;
                 return;
             }
@@ -696,7 +696,7 @@ namespace WinFrmTalk.Controls.CustomControls
                 ShowLodingDialog(panel1);
                 frmprent.IsClose = true;
                 HttpUtils.Instance.InitHttp(this);
-                HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/update") //»ñÈ¡ÈºÏêÇé
+                HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/update") //è·å–ç¾¤è¯¦æƒ…
               .AddParams("access_token", Applicate.Access_Token)
               .AddParams("roomId", mFriend.RoomId)
                .AddParams("roomName", GroupName)
@@ -713,7 +713,7 @@ namespace WinFrmTalk.Controls.CustomControls
                   {
                       loding.stop();
                       mFriend.NickName = GroupName;
-                      mFriend.UpdateNickName();//¸üĞÂÊı¾İ¿âÖĞµÄÈºêÇ³Æ
+                      mFriend.UpdateNickName();//æ›´æ–°æ•°æ®åº“ä¸­çš„ç¾¤æ˜µç§°
                       lblName.txtinfo.Visible = false;
 
 
@@ -731,8 +731,8 @@ namespace WinFrmTalk.Controls.CustomControls
 
             );
 
-            string title = LanguageXmlUtils.GetValue("title_modify_groupname", "ĞŞ¸ÄÈºÃû³Æ");
-            string name = LanguageXmlUtils.GetValue("name_group_name", "Èº×éÃû³Æ", true);
+            string title = LanguageXmlUtils.GetValue("title_modify_groupname", "ä¿®æ”¹ç¾¤åç§°");
+            string name = LanguageXmlUtils.GetValue("name_group_name", "ç¾¤ç»„åç§°", true);
             frm.ShowThis(title, name, false);
 
 
@@ -762,8 +762,8 @@ namespace WinFrmTalk.Controls.CustomControls
             switch (tag)
             {
 
-                case "2":// ÏûÏ¢Ãâ´òÈÅ
-                    Console.WriteLine(LanguageXmlUtils.GetValue("no_disturbing", "ÏûÏ¢Ãâ´òÈÅ") + lollipop.Checked);
+                case "2":// æ¶ˆæ¯å…æ‰“æ‰°
+                    Console.WriteLine(LanguageXmlUtils.GetValue("no_disturbing", "æ¶ˆæ¯å…æ‰“æ‰°") + lollipop.Checked);
                     mFriend.Nodisturb = lollipop.Checked ? 1 : 0;
                     mFriend.UpdateNodisturb();
                     Messenger.Default.Send(mFriend, MessageActions.UPDATE_FRIEND_DISTURB);
@@ -771,7 +771,7 @@ namespace WinFrmTalk.Controls.CustomControls
                     RequestRoomSetting(mFriend, 0, lollipop.Checked);
                     break;
 
-                case "3":// ÏûÏ¢ÖÃ¶¥
+                case "3":// æ¶ˆæ¯ç½®é¡¶
 
                     int time = lollipop.Checked ? TimeUtils.CurrentIntTime() : 0;
                     mFriend.UpdateTopTime(time);
@@ -787,10 +787,10 @@ namespace WinFrmTalk.Controls.CustomControls
 
         
         /// <summary>
-        /// ±£´æÏûÏ¢Ãâ´òÈÅ-ÔÄºó¼´·Ù-ÖÃ¶¥×´Ì¬µ½·şÎñÆ÷
+        /// ä¿å­˜æ¶ˆæ¯å…æ‰“æ‰°-é˜…åå³ç„š-ç½®é¡¶çŠ¶æ€åˆ°æœåŠ¡å™¨
         /// </summary>
-        /// <param name="friend">Èº×é</param>
-        /// <param name="type">0== Ãâ´òÈÅ 1== ÖÃ¶¥  </param>
+        /// <param name="friend">ç¾¤ç»„</param>
+        /// <param name="type">0== å…æ‰“æ‰° 1== ç½®é¡¶  </param>
         private void RequestRoomSetting(Friend friend, int type, bool isOpen)
         {
             string topvalue = isOpen ? "1" : "0";
@@ -806,44 +806,44 @@ namespace WinFrmTalk.Controls.CustomControls
         }
 
 
-        #region  ²»ÊÇÊ×´ÎÏÔÊ¾´Ó½Ó¿Ú»ñÈ¡µÄÊı¾İ(Ö»ÏÔÊ¾³ÉÔ±ĞÅÏ¢£¬²»ÏÔÊ¾Èº¿ØÖÆÏûÏ¢)
+        #region  ä¸æ˜¯é¦–æ¬¡æ˜¾ç¤ºä»æ¥å£è·å–çš„æ•°æ®(åªæ˜¾ç¤ºæˆå‘˜ä¿¡æ¯ï¼Œä¸æ˜¾ç¤ºç¾¤æ§åˆ¶æ¶ˆæ¯)
         /// <summary>CurrentRole
         /// 
         /// </summary>
-        /// <param name="showmember">1.ÏÔÊ¾Èº³ÉÔ±0.²»ÏÔÊ¾Èº³ÉÔ±</param>
+        /// <param name="showmember">1.æ˜¾ç¤ºç¾¤æˆå‘˜0.ä¸æ˜¾ç¤ºç¾¤æˆå‘˜</param>
         public void ShowmembertTopal(int showmember)
         {
-            if (CurrentRole == 3 || CurrentRole == 4)//ÆÕÍ¨Èº³ÉÔ±£¬ÒşÉíÈË
+            if (CurrentRole == 3 || CurrentRole == 4)//æ™®é€šç¾¤æˆå‘˜ï¼Œéšèº«äºº
             {
                 if (showMember == 0)
                 {
-                    AdddataTopal(roommemberLst, false);//²»ÏÔÊ¾Èº³ÉÔ±
+                    AdddataTopal(roommemberLst, false);//ä¸æ˜¾ç¤ºç¾¤æˆå‘˜
                 }
                 else
                 {
-                    AdddataTopal(roommemberLst, true);//ÏÔÊ¾Èº³ÉÔ±
+                    AdddataTopal(roommemberLst, true);//æ˜¾ç¤ºç¾¤æˆå‘˜
                 }
             }
-            else//¹ÜÀíÔ±ºÍÈºÖ÷
+            else//ç®¡ç†å‘˜å’Œç¾¤ä¸»
             {
-                AdddataTopal(roommemberLst, true);//ÏÔÊ¾Èº³ÉÔ±
+                AdddataTopal(roommemberLst, true);//æ˜¾ç¤ºç¾¤æˆå‘˜
             }
 
         }
         #endregion
 
-        #region É¾³ıÈº³ÉÔ±
-        //µã»÷É¾³ı°´Å¥
+        #region åˆ é™¤ç¾¤æˆå‘˜
+        //ç‚¹å‡»åˆ é™¤æŒ‰é’®
         private void BtnDel_Click1(object sender, EventArgs e)
         {
             var frm = Applicate.GetWindow<FrmMoreMember>();
             if (frm == null)
             {
-                FrmMoreMember moreMember = new FrmMoreMember();//Èº³ÉÔ±
+                FrmMoreMember moreMember = new FrmMoreMember();//ç¾¤æˆå‘˜
                 moreMember.SetRoom(mFriend);
                 moreMember.issum = true;
                 moreMember.Role = CurrentRole;
-                moreMember.Text = LanguageXmlUtils.GetValue("delete_member", "É¾³ıÈº³ÉÔ±");
+                moreMember.Text = LanguageXmlUtils.GetValue("delete_member", "åˆ é™¤ç¾¤æˆå‘˜");
                 moreMember.Show();
                 moreMember.isshowmember = showMember;
                 moreMember.BringToFront();
@@ -855,30 +855,30 @@ namespace WinFrmTalk.Controls.CustomControls
             }
         }
         #endregion
-        //Ìí¼Ó°´Å¥ÊÂ¼ş
+        //æ·»åŠ æŒ‰é’®äº‹ä»¶
 
-        #region Ìí¼ÓÈº³ÉÔ±
+        #region æ·»åŠ ç¾¤æˆå‘˜
         private void BtnAdd_Click1(object sender, EventArgs e)
         {
             FrmSMPGroupSet frm = this.Parent as FrmSMPGroupSet;
             if (CurrentRole == 4)
             {
-                //»ñÈ¡ roleÔÙ½øĞĞÅĞ¶Ï
+                //è·å– roleå†è¿›è¡Œåˆ¤æ–­
 
                 frm.IsClose = false;
 
-                if (HttpUtils.Instance.ShowPromptBox("ÒşÉíÈË²»ÔÊĞíÑûÇëºÃÓÑ"))
+                if (HttpUtils.Instance.ShowPromptBox("éšèº«äººä¸å…è®¸é‚€è¯·å¥½å‹"))
                 {
                     frm.IsClose = true;
                 }
             }
             else if (CurrentRole == 3 && allowInviteFriend == 0)
             {
-                //»ñÈ¡ roleÔÙ½øĞĞÅĞ¶Ïz     //ÈºÖ÷
+                //è·å– roleå†è¿›è¡Œåˆ¤æ–­z     //ç¾¤ä¸»
 
                 frm.IsClose = false;
 
-                if (HttpUtils.Instance.ShowPromptBox("ÆÕÍ¨³ÉÔ±²»ÔÊĞíÑûÇëºÃÓÑ"))
+                if (HttpUtils.Instance.ShowPromptBox("æ™®é€šæˆå‘˜ä¸å…è®¸é‚€è¯·å¥½å‹"))
                 {
                     frm.IsClose = true;
                 }
@@ -888,20 +888,20 @@ namespace WinFrmTalk.Controls.CustomControls
                 frm.IsClose = false;
 
                 FrmBase main = HttpUtils.Instance.FindFrm(typeof(FrmMain));
-                if (main.ShowPromptBox("ÃÜÔ¿¶ªÊ§×´Ì¬²»ÄÜÑûÇëºÃÓÑ"))
+                if (main.ShowPromptBox("å¯†é’¥ä¸¢å¤±çŠ¶æ€ä¸èƒ½é‚€è¯·å¥½å‹"))
                 {
                     frm.IsClose = true;
                 }
             }
             else
             {
-                InviteTogroup();//ÑûÇëºÃÓÑ
+                InviteTogroup();//é‚€è¯·å¥½å‹
             }
 
         }
         #endregion
-  #region ¿ª¹Ø°´Å¥
-        //Ñ¡Ôñ°´Å¥·¢Éú¸Ä±ä
+  #region å¼€å…³æŒ‰é’®
+        //é€‰æ‹©æŒ‰é’®å‘ç”Ÿæ”¹å˜
         private void CheckData_CheckedChanged(object sender, EventArgs e)
         {
             LollipopToggle lollipop = (LollipopToggle)sender;
@@ -909,13 +909,13 @@ namespace WinFrmTalk.Controls.CustomControls
             switch (tag)
             {
 
-                case "2":// ÏûÏ¢Ãâ´òÈÅ
-                    Console.WriteLine("ÏûÏ¢Ãâ´òÈÅ CheckData_CheckedChanged");
+                case "2":// æ¶ˆæ¯å…æ‰“æ‰°
+                    Console.WriteLine("æ¶ˆæ¯å…æ‰“æ‰° CheckData_CheckedChanged");
                     //Newsdisturb = lollipop.Checked ? 1 : 0;
                     //LocalDataUtils.SetBoolData(mFriend.userId + "NOT_DISTURB" + CurrentUserid, lollipop.Checked);
                     break;
 
-                case "3":// ÏûÏ¢ÖÃ¶¥
+                case "3":// æ¶ˆæ¯ç½®é¡¶
                     int time = lollipop.Checked ? TimeUtils.CurrentIntTime() : 0;
                     mFriend.UpdateTopTime(time);
                     Messenger.Default.Send(mFriend, MessageActions.UPDATE_FRIEND_TOP);
@@ -923,17 +923,17 @@ namespace WinFrmTalk.Controls.CustomControls
             }
 
         }
-        #endregion        //¼üÅÌÊäÈë
-        #region ĞŞ¸Ä²ÎÊıºóÊäÈë»Ø³µ
+        #endregion        //é”®ç›˜è¾“å…¥
+        #region ä¿®æ”¹å‚æ•°åè¾“å…¥å›è½¦
         private void txtRemarks_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (CurrentRole == 4)
             {
                 var main = HttpUtils.Instance.FindFrm(typeof(FrmMain));
-                main.ShowTip("ÒşÉíÈË²»ÔÊĞíĞŞ¸ÄêÇ³Æ");
+                main.ShowTip("éšèº«äººä¸å…è®¸ä¿®æ”¹æ˜µç§°");
                 return;
             }
-            if (e.KeyChar == 13)//»Ø³µ
+            if (e.KeyChar == 13)//å›è½¦
             {
                 //SendKeys.Send("{tab}");
                 txtRemarks_Leave(sender, e);
@@ -945,10 +945,10 @@ namespace WinFrmTalk.Controls.CustomControls
             if (CurrentRole != 1)
             {
                 var main = HttpUtils.Instance.FindFrm(typeof(FrmMain));
-                main.ShowTip("·ÇÈºÖ÷²»ÔÊĞíĞŞ¸Ä²»ÔÊĞíĞŞ¸Ä");
+                main.ShowTip("éç¾¤ä¸»ä¸å…è®¸ä¿®æ”¹ä¸å…è®¸ä¿®æ”¹");
                 return;
             }
-            if (e.KeyChar == 13)//»Ø³µ
+            if (e.KeyChar == 13)//å›è½¦
             {
                 //SendKeys.Send("{tab}");
                 txtRemarks_Leave(sender, e);
@@ -957,8 +957,8 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region  »Ø³µºó¸üĞÂÊı¾İµ½½çÃæ
-        //¸üĞÂÊı¾İ
+        #region  å›è½¦åæ›´æ–°æ•°æ®åˆ°ç•Œé¢
+        //æ›´æ–°æ•°æ®
 
         private void txtRemarks_Leave(object sender, EventArgs e)
         {
@@ -972,20 +972,20 @@ namespace WinFrmTalk.Controls.CustomControls
             {
                 switch (tag)
                 {
-                    case "1"://ÈºÃû³Æ
+                    case "1"://ç¾¤åç§°
                         GroupName = a;
                         updategroupname();
                         break;
-                    case "2"://Èº¹«¸æ
+                    case "2"://ç¾¤å…¬å‘Š
                         GroupTips = a;
                         UpdatePlacard();
                         break;
-                    case "3"://êÇ³Æ
+                    case "3"://æ˜µç§°
                         MynickName = a;
-                        Console.Write("êÇ³ÆÎª" + a);
+                        Console.Write("æ˜µç§°ä¸º" + a);
                         updateNickName();
                         break;
-                    case "4"://Èº×éÃèÊö
+                    case "4"://ç¾¤ç»„æè¿°
                         GroupDiscription = a;
                         updatedesc();
                         break;
@@ -1000,11 +1000,11 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ĞŞ¸Äµ±Ç°ÓÃ»§ÈºÄÚêÇ³Æ
+        #region ä¿®æ”¹å½“å‰ç”¨æˆ·ç¾¤å†…æ˜µç§°
         private void updateNickName()
         {
 
-            ShowLodingDialog(panel1);//ÏÔÊ¾µÈ´ı·û
+            ShowLodingDialog(panel1);//æ˜¾ç¤ºç­‰å¾…ç¬¦
             HttpUtils.Instance.InitHttp(this);
 
             HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/member/update")
@@ -1014,11 +1014,11 @@ namespace WinFrmTalk.Controls.CustomControls
                 .AddParams("nickname", MynickName)
                 .Build().Execute((sccess, data) =>
                 {
-                    //Í£Ö¹µÈ´ı·û
+                    //åœæ­¢ç­‰å¾…ç¬¦
                     loding.stop();
                     if (sccess)
                     {
-                        //±£´æÊı¾İ¿â
+                        //ä¿å­˜æ•°æ®åº“
                         RoomMemberDao.Instance.UpdateCardname(mFriend.RoomId, CurrentUserid, MynickName);
                     }
                 });
@@ -1026,10 +1026,10 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        // ¸üĞÂÈº¹«¸æ
+        // æ›´æ–°ç¾¤å…¬å‘Š
         private void UpdatePlacard()
         {
-            //»ñÈ¡ÈºÏêÇé
+            //è·å–ç¾¤è¯¦æƒ…
             ShowLodingDialog(panel1);
 
             HttpUtils.Instance.InitHttp(this);
@@ -1042,13 +1042,13 @@ namespace WinFrmTalk.Controls.CustomControls
                     loding.stop();
                 });
         }
-        #region ¸üĞÂÈºÃèÊö
+        #region æ›´æ–°ç¾¤æè¿°
         private void updatedesc()
         {
 
             ShowLodingDialog(panel1);
             HttpUtils.Instance.InitHttp(this);
-            HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/update") //»ñÈ¡ÈºÏêÇé
+            HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/update") //è·å–ç¾¤è¯¦æƒ…
           .AddParams("access_token", Applicate.Access_Token)
           .AddParams("roomId", mFriend.RoomId)
           .AddParams("desc", GroupDiscription)
@@ -1064,7 +1064,7 @@ namespace WinFrmTalk.Controls.CustomControls
               {
                   loding.stop();
                   // mFriend.description = GroupName;
-                  // mFriend.UpdateNickName();//¸üĞÂÊı¾İ¿âÖĞµÄÈºêÇ³Æ
+                  // mFriend.UpdateNickName();//æ›´æ–°æ•°æ®åº“ä¸­çš„ç¾¤æ˜µç§°
 
               }
               else
@@ -1078,14 +1078,14 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ¸üĞÂÈº×éÃû³Æ
+        #region æ›´æ–°ç¾¤ç»„åç§°
         private void updategroupname()
         {
 
             ShowLodingDialog(panel1);
 
             HttpUtils.Instance.InitHttp(this);
-            HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/update") //»ñÈ¡ÈºÏêÇé
+            HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/update") //è·å–ç¾¤è¯¦æƒ…
           .AddParams("access_token", Applicate.Access_Token)
           .AddParams("roomId", mFriend.RoomId)
            .AddParams("roomName", GroupName)
@@ -1100,7 +1100,7 @@ namespace WinFrmTalk.Controls.CustomControls
               {
                   loding.stop();
                   mFriend.NickName = GroupName;
-                  mFriend.UpdateNickName();//¸üĞÂÊı¾İ¿âÖĞµÄÈºêÇ³Æ
+                  mFriend.UpdateNickName();//æ›´æ–°æ•°æ®åº“ä¸­çš„ç¾¤æ˜µç§°
                   lblName.txtinfo.Visible = false;
 
 
@@ -1117,13 +1117,13 @@ namespace WinFrmTalk.Controls.CustomControls
         #endregion
 
 
-        #region ÑûÇëºÃÓÑ
+        #region é‚€è¯·å¥½å‹
         /// <summary>
-        /// ÊÇÈ¡Ïû·ÖÒ³¼ÓÔØ,»¹ÊÇÈ¡Êı¾İ¿âµÄÊı¾İ£¿
+        /// æ˜¯å–æ¶ˆåˆ†é¡µåŠ è½½,è¿˜æ˜¯å–æ•°æ®åº“çš„æ•°æ®ï¼Ÿ
         /// </summary>
         private void InviteTogroup()
         {
-            //´ÓÊı¾İ¿â»ñÈ¡µ½µÄÈº³ÉÔ±
+            //ä»æ•°æ®åº“è·å–åˆ°çš„ç¾¤æˆå‘˜
             List<RoomMember> memberlst = RoomMemberDao.Instance.GetRommMemberListByHead(mFriend.RoomId);
 
 
@@ -1142,7 +1142,7 @@ namespace WinFrmTalk.Controls.CustomControls
 
             frmSelect.StartPosition = FormStartPosition.CenterScreen;
             bool isEncrypt = mFriend.IsSecretGroup == 1;
-            //ÓÉÓÚroommemberLstµÄ´óÊıÁ¿Îª15»áµ¼ÖÂÉ¾³ı³öÏÖÖØ¸´
+            //ç”±äºroommemberLstçš„å¤§æ•°é‡ä¸º15ä¼šå¯¼è‡´åˆ é™¤å‡ºç°é‡å¤
             frmSelect.InviteFriendToRoom(memberlst, isEncrypt);
 
             frmSelect.AddConfrmListener((Selectdata) =>
@@ -1160,21 +1160,21 @@ namespace WinFrmTalk.Controls.CustomControls
                     }
 
                     RequestInviteContact(mFriend.RoomId, datas, friends);
-                }//¿ªÆôÁËÈºÑéÖ¤
+                }//å¼€å¯äº†ç¾¤éªŒè¯
                 else
                 {
                     FrmROOMVerify frmROOMVerify = new FrmROOMVerify();
                     frmROOMVerify.ShowDialog();
-                    List<Friend> friendlst = new List<Friend>();//Ìí¼ÓºÃÓÑµÄ¼¯ºÏ
+                    List<Friend> friendlst = new List<Friend>();//æ·»åŠ å¥½å‹çš„é›†åˆ
                     if (frmROOMVerify.DialogResult == DialogResult.OK)
                     {
-                        string Reson = frmROOMVerify.textReson.Text;//ÑûÇëºÃÓÑµÄÔ­Òò
+                        string Reson = frmROOMVerify.textReson.Text;//é‚€è¯·å¥½å‹çš„åŸå› 
                         foreach (var item in Selectdata.Values)
                         {
                             friendlst.Add(item);
                         }
-                        //»ñÈ¡ÈºÖ÷
-                        ShiKuManager.SendRoomverification(RoleHoste, friendlst, Reson, mFriend.UserId);//·¢ÏûÏ¢
+                        //è·å–ç¾¤ä¸»
+                        ShiKuManager.SendRoomverification(RoleHoste, friendlst, Reson, mFriend.UserId);//å‘æ¶ˆæ¯
                     }
                 }
 
@@ -1182,7 +1182,7 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ÇëÇóÑûÇëºÃÓÑ
+        #region è¯·æ±‚é‚€è¯·å¥½å‹
         public void RequestInviteContact(string roomId, List<string> datas, List<Friend> friends)
         {
             string userids = JsonConvert.SerializeObject(datas);
@@ -1202,7 +1202,7 @@ namespace WinFrmTalk.Controls.CustomControls
                 value.Add("keys", memkeys);
             }
 
-            //ÑûÇëÈº³ÉÔ±
+            //é‚€è¯·ç¾¤æˆå‘˜
             HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/member/update")
                 .AddParams(value)
                 .Build().Execute((sccess, data) =>
@@ -1212,7 +1212,7 @@ namespace WinFrmTalk.Controls.CustomControls
                     {
                         var str = UIUtils.DecodeString(data, "data");
                         string names = string.Empty;
-                        // ±£´æÈº³ÉÔ±µ½Êı¾İ¿â
+                        // ä¿å­˜ç¾¤æˆå‘˜åˆ°æ•°æ®åº“
                         foreach (var item in friends)
                         {
                             if (str.Contains(item.UserId))
@@ -1220,17 +1220,17 @@ namespace WinFrmTalk.Controls.CustomControls
                                 names += "," + item.NickName;
                             }
 
-                            // ÑûÇëÁ½ÖÖÇé¿ö£¬²»ÔÚÈº×éÒÑ¾­³É¹¦ÑûÇë£¬ÔÚÈº×éµÄ×ßµ½ÕâÀïËµÃ÷±¾µØÃ»ÓĞ
+                            // é‚€è¯·ä¸¤ç§æƒ…å†µï¼Œä¸åœ¨ç¾¤ç»„å·²ç»æˆåŠŸé‚€è¯·ï¼Œåœ¨ç¾¤ç»„çš„èµ°åˆ°è¿™é‡Œè¯´æ˜æœ¬åœ°æ²¡æœ‰
                             RoomMember member = item.ToRoomMember(roomId);
                             RoomMemberDao.Instance.InsertOrUpdate(member);
                         }
 
-                        // Ë¢ĞÂÈºÉèÖÃ³ÉÔ±
+                        // åˆ·æ–°ç¾¤è®¾ç½®æˆå‘˜
                         Messenger.Default.Send(roomId, MessageActions.Room_UPDATE_ROOM_ADD);
                         if (!UIUtils.IsNull(names))
                         {
                             names = names.Substring(1, names.Length - 1);
-                            HttpUtils.Instance.ShowPromptBox("ÏÂÁĞÈº³ÉÔ±ÒÑÔÚÈº×éÖĞ:\n" + names);
+                            HttpUtils.Instance.ShowPromptBox("ä¸‹åˆ—ç¾¤æˆå‘˜å·²åœ¨ç¾¤ç»„ä¸­:\n" + names);
                         }
 
                     }
@@ -1239,7 +1239,7 @@ namespace WinFrmTalk.Controls.CustomControls
 
 
 
-        // »ñÈ¡Èº³ÉÔ±µÄ ras ¹«Ô¿¼¯ºÏjson
+        // è·å–ç¾¤æˆå‘˜çš„ ras å…¬é’¥é›†åˆjson
         private string GetMembersKey(List<Friend> select, string chatKey)
         {
             JObject json = new JObject();
@@ -1254,13 +1254,13 @@ namespace WinFrmTalk.Controls.CustomControls
 
         #endregion
 
-        //²é¿´¸ü¶à£¬ÏÔÊ¾Èº³ÉÔ±½çÃæ
+        //æŸ¥çœ‹æ›´å¤šï¼Œæ˜¾ç¤ºç¾¤æˆå‘˜ç•Œé¢
         private void btnSeeMore_Click(object sender, EventArgs e)
         {
             var moreMember = Applicate.GetWindow<FrmMembersLst>();
             if (moreMember == null)
             {
-                moreMember = new FrmMembersLst();//Èº³ÉÔ±
+                moreMember = new FrmMembersLst();//ç¾¤æˆå‘˜
 
                 moreMember.setdata(mFriend);
                 moreMember.issum = false;
@@ -1278,10 +1278,10 @@ namespace WinFrmTalk.Controls.CustomControls
 
         }
 
-        #region ´ò¿ªÈº¹ÜÀí
+        #region æ‰“å¼€ç¾¤ç®¡ç†
 
         /// <summary>
-        /// µã»÷Èº¹ÜÀí
+        /// ç‚¹å‡»ç¾¤ç®¡ç†
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -1294,9 +1294,9 @@ namespace WinFrmTalk.Controls.CustomControls
             //}
             //else
             //{
-            //Èç¹ûµ±Ç°Èº×é´ò¿ªºó¾Í²»ÔÙ´ò¿ª·´Ö®¾ÍÒª´ò¿ª
+            //å¦‚æœå½“å‰ç¾¤ç»„æ‰“å¼€åå°±ä¸å†æ‰“å¼€åä¹‹å°±è¦æ‰“å¼€
 
-            //±ÜÃâÍ¬Ò»´°Ìå¶à´Î±»µã»÷
+            //é¿å…åŒä¸€çª—ä½“å¤šæ¬¡è¢«ç‚¹å‡»
 
             if (Applicate.userlst.Count == 0)
             {
@@ -1326,7 +1326,7 @@ namespace WinFrmTalk.Controls.CustomControls
                 frmMagent.SetRoomData(mFriend);
 
                 frmMagent.BringToFront();
-                frmMagent.LoadData();//¼ÓÔØÊı¾İ
+                frmMagent.LoadData();//åŠ è½½æ•°æ®
                                      // frmMagent.Show();
 
             }
@@ -1336,9 +1336,9 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ´ò¿ªÈºÎÄ¼ş
+        #region æ‰“å¼€ç¾¤æ–‡ä»¶
         /// <summary>
-        /// ÈºÎÄ¼ş
+        /// ç¾¤æ–‡ä»¶
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -1359,10 +1359,10 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region ´ò¿ªÈº¹«¸æ
+        #region æ‰“å¼€ç¾¤å…¬å‘Š
 
         /// <summary>
-        ///  Èº¹«¸æ
+        ///  ç¾¤å…¬å‘Š
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -1375,7 +1375,7 @@ namespace WinFrmTalk.Controls.CustomControls
                 if (CurrentRole == 3 || CurrentRole == 4)
                 {
                     var main = HttpUtils.Instance.FindFrm(typeof(FrmMain));
-                    main.ShowTip("ÔİÎŞ¹«¸æ");
+                    main.ShowTip("æš‚æ— å…¬å‘Š");
 
                     return;
 
@@ -1395,17 +1395,17 @@ namespace WinFrmTalk.Controls.CustomControls
             }
             else
             {
-                // ´°¿ÚÒÑ±»´ò¿ª
+                // çª—å£å·²è¢«æ‰“å¼€
                 var frm = fileListFrm as FrmGrouptips;
 
                 if (string.Equals(frm.roomId, mFriend.RoomId))
                 {
-                    // ¼¤»î´°¿Ú
+                    // æ¿€æ´»çª—å£
 
                 }
                 else
                 {
-                    // Ë¢ĞÂ´°¿Ú Êı¾İ
+                    // åˆ·æ–°çª—å£ æ•°æ®
                     frm.SetData(mFriend);
                     frm.CurrentRole = CurrentRole;
                     frm.LoadData();
@@ -1415,9 +1415,9 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
 
-        #region Çå¿ÕÁÄÌì¼ÇÂ¼
+        #region æ¸…ç©ºèŠå¤©è®°å½•
         /// <summary>
-        /// Çå¿ÕÁÄÌì¼ÇÂ¼
+        /// æ¸…ç©ºèŠå¤©è®°å½•
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -1425,19 +1425,19 @@ namespace WinFrmTalk.Controls.CustomControls
         {
             FrmSMPGroupSet frm = this.Parent as FrmSMPGroupSet;
             frm.IsClose = false;
-            if (Applicate.GetWindow<FrmMain>().ShowPromptBox("È·ÈÏÉ¾³ıÁÄÌì¼ÇÂ¼£¿´Ë²Ù×÷½«»áÉ¾³ı·şÎñÆ÷ÉÏµÄÁÄÌìÊı¾İ£¬ÎŞ·¨ÂşÓÎ"))
+            if (Applicate.GetWindow<FrmMain>().ShowPromptBox("ç¡®è®¤åˆ é™¤èŠå¤©è®°å½•ï¼Ÿæ­¤æ“ä½œå°†ä¼šåˆ é™¤æœåŠ¡å™¨ä¸Šçš„èŠå¤©æ•°æ®ï¼Œæ— æ³•æ¼«æ¸¸"))
             {
 
-                //µ÷ÓÃ½Ó¿Ú
-                HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/member/setBeginMsgTime"). //É¾³ıÏûÏ¢
+                //è°ƒç”¨æ¥å£
+                HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/member/setBeginMsgTime"). //åˆ é™¤æ¶ˆæ¯
                     AddParams("access_token", Applicate.Access_Token).
                     AddParams("roomId", mFriend.RoomId).
-                    Build().ExecuteJson<object>((sccess, obj) =>   //·µ»ØÖµËµÃ÷£º text£º¼ÓÃÜºóµÄÄÚÈİ
+                    Build().ExecuteJson<object>((sccess, obj) =>   //è¿”å›å€¼è¯´æ˜ï¼š textï¼šåŠ å¯†åçš„å†…å®¹
                     {
 
                     });
 
-                // ĞŞ¸ÄìøµÀ11363 2020-3-18 18:39:52
+                // ä¿®æ”¹ç¦…é“11363 2020-3-18 18:39:52
                 var text = Applicate.GetWindow<FrmShowText>();
                 if (text != null)
                 {
@@ -1459,17 +1459,17 @@ namespace WinFrmTalk.Controls.CustomControls
             frm.IsClose = true;
         }
         #endregion
-        //Ìí¼Óµ½Êı¾İµ½Ãæ°åÖĞ
+        //æ·»åŠ åˆ°æ•°æ®åˆ°é¢æ¿ä¸­
         /// <summary>
-        /// <para>shshowMemberÊÇ·ñÏÔÊ¾Èº³ÉÔ±</para>
-        ///<para>memberlsts ³ÉÔ±¼¯ºÏ</para>
+        /// <para>shshowMemberæ˜¯å¦æ˜¾ç¤ºç¾¤æˆå‘˜</para>
+        ///<para>memberlsts æˆå‘˜é›†åˆ</para>
         /// </summary>
-        /// <param name="memberlsts">Èº³ÉÔ±µÄ¼¯ºÏ</param>
-        /// <param name="showMember">ÏÔÊ¾Èº³ÉÔ±</param>
+        /// <param name="memberlsts">ç¾¤æˆå‘˜çš„é›†åˆ</param>
+        /// <param name="showMember">æ˜¾ç¤ºç¾¤æˆå‘˜</param>
         private void AdddataTopal(List<RoomMember> memberlsts, bool showMember)
         {
-            #region Èº¹ÜÀí£¬É¾³ı£¬ÈºÃèÊöÊÇ·ñ¿É¼û£¬
-            if (CurrentRole == 1 || CurrentRole == 2)//ÈºÖ÷ºÍ¹ÜÀíÔ±
+            #region ç¾¤ç®¡ç†ï¼Œåˆ é™¤ï¼Œç¾¤æè¿°æ˜¯å¦å¯è§ï¼Œ
+            if (CurrentRole == 1 || CurrentRole == 2)//ç¾¤ä¸»å’Œç®¡ç†å‘˜
             {
                 lblMenge.Visible = true;
             }
@@ -1487,7 +1487,7 @@ namespace WinFrmTalk.Controls.CustomControls
             //}
             int membercount = 0;
 
-            if (btnDel.Visible == false)//É¾³ı²»¿É¼û×î¶àÏÔÊ¾7¸öÈº³ÉÔ±£¬É¾³ı¿É¼û×î¶àÏÔÊ¾Áù¸ö
+            if (btnDel.Visible == false)//åˆ é™¤ä¸å¯è§æœ€å¤šæ˜¾ç¤º7ä¸ªç¾¤æˆå‘˜ï¼Œåˆ é™¤å¯è§æœ€å¤šæ˜¾ç¤ºå…­ä¸ª
             {
                 membercount = memberlsts.Count > 7 ? 7 : memberlsts.Count;
                 btnseemore.Visible = memberlsts.Count > 7 ? true : false;
@@ -1498,9 +1498,9 @@ namespace WinFrmTalk.Controls.CustomControls
                 btnseemore.Visible = memberlsts.Count > 6 ? true : false;
             }
             #endregion
-            tabpalMove(controlLst);//Çå³ıÃæ°åµÄÊı¾İ
+            tabpalMove(controlLst);//æ¸…é™¤é¢æ¿çš„æ•°æ®
             controlLst.Clear();
-            #region ÏòÃæ°åÖĞÌí¼ÓÊı¾İ
+            #region å‘é¢æ¿ä¸­æ·»åŠ æ•°æ®
             int j = 0, k = 0;
             for (int i = 0; i < membercount; i++)
             {
@@ -1519,7 +1519,7 @@ namespace WinFrmTalk.Controls.CustomControls
                 uSEpicAddName.Userid = memberlsts[i].userId;
                 ImageLoader.Instance.DisplayAvatar(memberlsts[i].userId, uSEpicAddName.pics);
 
-                //Èç¹û´¥·¢clickÊÂ¼şÊ±£¬´°¿Ú²»¹Ø±Õ
+                //å¦‚æœè§¦å‘clickäº‹ä»¶æ—¶ï¼Œçª—å£ä¸å…³é—­
                 uSEpicAddName.pics.Click -= uSEpicAddName.pics_Click;
                 uSEpicAddName.pics.Click += Pics_Click;
 
@@ -1539,7 +1539,7 @@ namespace WinFrmTalk.Controls.CustomControls
                     }
 
                 }
-                if (!showMember)//ÊÇ·ñÏÔÊ¾Èº³ÉÔ±
+                if (!showMember)//æ˜¯å¦æ˜¾ç¤ºç¾¤æˆå‘˜
                 {
                     if (memberlsts[i].role == 1 || memberlsts[i].role == 2 || memberlsts[i].userId == CurrentUserid)
                     {
@@ -1550,7 +1550,7 @@ namespace WinFrmTalk.Controls.CustomControls
                     }
                     if (roommemberLst.Count > 7)
                     {
-                        btnseemore.Visible = true;//¹ÜÀíÔ±¿ÉÄÜÓĞ¶à¸ö 
+                        btnseemore.Visible = true;//ç®¡ç†å‘˜å¯èƒ½æœ‰å¤šä¸ª 
                     }
                     else
                     {
@@ -1571,11 +1571,11 @@ namespace WinFrmTalk.Controls.CustomControls
 
             }
             #endregion
-            changePanelHeigh(controlLst.Count);//¶¯Ì¬ÏÔÊ¾Á½¸öpanelµÄ¸ß¶È
+            changePanelHeigh(controlLst.Count);//åŠ¨æ€æ˜¾ç¤ºä¸¤ä¸ªpanelçš„é«˜åº¦
         }
 
         /// <summary>
-        /// µã»÷ÈºÍ¼Ïñ
+        /// ç‚¹å‡»ç¾¤å›¾åƒ
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -1583,7 +1583,7 @@ namespace WinFrmTalk.Controls.CustomControls
         {
             if (mFriend.AllowSendCard == 0 && CurrentRole != 1)
             {
-                HttpUtils.Instance.ShowTip("µ±Ç°Èº×é½ûÖ¹ÆÕÍ¨³ÉÔ±Ë½ÁÄ£¬²»ÔÊĞí²é¿´ÆäËû³ÉÔ±ĞÅÏ¢");
+                HttpUtils.Instance.ShowTip("å½“å‰ç¾¤ç»„ç¦æ­¢æ™®é€šæˆå‘˜ç§èŠï¼Œä¸å…è®¸æŸ¥çœ‹å…¶ä»–æˆå‘˜ä¿¡æ¯");
             }
             else
             {
@@ -1592,7 +1592,7 @@ namespace WinFrmTalk.Controls.CustomControls
                 FrmSMPGroupSet frm = this.Parent as FrmSMPGroupSet;
                 frm.IsClose = false;
                 FrmFriendsBasic frmFriendsBasic = new FrmFriendsBasic();
-                frmFriendsBasic.ShowUserInfoByRoom(uSEpicAddName.Userid, mFriend.UserId, CurrentRole);//ÏÔÊ¾ÈºÍ¼Ïñ¿¨Æ¬
+                frmFriendsBasic.ShowUserInfoByRoom(uSEpicAddName.Userid, mFriend.UserId, CurrentRole);//æ˜¾ç¤ºç¾¤å›¾åƒå¡ç‰‡
                 frmFriendsBasic.frmSMP = frm;
                 frmFriendsBasic.Show();
                 frm.IsClose = true;
@@ -1602,7 +1602,7 @@ namespace WinFrmTalk.Controls.CustomControls
         }
 
         /// <summary>
-        /// ÒÆ³ıpanelÖĞµÄ¿Ø¼ş
+        /// ç§»é™¤panelä¸­çš„æ§ä»¶
         /// </summary>
         /// <param name="conList"></param>
         private void tabpalMove(List<Control> conList)
@@ -1614,7 +1614,7 @@ namespace WinFrmTalk.Controls.CustomControls
         }
 
         /// <summary>
-        /// Èº¶şÎ¬Âë
+        /// ç¾¤äºŒç»´ç 
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -1623,12 +1623,12 @@ namespace WinFrmTalk.Controls.CustomControls
 
             if (isChangeChatKey)
             {
-                // ÖØÖÃÈº×éÃÜÔ¿
+                // é‡ç½®ç¾¤ç»„å¯†é’¥
                 FrmSMPGroupSet frm = this.Parent as FrmSMPGroupSet;
                 frm.IsClose = false;
 
-                // ÏÈÈ¥»ñÈ¡ËùÓĞÈº³ÉÔ±µÄrsa¹«Ô¿ È»ºóÖØĞÂ¼ÓÃÜÉÏ´«µ½·şÎñÆ÷
-                if (HttpUtils.Instance.ShowPromptBox("ÖØÖÃÈº×éÍ¨ĞÅÃÜÔ¿£¬·şÎñÆ÷ÉÏ¸ÃÈº×éµÄÁÄÌì¼ÇÂ¼½«±»Çå¿Õ"))
+                // å…ˆå»è·å–æ‰€æœ‰ç¾¤æˆå‘˜çš„rsaå…¬é’¥ ç„¶åé‡æ–°åŠ å¯†ä¸Šä¼ åˆ°æœåŠ¡å™¨
+                if (HttpUtils.Instance.ShowPromptBox("é‡ç½®ç¾¤ç»„é€šä¿¡å¯†é’¥ï¼ŒæœåŠ¡å™¨ä¸Šè¯¥ç¾¤ç»„çš„èŠå¤©è®°å½•å°†è¢«æ¸…ç©º"))
                 {
                     ShowLodingDialog(panel1);
                     RequestMembersRsaPublicKey();
@@ -1642,7 +1642,7 @@ namespace WinFrmTalk.Controls.CustomControls
             {
                 FrmQRCode frm = new FrmQRCode();
                 Control parent = Applicate.GetWindow<FrmMain>();
-                frm.Location = frm.Location = new Point(parent.Location.X + (parent.Width - frm.Width) / 2, parent.Location.Y + (parent.Height - frm.Height) / 2);//¾ÓÖĞ
+                frm.Location = frm.Location = new Point(parent.Location.X + (parent.Width - frm.Width) / 2, parent.Location.Y + (parent.Height - frm.Height) / 2);//å±…ä¸­
                 frm.RoomShow(mFriend.RoomId);
 
             }
@@ -1650,11 +1650,11 @@ namespace WinFrmTalk.Controls.CustomControls
 
 
         /// <summary>
-        /// ÇëÇóËùÓĞÈº³ÉÔ±µÄrsa¹«Ô¿
+        /// è¯·æ±‚æ‰€æœ‰ç¾¤æˆå‘˜çš„rsaå…¬é’¥
         /// </summary>
         private void RequestMembersRsaPublicKey()
         {
-            //»ñÈ¡ËùÓĞÈº³ÉÔ±µÄ¹«Ô¿
+            //è·å–æ‰€æœ‰ç¾¤æˆå‘˜çš„å…¬é’¥
             HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/getAllMemberRsaPublicKey")
                .AddParams("roomId", mFriend.RoomId)
                .Build().Execute((sucess, data) =>
@@ -1667,21 +1667,21 @@ namespace WinFrmTalk.Controls.CustomControls
                    {
                        FrmSMPGroupSet frm = this.Parent as FrmSMPGroupSet;
                        frm.IsClose = true;
-                       HttpUtils.Instance.ShowTip("ÖØÖÃÊ§°Ü");
+                       HttpUtils.Instance.ShowTip("é‡ç½®å¤±è´¥");
                        loding.stop();
                    }
                });
         }
 
         /// <summary>
-        /// ÖØÖÃÃÜÔ¿
+        /// é‡ç½®å¯†é’¥
         /// </summary>
         private void RequestResetChatKey(Dictionary<string, object> memberKeys)
         {
             string ChatKey = Guid.NewGuid().ToString("N");
             string keysStr = GetMembersKey(memberKeys, ChatKey);
 
-            // ÖØÖÃÃÜÔ¿
+            // é‡ç½®å¯†é’¥
             HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/resetGroupChatKey")
                .AddParams("roomId", mFriend.RoomId)
                .AddParams("keys", keysStr)
@@ -1692,7 +1692,7 @@ namespace WinFrmTalk.Controls.CustomControls
                    loding.stop();
                    if (sucess)
                    {
-                       HttpUtils.Instance.ShowTip("ÖØÖÃ³É¹¦");
+                       HttpUtils.Instance.ShowTip("é‡ç½®æˆåŠŸ");
                        mFriend.ChatKeyGroup = ChatKey;
                        mFriend.UpdateChatKeyGroup(ChatKey);
                    }
@@ -1700,7 +1700,7 @@ namespace WinFrmTalk.Controls.CustomControls
 
         }
 
-        // »ñÈ¡Èº³ÉÔ±µÄ ras ¹«Ô¿¼¯ºÏjson
+        // è·å–ç¾¤æˆå‘˜çš„ ras å…¬é’¥é›†åˆjson
         private string GetMembersKey(Dictionary<string, object> data, string chatKey)
         {
             JObject json = new JObject();
@@ -1717,7 +1717,7 @@ namespace WinFrmTalk.Controls.CustomControls
         }
 
         /// <summary>
-        /// ¹ıÆÚÊ±¼ä
+        /// è¿‡æœŸæ—¶é—´
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -1726,12 +1726,12 @@ namespace WinFrmTalk.Controls.CustomControls
             cmsOverdueDate.Show(lblOverdueDate, 0, lblOverdueDate.Height);
         }
         /// <summary>
-        /// ÏûÏ¢¹ıÆÚÊÂ¼şµ÷È¡½Ó¿Ú
+        /// æ¶ˆæ¯è¿‡æœŸäº‹ä»¶è°ƒå–æ¥å£
         /// </summary>
         /// <param name="date"></param>
         private void HttpSubDate(string date)
         {
-            HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/update")//¸üĞÂÈº
+            HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/update")//æ›´æ–°ç¾¤
                 .AddParams("access_token", Applicate.Access_Token)
                 .AddParams("chatRecordTimeOut", date)
                 .AddParams("roomId", mFriend.RoomId)
@@ -1740,14 +1740,14 @@ namespace WinFrmTalk.Controls.CustomControls
                     if (sucess)
                     {
                         OverdueDate(date, true);
-                        LogUtils.Log("ĞŞ¸Ä³É¹¦");
+                        LogUtils.Log("ä¿®æ”¹æˆåŠŸ");
                     }
                 });
         }
 
 
         /// <summary>
-        /// ÉèÖÃÏûÏ¢¹ıÆÚÄÚÈİ
+        /// è®¾ç½®æ¶ˆæ¯è¿‡æœŸå†…å®¹
         /// </summary>
         /// <param name="date"></param>
         private void OverdueDate(string date, bool a)
@@ -1757,37 +1757,37 @@ namespace WinFrmTalk.Controls.CustomControls
             switch (date)
             {
                 case "-1":
-                    lblOverdueDate.Text = LanguageXmlUtils.GetValue("permanent", "ÓÀ²»");
+                    lblOverdueDate.Text = LanguageXmlUtils.GetValue("permanent", "æ°¸ä¸");
                     save = "0";
                     break;
                 case "0":
-                    lblOverdueDate.Text = LanguageXmlUtils.GetValue("permanent", "ÓÀ²»");
+                    lblOverdueDate.Text = LanguageXmlUtils.GetValue("permanent", "æ°¸ä¸");
                     break;
                 case "0.04":
                     lblOverdueDate.Text = LanguageXmlUtils.GetValue("one_hour", "1Ğ¡Ê±");
                     break;
                 case "1":
                 case "1.0":
-                    lblOverdueDate.Text = LanguageXmlUtils.GetValue("one_day", "1Ìì");
+                    lblOverdueDate.Text = LanguageXmlUtils.GetValue("one_day", "1å¤©");
                     break;
                 case "7":
                 case "7.0":
-                    lblOverdueDate.Text = LanguageXmlUtils.GetValue("one_week", "1ÖÜ");
+                    lblOverdueDate.Text = LanguageXmlUtils.GetValue("one_week", "1å‘¨");
                     break;
                 case "30":
                 case "30.0":
-                    lblOverdueDate.Text = LanguageXmlUtils.GetValue("one_week", "1ÔÂ");
+                    lblOverdueDate.Text = LanguageXmlUtils.GetValue("one_week", "1æœˆ");
                     break;
                 case "90":
                 case "90.0":
-                    lblOverdueDate.Text = LanguageXmlUtils.GetValue("one_season", "1¼¾");
+                    lblOverdueDate.Text = LanguageXmlUtils.GetValue("one_season", "1å­£");
                     break;
                 case "365":
                 case "365.0":
-                    lblOverdueDate.Text = LanguageXmlUtils.GetValue("one_year", "1Äê");
+                    lblOverdueDate.Text = LanguageXmlUtils.GetValue("one_year", "1å¹´");
                     break;
                 default:
-                    LogUtils.Log("ĞŞ¸ÄÊ§°Ü");
+                    LogUtils.Log("ä¿®æ”¹å¤±è´¥");
                     save = "0";
                     break;
             }
@@ -1797,10 +1797,10 @@ namespace WinFrmTalk.Controls.CustomControls
             }
 
         }
-        #region ÏûÏ¢¹ıÆÚÊ±¼ä
+        #region æ¶ˆæ¯è¿‡æœŸæ—¶é—´
 
         /// <summary>
-        /// ÓÀ¾Ã
+        /// æ°¸ä¹…
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -1818,7 +1818,7 @@ namespace WinFrmTalk.Controls.CustomControls
             HttpSubDate("0.04");
         }
         /// <summary>
-        /// Ò»Ìì
+        /// ä¸€å¤©
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -1827,7 +1827,7 @@ namespace WinFrmTalk.Controls.CustomControls
             HttpSubDate("1.0");
         }
         /// <summary>
-        /// Ò»ÖÜ
+        /// ä¸€å‘¨
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -1836,7 +1836,7 @@ namespace WinFrmTalk.Controls.CustomControls
             HttpSubDate("7.0");
         }
         /// <summary>
-        /// Ò»ÔÂ
+        /// ä¸€æœˆ
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -1845,7 +1845,7 @@ namespace WinFrmTalk.Controls.CustomControls
             HttpSubDate("30.0");
         }
         /// <summary>
-        /// Ò»¼¾
+        /// ä¸€å­£
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -1855,7 +1855,7 @@ namespace WinFrmTalk.Controls.CustomControls
 
         }
         /// <summary>
-        /// Ò»Äê
+        /// ä¸€å¹´
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -1864,9 +1864,9 @@ namespace WinFrmTalk.Controls.CustomControls
             HttpSubDate("365.0");
         }
         #endregion
-        #region  Êó±ê±³¾°ÊÂ¼şµÄ±³¾°É«
+        #region  é¼ æ ‡èƒŒæ™¯äº‹ä»¶çš„èƒŒæ™¯è‰²
         /// <summary>
-        /// Êó±êÀë¿ªÊÂ¼ş
+        /// é¼ æ ‡ç¦»å¼€äº‹ä»¶
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -1878,36 +1878,36 @@ namespace WinFrmTalk.Controls.CustomControls
 
         }
         /// <summary>
-        /// Êó±êÒÆÈëÊÂ¼ş
+        /// é¼ æ ‡ç§»å…¥äº‹ä»¶
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void panel3_MouseMove(object sender, MouseEventArgs e)
         {
             Panel pal = (Panel)sender;
-            pal.BackColor = ColorTranslator.FromHtml("#D8D8D9");//Ğü¸¡ÑÕÉ«
-                                                                //  txtinfo.BackColor = ColorTranslator.FromHtml("#D8D8D9");//Ğü¸¡ÑÕÉ«
+            pal.BackColor = ColorTranslator.FromHtml("#D8D8D9");//æ‚¬æµ®é¢œè‰²
+                                                                //  txtinfo.BackColor = ColorTranslator.FromHtml("#D8D8D9");//æ‚¬æµ®é¢œè‰²
         }
         #endregion
-        #region ×ÔÊÊÓ¦¸Ä±äÃæ°åµÄ¸ß¶È
+        #region è‡ªé€‚åº”æ”¹å˜é¢æ¿çš„é«˜åº¦
         /// <summary>
-        /// Éè¼ÆÊ±·ÖÎªÉÏÏÂÁ½¸öÃæ°å(ÉÏÃæÏÔÊ¾Í¼Ïñ£¬ÏÂÃæÏÔÊ¾Èº×éĞÅÏ¢£¬ÓÉÓÚÉÏÃæÊÇ¶¯Ì¬µÄµ±ÉÏÃæÖ»ÓĞÒ»ĞĞµÄÊ±ºòËüµÄ¸ß¶È¾ÍÊÇ×îĞ¡Öµ£¬Á½ĞĞµÄÊ±ºò¾ÍÊÇ×î´óÖµ£¬ÏÂÃæµÄÖµÒ²ÊÇ¶¯Ì¬µÄ£¬ÓÉÓÚÈº¹ÜÀíÊÇ¶¯Ì¬¿É¼ûµÄ£¨µÀÀíÍ¬ÉÏ£©)
+        /// è®¾è®¡æ—¶åˆ†ä¸ºä¸Šä¸‹ä¸¤ä¸ªé¢æ¿(ä¸Šé¢æ˜¾ç¤ºå›¾åƒï¼Œä¸‹é¢æ˜¾ç¤ºç¾¤ç»„ä¿¡æ¯ï¼Œç”±äºä¸Šé¢æ˜¯åŠ¨æ€çš„å½“ä¸Šé¢åªæœ‰ä¸€è¡Œçš„æ—¶å€™å®ƒçš„é«˜åº¦å°±æ˜¯æœ€å°å€¼ï¼Œä¸¤è¡Œçš„æ—¶å€™å°±æ˜¯æœ€å¤§å€¼ï¼Œä¸‹é¢çš„å€¼ä¹Ÿæ˜¯åŠ¨æ€çš„ï¼Œç”±äºç¾¤ç®¡ç†æ˜¯åŠ¨æ€å¯è§çš„ï¼ˆé“ç†åŒä¸Šï¼‰)
         /// </summary>
-        /// <param name="count"> Èº³ÉÔ±Ãæ°åĞèÒªÏÔÊ¾³ÉÔ±µÄ¸öÊı</param>
+        /// <param name="count"> ç¾¤æˆå‘˜é¢æ¿éœ€è¦æ˜¾ç¤ºæˆå‘˜çš„ä¸ªæ•°</param>
         private void changePanelHeigh(int count)
         {
             Point p = new Point();
             Point p2 = new Point();
-            if (btnDel.Visible)//É¾³ı¿É¼û
+            if (btnDel.Visible)//åˆ é™¤å¯è§
             {
-                if (count > 2)//tabMemberÁ©ĞĞ
+                if (count > 2)//tabMemberä¿©è¡Œ
                 {
                     p.X = 6; p.Y = 163;
                     palgroupCtl.Location = p;
                     p2.X = 6; p2.Y = 528;
                     // palGroupDis.Location = p2;
                 }
-                else//tabMemberÒ»ĞĞ
+                else//tabMemberä¸€è¡Œ
                 {
                     p.X = 6; p.Y = tabMember.Location.Y + 75;
                     palgroupCtl.Location = p;
@@ -1917,7 +1917,7 @@ namespace WinFrmTalk.Controls.CustomControls
             }
             else
             {
-                if (count > 3) //tabMemberÁ©ĞĞ
+                if (count > 3) //tabMemberä¿©è¡Œ
                 {
 
                     p.X = 6; p.Y = 163;
@@ -1925,7 +1925,7 @@ namespace WinFrmTalk.Controls.CustomControls
                     p2.X = 6; p2.Y = 528;
                     // palGroupDis.Location = p2;
                 }
-                else//tabMemberÒ»ĞĞ
+                else//tabMemberä¸€è¡Œ
                 {
                     p.X = 6; p.Y = tabMember.Location.Y + 75;
                     palgroupCtl.Location = p;
@@ -1943,14 +1943,14 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         #endregion
         /// <summary>
-        /// °ó¶¨¹ö¶¯Ìõ
+        /// ç»‘å®šæ»šåŠ¨æ¡
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void USEGroupSet_Load(object sender, EventArgs e)
         {
-            showInfoVScroll.SetCurrentPanel(panel1.Name);//¹ö¶¯µÄ·¶Î§
-            showInfoVScroll.v_scale = 30; //Êó±ê¹ö¶¯Ò»¸ñ
+            showInfoVScroll.SetCurrentPanel(panel1.Name);//æ»šåŠ¨çš„èŒƒå›´
+            showInfoVScroll.v_scale = 30; //é¼ æ ‡æ»šåŠ¨ä¸€æ ¼
             foreach (Control ctl in panel1.Controls)
             {
                 AddCrlMouseEnter(ctl);
@@ -1958,7 +1958,7 @@ namespace WinFrmTalk.Controls.CustomControls
         }
         private void View_MouseEnter(object sender, EventArgs e)
         {
-            //Ìí¼Ó try -catch ÔÚwin7ÏÂË«»÷×î½üÏûÏ¢ÁĞ±í£¨¶ÀÁ¢´°Ìå£©»á±¨Òì³££ºÎŞ·¨¼¤»î²»¿É¼û»òÒÑ½ûÓÃµÄ¿Ø¼ş
+            //æ·»åŠ  try -catch åœ¨win7ä¸‹åŒå‡»æœ€è¿‘æ¶ˆæ¯åˆ—è¡¨ï¼ˆç‹¬ç«‹çª—ä½“ï¼‰ä¼šæŠ¥å¼‚å¸¸ï¼šæ— æ³•æ¿€æ´»ä¸å¯è§æˆ–å·²ç¦ç”¨çš„æ§ä»¶
             try
             {
                 this.ActiveControl = (Control)sender;
@@ -1978,28 +1978,28 @@ namespace WinFrmTalk.Controls.CustomControls
             }
         }
         /// <summary>
-        /// ÍË³öÈº×é
+        /// é€€å‡ºç¾¤ç»„
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        //1.ÅĞ¶Ïµ±Ç°ÓÃ»§µÄ½ÇÉ«£¬Èç¹ûÊÇÈºÖ÷¾Í½âÉ¢¸ÃÈº£¬Èç¹ûÊÇÆÕÍ¨³ÉÔ±¾ÍÉ¾³ı¸ÃÈº
-        //É¾³ı²¢ÍÆ³öÈº×é
+        //1.åˆ¤æ–­å½“å‰ç”¨æˆ·çš„è§’è‰²ï¼Œå¦‚æœæ˜¯ç¾¤ä¸»å°±è§£æ•£è¯¥ç¾¤ï¼Œå¦‚æœæ˜¯æ™®é€šæˆå‘˜å°±åˆ é™¤è¯¥ç¾¤
+        //åˆ é™¤å¹¶æ¨å‡ºç¾¤ç»„
         private void btnDelAndExite_Click(object sender, EventArgs e)
         {
             FrmSMPGroupSet frm = new FrmSMPGroupSet();
             frm = (FrmSMPGroupSet)this.Parent;
 
-            //»ñÈ¡ roleÔÙ½øĞĞÅĞ¶Ï
-            #region ÈºÖ÷
+            //è·å– roleå†è¿›è¡Œåˆ¤æ–­
+            #region ç¾¤ä¸»
             if (CurrentRole == 1)
             {
                 frm.IsClose = false;
 
-                if (HttpUtils.Instance.ShowPromptBox("È·¶¨ÒªÍË³ö½âÉ¢ÈºÂğ£¿"))
+                if (HttpUtils.Instance.ShowPromptBox("ç¡®å®šè¦é€€å‡ºè§£æ•£ç¾¤å—ï¼Ÿ"))
                 {
                     ShowLodingDialog(panel1);
                     HttpUtils.Instance.InitHttp(this);
-                    HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/delete") //É¾³ıÈº×é
+                    HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/delete") //åˆ é™¤ç¾¤ç»„
                     .AddParams("access_token", Applicate.Access_Token)
                     .AddParams("roomId", mFriend.RoomId)
                     .Build().AddErrorListener((code, err) =>
@@ -2023,25 +2023,25 @@ namespace WinFrmTalk.Controls.CustomControls
                 }
                 else
                 {
-                    //²»½âÉ¢Èº
+                    //ä¸è§£æ•£ç¾¤
                     //   dr = DialogResult.Cancel;
                     frm.IsClose = true;
                 }
             }
             #endregion
 
-            #region Èº³ÉÔ±
+            #region ç¾¤æˆå‘˜
             else
             {
                 frm.IsClose = false;
-                // É¾³ıÈº³ÉÔ±
+                // åˆ é™¤ç¾¤æˆå‘˜
 
-                if (HttpUtils.Instance.ShowPromptBox("È·¶¨ÒªÍË³ö¸ÃÈºÂğ£¿"))
+                if (HttpUtils.Instance.ShowPromptBox("ç¡®å®šè¦é€€å‡ºè¯¥ç¾¤å—ï¼Ÿ"))
                 {
 
                     ShowLodingDialog(panel1);
                     HttpUtils.Instance.InitHttp(this);
-                    HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/member/delete") //É¾³ıÈº×é
+                    HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/member/delete") //åˆ é™¤ç¾¤ç»„
                     .AddParams("access_token", Applicate.Access_Token)
                     .AddParams("roomId", mFriend.RoomId)
                     .AddParams("userId", Applicate.MyAccount.userId)

@@ -223,6 +223,7 @@ namespace WinFrmTalk
         private void UpdateRemarks(Friend friend)
         {
             int index = mAdapter.GetIndexByFriendId(friend.UserId);
+            LogUtils.Error("[DIAG-RL] itemview index=" + index + " content=" + (friend.Content == null ? "" : friend.Content) + " msgType=" + friend.LastMsgType);
             if (index > -1)
             {
                 var f = mAdapter.GetData(index);
@@ -290,7 +291,7 @@ namespace WinFrmTalk
             if (Thread.CurrentThread.IsBackground)
             {
                 var main = new DelegateString(RefreshFriendHead);
-                Invoke(main, userId);
+                if (!IsHandleCreated || IsDisposed) return; try { Invoke(main, userId); } catch (Exception ex) { Console.WriteLine("RefreshFriendHead error: " + ex.Message); }
                 return;
             }
 
@@ -376,6 +377,9 @@ namespace WinFrmTalk
             {
                 return;
             }
+            LogUtils.Error("[DIAG-RL] itemview jid=" + msg.ChatJid + " isRead=" + isRead);
+
+            LogUtils.Error("[DIAG-RL] itemview jid=" + msg.ChatJid + " isRead=" + isRead);
 
             var friend = msg.GetLastFriend();
 
@@ -406,6 +410,7 @@ namespace WinFrmTalk
             LogUtils.Log("刷新最近消息项");
 
             int index = mAdapter.GetIndexByFriendId(friend.UserId);
+            LogUtils.Error("[DIAG-RL] itemview index=" + index + " content=" + (friend.Content == null ? "" : friend.Content) + " msgType=" + friend.LastMsgType);
             if (index > -1)
             {
                 mAdapter.ChangeData(index, friend);
@@ -443,7 +448,14 @@ namespace WinFrmTalk
                     }
                     else
                     {
-                        item.FriendData.MsgNum = friend.MsgNum;//赋值未读数量
+                        // 2026-11-18 修复：收到别人消息时累加未读，解决会话列表新消息无红点
+                        bool isSelfMsg = !string.IsNullOrEmpty(msg.FromId) && msg.FromId.Equals(Applicate.MyAccount.userId);
+                        int addNum = isSelfMsg ? 0 : 1;
+                        item.FriendData.MsgNum = friend.MsgNum + addNum;
+                        if (addNum > 0)
+                        {
+                            item.FriendData.UpdateRedNum(item.FriendData.MsgNum);//持久化未读数，避免刷新后被覆盖成0
+                        }
                         item.RefreshUnreadNum();
                     }
 
@@ -466,7 +478,22 @@ namespace WinFrmTalk
             else
             {
                 index = GetFriendIndexByTime(friend);
+                // 2026-11-18 fix: new conversation must count unread as well,
+                // otherwise the freshly inserted item never shows a red badge
+                bool isSelfMsgNew = !string.IsNullOrEmpty(msg.FromId) && msg.FromId.Equals(Applicate.MyAccount.userId);
+                if (!isSelfMsgNew)
+                {
+                    friend.MsgNum = friend.MsgNum + 1;
+                    friend.UpdateRedNum(friend.MsgNum);
+                }
                 InsertRecentItem(index, friend, "刷新最近消息项");
+                xListView.RefreshItem(index);
+                var newItem = GetItemByFriend(index);
+                if (newItem != null)
+                {
+                    newItem.FriendData = friend;
+                    newItem.RefreshUnreadNum();
+                }
                 RefreChatUnReadTotalCount();
             }
         }
@@ -505,6 +532,8 @@ namespace WinFrmTalk
         #region 收到单条消息
         public void ReceiveSingleMessage(MessageObject msg)
         {
+            LogUtils.Error("[DIAG-RL] single jid=" + (msg == null ? "null" : msg.ChatJid) + " isRead=" + isRead + " isSharch=" + isSharch + " loading=" + (mLoding != null));
+            LogUtils.Error("[DIAG-RL] single jid=" + (msg == null ? "null" : msg.ChatJid) + " isRead=" + isRead + " isSharch=" + isSharch + " loading=" + (mLoding != null));
             if (Thread.CurrentThread.IsBackground)
             {
                 var main = new DelegateMessage(ReceiveSingleMessage);
@@ -693,6 +722,89 @@ namespace WinFrmTalk
             load.stop();
             isRead = true;
             RefreChatUnReadTotalCount();//重新显示全局消息未读角标
+
+            // 2026-08-31 v23.5 修复：延迟刷新所有可见项头像（下载完成兕底，首次登录头像不显示的完整保障）
+            RefreshAllHeadsDelayed();
+        }
+
+        // 2026-08-31 v23.5 新增：延迟刷新最近列表所有可见项头像
+        private void RefreshAllHeadsDelayed()
+        {
+            try
+            {
+                System.Threading.Tasks.Task.Delay(3000).ContinueWith((t) =>
+                {
+                    try
+                    {
+                        if (this.IsDisposed || this.Disposing)
+                        {
+                            return;
+                        }
+                        if (this.InvokeRequired)
+                        {
+                            // v23.10 修复（代码审查 B4）：原来 BeginInvoke 回调 RefreshAllHeadsDelayed() 会
+                            // 重新注册 3 秒/10 秒任务 → 任务无限累加（每次登录/刷新叠加）→ 卡顿甚至假死；
+                            // 这里只投递一次实际刷新。
+                            this.BeginInvoke(new Action(RefreshVisibleHeads));
+                            return;
+                        }
+                        RefreshVisibleHeads();
+                    }
+                    catch (Exception ex)
+                    {
+                        LogUtils.Log("刷新最近列表头像异常: " + ex.Message);
+                    }
+                });
+
+                // 10 秒后再刷一次（覆盖下载较慢的头像）
+                System.Threading.Tasks.Task.Delay(10000).ContinueWith((t) =>
+                {
+                    try
+                    {
+                        if (this.IsDisposed || this.Disposing)
+                        {
+                            return;
+                        }
+                        if (this.InvokeRequired)
+                        {
+                            this.BeginInvoke(new Action(() => RefreshVisibleHeads()));
+                            return;
+                        }
+                        RefreshVisibleHeads();
+                    }
+                    catch (Exception ex)
+                    {
+                        LogUtils.Log("刷新最近列表头像异常: " + ex.Message);
+                    }
+                });
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        // 刷新所有已创建项的头部图像
+        private void RefreshVisibleHeads()
+        {
+            try
+            {
+                int count = mAdapter.GetItemCount();
+                for (int i = 0; i < count; i++)
+                {
+                    if (xListView.DataCreated(i))
+                    {
+                        Control ctrl = xListView.GetItemControl(i);
+                        if (ctrl is NewsItem)
+                        {
+                            ((NewsItem)ctrl).RefreshFriendImage();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogUtils.Log("刷新最近列表头像异常: " + ex.Message);
+            }
         }
         #endregion
 

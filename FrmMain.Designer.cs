@@ -80,8 +80,8 @@
             // NotifyControl
             // 
             this.NotifyControl.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.NotifyControl.BalloonTipText = "翼聊IM";
-            this.NotifyControl.BalloonTipTitle = "翼聊IM";
+            this.NotifyControl.BalloonTipText = "零用花IM";
+            this.NotifyControl.BalloonTipTitle = "零用花IM";
             this.NotifyControl.ContextMenuStrip = this.cmsTrayMenu;
             this.NotifyControl.Visible = true;
             // 
@@ -285,7 +285,7 @@
             this.ShadowWidth = 6;
             this.ShowBorder = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "翼聊IM";
+            this.Text = "零用花IM";
             this.TitleNeed = false;
             this.Activated += new System.EventHandler(this.FrmMain_Activated);
             this.Deactivate += new System.EventHandler(this.FrmMain_Deactivate);

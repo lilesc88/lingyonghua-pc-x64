@@ -1,16 +1,16 @@
-namespace WinFrmTalk.Controls.CustomControls
+ï»¿namespace WinFrmTalk.Controls.CustomControls
 {
     partial class ShowMsgPanel
     {
         /// <summary> 
-        /// ±ØĞèµÄÉè¼ÆÆ÷±äÁ¿¡£
+        /// å¿…éœ€çš„è®¾è®¡å™¨å˜é‡ã€‚
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
         /// <summary> 
-        /// ÇåÀíËùÓĞÕıÔÚÊ¹ÓÃµÄ×ÊÔ´¡£
+        /// æ¸…ç†æ‰€æœ‰æ­£åœ¨ä½¿ç”¨çš„èµ„æºã€‚
         /// </summary>
-        /// <param name="disposing">Èç¹ûÓ¦ÊÍ·ÅÍĞ¹Ü×ÊÔ´£¬Îª true£»·ñÔòÎª false¡£</param>
+        /// <param name="disposing">å¦‚æœåº”é‡Šæ”¾æ‰˜ç®¡èµ„æºï¼Œä¸º trueï¼›å¦åˆ™ä¸º falseã€‚</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,11 +20,11 @@ namespace WinFrmTalk.Controls.CustomControls
             base.Dispose(disposing);
         }
 
-        #region ×é¼şÉè¼ÆÆ÷Éú³ÉµÄ´úÂë
+        #region ç»„ä»¶è®¾è®¡å™¨ç”Ÿæˆçš„ä»£ç 
 
         /// <summary> 
-        /// Éè¼ÆÆ÷Ö§³ÖËùĞèµÄ·½·¨ - ²»ÒªĞŞ¸Ä
-        /// Ê¹ÓÃ´úÂë±à¼­Æ÷ĞŞ¸Ä´Ë·½·¨µÄÄÚÈİ¡£
+        /// è®¾è®¡å™¨æ”¯æŒæ‰€éœ€çš„æ–¹æ³• - ä¸è¦ä¿®æ”¹
+        /// ä½¿ç”¨ä»£ç ç¼–è¾‘å™¨ä¿®æ”¹æ­¤æ–¹æ³•çš„å†…å®¹ã€‚
         /// </summary>
         private void InitializeComponent()
         {
@@ -35,6 +35,8 @@ namespace WinFrmTalk.Controls.CustomControls
             this.lab_splitTitle = new System.Windows.Forms.Label();
             this.lab_detial = new System.Windows.Forms.Label();
             this.labName = new System.Windows.Forms.Label();
+            this.lab_ipdot = new System.Windows.Forms.Label();
+            this.lab_ip = new System.Windows.Forms.Label();
             this.Bottom_Panel = new System.Windows.Forms.Panel();
             this.showMsgPanel_Tool = new WinFrmTalk.Controls.CustomControls.ShowMsgPanel_Tool();
             this.btnEnding = new System.Windows.Forms.Button();
@@ -88,6 +90,10 @@ namespace WinFrmTalk.Controls.CustomControls
             this.panTitle.Controls.Add(this.lab_splitTitle);
             this.panTitle.Controls.Add(this.lab_detial);
             this.panTitle.Controls.Add(this.labName);
+            this.panTitle.Controls.Add(this.lab_ip);
+            this.panTitle.Controls.Add(this.lab_ipdot);
+
+            this.lab_ip.BringToFront();
             this.panTitle.Dock = System.Windows.Forms.DockStyle.Top;
             this.panTitle.Location = new System.Drawing.Point(0, 0);
             this.panTitle.Name = "panTitle";
@@ -118,22 +124,45 @@ namespace WinFrmTalk.Controls.CustomControls
             // 
             // labName
             // 
-            this.labName.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.labName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.labName.AutoEllipsis = true;
             this.labName.BackColor = System.Drawing.Color.Transparent;
             this.labName.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.labName.Font = new System.Drawing.Font("Î¢ÈíÑÅºÚ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.labName.Font = new System.Drawing.Font("å¾®è½¯é›…é»‘", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.labName.Location = new System.Drawing.Point(27, 4);
             this.labName.Name = "labName";
             this.labName.Size = new System.Drawing.Size(641, 25);
             this.labName.TabIndex = 2;
-            this.labName.Text = "ÎÒÊÇÄ¬ÈÏÃû³Æ";
+            this.labName.Text = "æˆ‘æ˜¯é»˜è®¤åç§°";
             this.labName.UseMnemonic = false;
             this.labName.TextChanged += new System.EventHandler(this.LabName_TextChanged);
             //this.labName.TextChanged += new System.EventHandler(this.LabName_TextChanged);
             this.labName.MouseClick += new System.Windows.Forms.MouseEventHandler(this.LabName_MouseClick);
+            // lab_ip
+            // lab_ipdot
+            // 
+            this.lab_ipdot.AutoSize = false;
+            this.lab_ipdot.BackColor = System.Drawing.Color.Transparent;
+            this.lab_ipdot.Font = new System.Drawing.Font("Microsoft YaHei", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lab_ipdot.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(194)))), ((int)(((byte)(74)))));
+            this.lab_ipdot.Location = new System.Drawing.Point(120, 11);
+            this.lab_ipdot.Name = "lab_ipdot";
+            this.lab_ipdot.Size = new System.Drawing.Size(12, 16);
+            this.lab_ipdot.TabIndex = 6;
+            this.lab_ipdot.Text = "";
+            // 
+            this.lab_ip.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lab_ip.AutoEllipsis = true;
+            this.lab_ip.BackColor = System.Drawing.Color.Transparent;
+            this.lab_ip.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lab_ip.ForeColor = System.Drawing.Color.Gray;
+            this.lab_ip.Location = new System.Drawing.Point(120, 8);
+            this.lab_ip.Name = "lab_ip";
+            this.lab_ip.Size = new System.Drawing.Size(300, 20);
+            this.lab_ip.TabIndex = 5;
+            this.lab_ip.Text = "";
             // 
             // Bottom_Panel
             // 
@@ -164,12 +193,12 @@ namespace WinFrmTalk.Controls.CustomControls
             this.btnEnding.FlatAppearance.BorderColor = System.Drawing.Color.DarkGray;
             this.btnEnding.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(18)))), ((int)(((byte)(150)))), ((int)(((byte)(37)))));
             this.btnEnding.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnEnding.Font = new System.Drawing.Font("ËÎÌå", 9F);
+            this.btnEnding.Font = new System.Drawing.Font("å®‹ä½“", 9F);
             this.btnEnding.Location = new System.Drawing.Point(32, 129);
             this.btnEnding.Name = "btnEnding";
             this.btnEnding.Size = new System.Drawing.Size(75, 23);
             this.btnEnding.TabIndex = 18;
-            this.btnEnding.Text = "½áÊø»á»°(S)";
+            this.btnEnding.Text = "ç»“æŸä¼šè¯(S)";
             this.btnEnding.UseVisualStyleBackColor = false;
             this.btnEnding.Visible = false;
             this.btnEnding.Click += new System.EventHandler(this.btnEnding_Click);
@@ -182,12 +211,12 @@ namespace WinFrmTalk.Controls.CustomControls
             this.btnSend.FlatAppearance.BorderColor = System.Drawing.Color.DarkGray;
             this.btnSend.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(18)))), ((int)(((byte)(150)))), ((int)(((byte)(37)))));
             this.btnSend.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSend.Font = new System.Drawing.Font("ËÎÌå", 9F);
+            this.btnSend.Font = new System.Drawing.Font("å®‹ä½“", 9F);
             this.btnSend.Location = new System.Drawing.Point(644, 129);
             this.btnSend.Name = "btnSend";
             this.btnSend.Size = new System.Drawing.Size(68, 23);
             this.btnSend.TabIndex = 17;
-            this.btnSend.Text = "·¢ËÍ(S)";
+            this.btnSend.Text = "å‘é€(S)";
             this.btnSend.UseVisualStyleBackColor = false;
             this.btnSend.Click += new System.EventHandler(this.BtnSend_Click);
             // 
@@ -197,7 +226,7 @@ namespace WinFrmTalk.Controls.CustomControls
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSend.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtSend.ContextMenuStrip = this.menuTxtSend;
-            this.txtSend.Font = new System.Drawing.Font("Î¢ÈíÑÅºÚ", 10F);
+            this.txtSend.Font = new System.Drawing.Font("å¾®è½¯é›…é»‘", 10F);
             this.txtSend.ImeMode = System.Windows.Forms.ImeMode.Off;
             this.txtSend.Location = new System.Drawing.Point(16, 46);
             this.txtSend.Name = "txtSend";
@@ -217,7 +246,7 @@ namespace WinFrmTalk.Controls.CustomControls
             this.menuTxtSend.BackRadius = 1;
             this.menuTxtSend.Base = System.Drawing.Color.White;
             this.menuTxtSend.DropDownImageSeparator = System.Drawing.Color.FromArgb(((int)(((byte)(197)))), ((int)(((byte)(197)))), ((int)(((byte)(197)))));
-            this.menuTxtSend.Font = new System.Drawing.Font("ËÎÌå", 9F);
+            this.menuTxtSend.Font = new System.Drawing.Font("å®‹ä½“", 9F);
             this.menuTxtSend.Fore = System.Drawing.Color.Black;
             this.menuTxtSend.HoverFore = System.Drawing.Color.Black;
             this.menuTxtSend.ItemAnamorphosis = false;
@@ -243,7 +272,7 @@ namespace WinFrmTalk.Controls.CustomControls
             // 
             this.menuItem_paste.Name = "menuItem_paste";
             this.menuItem_paste.Size = new System.Drawing.Size(94, 22);
-            this.menuItem_paste.Text = "Õ³Ìù";
+            this.menuItem_paste.Text = "ç²˜è´´";
             this.menuItem_paste.Click += new System.EventHandler(this.MenuItem_paste_Click);
             // 
             // cmsMsgMenu
@@ -253,7 +282,7 @@ namespace WinFrmTalk.Controls.CustomControls
             this.cmsMsgMenu.BackRadius = 1;
             this.cmsMsgMenu.Base = System.Drawing.Color.White;
             this.cmsMsgMenu.DropDownImageSeparator = System.Drawing.Color.FromArgb(((int)(((byte)(197)))), ((int)(((byte)(197)))), ((int)(((byte)(197)))));
-            this.cmsMsgMenu.Font = new System.Drawing.Font("ËÎÌå", 9F);
+            this.cmsMsgMenu.Font = new System.Drawing.Font("å®‹ä½“", 9F);
             this.cmsMsgMenu.Fore = System.Drawing.Color.Black;
             this.cmsMsgMenu.HoverFore = System.Drawing.Color.Black;
             this.cmsMsgMenu.ItemAnamorphosis = false;
@@ -297,14 +326,14 @@ namespace WinFrmTalk.Controls.CustomControls
             // 
             this.menuItem_Transcribe.Name = "menuItem_Transcribe";
             this.menuItem_Transcribe.Size = new System.Drawing.Size(154, 22);
-            this.menuItem_Transcribe.Text = "¿ªÊ¼Â¼ÖÆ";
+            this.menuItem_Transcribe.Text = "å¼€å§‹å½•åˆ¶";
             this.menuItem_Transcribe.Click += new System.EventHandler(this.MenuItem_Transcribe_Click);
             // 
             // menuItem_NoneSound
             // 
             this.menuItem_NoneSound.Name = "menuItem_NoneSound";
             this.menuItem_NoneSound.Size = new System.Drawing.Size(154, 22);
-            this.menuItem_NoneSound.Text = "¾²Òô²¥·Å";
+            this.menuItem_NoneSound.Text = "é™éŸ³æ’­æ”¾";
             // 
             // separator_one
             // 
@@ -315,7 +344,7 @@ namespace WinFrmTalk.Controls.CustomControls
             // 
             this.menuItem_Copy.Name = "menuItem_Copy";
             this.menuItem_Copy.Size = new System.Drawing.Size(154, 22);
-            this.menuItem_Copy.Text = "¸´ÖÆ";
+            this.menuItem_Copy.Text = "å¤åˆ¶";
             this.menuItem_Copy.Click += new System.EventHandler(this.MenuItem_Copy_Click);
             // 
             // separator_two
@@ -327,55 +356,55 @@ namespace WinFrmTalk.Controls.CustomControls
             // 
             this.menuItem_Recall.Name = "menuItem_Recall";
             this.menuItem_Recall.Size = new System.Drawing.Size(154, 22);
-            this.menuItem_Recall.Text = "³·»Ø";
+            this.menuItem_Recall.Text = "æ’¤å›";
             this.menuItem_Recall.Click += new System.EventHandler(this.MenuItem_Recall_Click);
             // 
             // menuItem_Relay
             // 
             this.menuItem_Relay.Name = "menuItem_Relay";
             this.menuItem_Relay.Size = new System.Drawing.Size(154, 22);
-            this.menuItem_Relay.Text = "×ª·¢";
+            this.menuItem_Relay.Text = "è½¬å‘";
             this.menuItem_Relay.Click += new System.EventHandler(this.MenuItem_Relay_Click);
             // 
             // menuItem_Collect
             // 
             this.menuItem_Collect.Name = "menuItem_Collect";
             this.menuItem_Collect.Size = new System.Drawing.Size(154, 22);
-            this.menuItem_Collect.Text = "ÊÕ²Ø";
+            this.menuItem_Collect.Text = "æ”¶è—";
             this.menuItem_Collect.Click += new System.EventHandler(this.MenuItem_Collect_Click);
             // 
             // menuItem_SaveCustomize
             // 
             this.menuItem_SaveCustomize.Name = "menuItem_SaveCustomize";
             this.menuItem_SaveCustomize.Size = new System.Drawing.Size(154, 22);
-            this.menuItem_SaveCustomize.Text = "´æ±íÇé";
+            this.menuItem_SaveCustomize.Text = "å­˜è¡¨æƒ…";
             this.menuItem_SaveCustomize.Click += new System.EventHandler(this.MenuItem_SaveCustomize_Click);
             // 
             // menuItem_MultiSelect
             // 
             this.menuItem_MultiSelect.Name = "menuItem_MultiSelect";
             this.menuItem_MultiSelect.Size = new System.Drawing.Size(154, 22);
-            this.menuItem_MultiSelect.Text = "¶àÑ¡";
+            this.menuItem_MultiSelect.Text = "å¤šé€‰";
             this.menuItem_MultiSelect.Click += new System.EventHandler(this.MenuItem_MultiSelect_Click);
             // 
             // menuItem_Reply
             // 
             this.menuItem_Reply.Name = "menuItem_Reply";
             this.menuItem_Reply.Size = new System.Drawing.Size(154, 22);
-            this.menuItem_Reply.Text = "»Ø¸´";
+            this.menuItem_Reply.Text = "å›å¤";
             this.menuItem_Reply.Click += new System.EventHandler(this.MenuItem_Reply_Click);
             // 
             // menuItem_Translate
             // 
             this.menuItem_Translate.Name = "menuItem_Translate";
             this.menuItem_Translate.Size = new System.Drawing.Size(154, 22);
-            this.menuItem_Translate.Text = "·­Òë";
+            this.menuItem_Translate.Text = "ç¿»è¯‘";
             // 
             // menuItem_AudioToText
             // 
             this.menuItem_AudioToText.Name = "menuItem_AudioToText";
             this.menuItem_AudioToText.Size = new System.Drawing.Size(154, 22);
-            this.menuItem_AudioToText.Text = "ÓïÒô×ªÎÄ×Ö";
+            this.menuItem_AudioToText.Text = "è¯­éŸ³è½¬æ–‡å­—";
             // 
             // separator_three
             // 
@@ -386,21 +415,21 @@ namespace WinFrmTalk.Controls.CustomControls
             // 
             this.menuItem_Download.Name = "menuItem_Download";
             this.menuItem_Download.Size = new System.Drawing.Size(154, 22);
-            this.menuItem_Download.Text = "ÏÂÔØ";
+            this.menuItem_Download.Text = "ä¸‹è½½";
             this.menuItem_Download.Click += new System.EventHandler(this.MenuItem_Download_Click);
             // 
             // menuItem_SaveAs
             // 
             this.menuItem_SaveAs.Name = "menuItem_SaveAs";
             this.menuItem_SaveAs.Size = new System.Drawing.Size(154, 22);
-            this.menuItem_SaveAs.Text = "Áí´æÎª...";
+            this.menuItem_SaveAs.Text = "å¦å­˜ä¸º...";
             this.menuItem_SaveAs.Click += new System.EventHandler(this.MenuItem_SaveAs_Click);
             // 
             // menuItem_OpenFileFolder
             // 
             this.menuItem_OpenFileFolder.Name = "menuItem_OpenFileFolder";
             this.menuItem_OpenFileFolder.Size = new System.Drawing.Size(154, 22);
-            this.menuItem_OpenFileFolder.Text = "ÔÚÎÄ¼ş¼ĞÖĞÏÔÊ¾";
+            this.menuItem_OpenFileFolder.Text = "åœ¨æ–‡ä»¶å¤¹ä¸­æ˜¾ç¤º";
             this.menuItem_OpenFileFolder.Click += new System.EventHandler(this.MenuItem_OpenFileFolder_Click);
             // 
             // separator_four
@@ -412,7 +441,7 @@ namespace WinFrmTalk.Controls.CustomControls
             // 
             this.menuItem_Delete.Name = "menuItem_Delete";
             this.menuItem_Delete.Size = new System.Drawing.Size(154, 22);
-            this.menuItem_Delete.Text = "É¾³ı";
+            this.menuItem_Delete.Text = "åˆ é™¤";
             this.menuItem_Delete.Click += new System.EventHandler(this.MenuItem_Delete_Click);
             // 
             // panMultiSelect
@@ -700,6 +729,8 @@ namespace WinFrmTalk.Controls.CustomControls
         private ServiceListCrl serviceListCrl;
 
         private TitleManagerControls titleManager;
+        private System.Windows.Forms.Label lab_ip;
+        private System.Windows.Forms.Label lab_ipdot;
         private ShowMsgPanel_Tool showMsgPanel_Tool;
     }
 }

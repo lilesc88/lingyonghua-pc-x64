@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -153,7 +153,7 @@ namespace RichTextBoxLinks
             moduleHandle = IntPtr.Zero;
             attemptedLoad = false;
         }
-        #region ֻ���������ع��
+        #region 只读属性隐藏光标
         private const int WM_SETFOCUS = 0x7;
         private const int WM_LBUTTONDOWN = 0x201;
         private const int WM_LBUTTONUP = 0x202;
@@ -165,6 +165,8 @@ namespace RichTextBoxLinks
         private const int WM_KEYUP = 0x0101;
         [DllImport("user32.dll")]
         static extern bool HideCaret(IntPtr hWnd);
+        [DllImport("user32.dll")]
+        static extern bool ShowCaret(IntPtr hWnd);
         private bool bReadOnly = false;
         public void SetReadMode()
         {
@@ -176,6 +178,7 @@ namespace RichTextBoxLinks
             ReadOnly = false;
             bReadOnly = false;
             Focus();
+            if (IsHandleCreated) ShowCaret(Handle);   // 2026-11-19 恢复光标显示：HideCaret 是计数式隐藏，必须显式 ShowCaret
         }
         [DefaultValue(false)]
         protected override void WndProc(ref Message m)
@@ -185,6 +188,8 @@ namespace RichTextBoxLinks
             {
                 if (bReadOnly)
                     HideCaret(Handle);
+                else if (m.Msg == WM_SETFOCUS || m.Msg == WM_LBUTTONDOWN || m.Msg == WM_KEYDOWN)
+                    ShowCaret(Handle);   // 2026-11-19 可编辑状态下确保光标可见
                 if (m.Msg == WM_SETFOCUS || m.Msg == WM_KEYDOWN || m.Msg == WM_KEYUP || m.Msg == WM_LBUTTONDOWN || m.Msg == WM_LBUTTONUP || m.Msg == WM_LBUTTONDBLCLK || m.Msg == WM_RBUTTONDOWN || m.Msg == WM_RBUTTONUP || m.Msg == WM_RBUTTONDBLCLK)
                 {
                     return;

@@ -180,6 +180,13 @@ namespace WinFrmTalk.Controls
                         }
                     }
 
+                    // 2026-08-25 修复：msgs 为空（会话消息已清理/无图片消息）或 Tag 匹配不到时，
+                    // 直接返回，避免 ShowImageList 内 datas[index] 索引越界崩溃
+                    if (msgs.Count == 0 || click_index >= msgs.Count)
+                    {
+                        return;
+                    }
+
                     FrmLookImage frmLookImage = Applicate.GetWindow<FrmLookImage>();
                     if (frmLookImage == null)
                     {

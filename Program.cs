@@ -13,7 +13,7 @@ namespace WinFrmTalk
 {
     public static class Program
     {
-       
+
         /// <summary>
         /// 判断.Net Framework的Release是否符合需要
         /// (.Net Framework 版本在4.0及以上)
@@ -87,7 +87,6 @@ namespace WinFrmTalk
         [STAThread]
         public static void Main()
         {
-           
             SetAccess("Users", Application.StartupPath);
             // 异常处理
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);

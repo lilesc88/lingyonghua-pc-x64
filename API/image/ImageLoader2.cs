@@ -57,8 +57,9 @@ public class ImageLoader2
         }
         catch (Exception)
         {
-            // 加载默认头像 可能是群组
-            compte?.Invoke(Resources.avatar_group);
+            // 2026-08-31 v23.4 修复：非数字 userId（如 MD5 哈希好友）不显示群图标，改显默认头像（与 Android 一致）
+            compte?.Invoke(Resources.avatar_default);
+            return;
         }
 
         if (userIdInt == -1 || userIdInt == 0)
@@ -68,20 +69,64 @@ public class ImageLoader2
             return;
         }
 
-        int dirName = userIdInt % 1000;
+        // 2026-08-31 v23.4 修复：目录规则对齐服务器（userId % 10000，原 % 1000 导致 9 位以上 userId 头像 404）
+        int dirName = userIdInt % 10000;
+
+        // 2026-08-31 v23.4 修复：头像基础地址兜底（downloadAvatarUrl 为空时从 apiUrl 推导）
+        string avatarBase = GetAvatarBaseUrl();
 
         string url = null;
         if (isThumb)
         {
-            url = Applicate.URLDATA.data.downloadAvatarUrl + "avatar/t/" + dirName + "/" + userId + ".jpg";
+            url = avatarBase + "avatar/t/" + dirName + "/" + userId + ".jpg";
         }
         else
         {
-            url = Applicate.URLDATA.data.downloadAvatarUrl + "avatar/o/" + dirName + "/" + userId + ".jpg";
+            url = avatarBase + "avatar/o/" + dirName + "/" + userId + ".jpg";
         }
+
+        // v23.12: 头像 URL 带版本号，避免命中旧缓存
+        url = AvatarVersion.Append(url, userId);
 
         PictureBox box = null;
         Load(url).Error(Resources.avatar_default).CompteListener(compte).Into(box);
+    }
+
+    /// <summary>
+    /// 2026-08-31 v23.4 新增：获取头像服务器基础地址（downloadAvatarUrl 为空时从 apiUrl 推导 8089）
+    /// </summary>
+    private string GetAvatarBaseUrl()
+    {
+        try
+        {
+            if (Applicate.URLDATA != null && Applicate.URLDATA.data != null
+                && !string.IsNullOrEmpty(Applicate.URLDATA.data.downloadAvatarUrl))
+            {
+                string baseUrl = Applicate.URLDATA.data.downloadAvatarUrl;
+                if (!baseUrl.EndsWith("/"))
+                {
+                    baseUrl += "/";
+                }
+                return baseUrl;
+            }
+
+            if (Applicate.URLDATA != null && Applicate.URLDATA.data != null
+                && !string.IsNullOrEmpty(Applicate.URLDATA.data.apiUrl))
+            {
+                string api = Applicate.URLDATA.data.apiUrl;
+                string avatar = api.Replace(":8094/", ":8089/").Replace(":8094", ":8089");
+                if (!avatar.EndsWith("/"))
+                {
+                    avatar += "/";
+                }
+                return avatar;
+            }
+        }
+        catch (Exception)
+        {
+        }
+
+        return "";
     }
 
 
@@ -132,7 +177,7 @@ public class ImageLoader2
         }
 
 
-        if (userId.Length > 8)
+        if (userId.Length == 0)
         {
             return true;
         }

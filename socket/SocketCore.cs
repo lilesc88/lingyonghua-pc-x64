@@ -504,7 +504,9 @@ namespace WinFrmTalk.socket
                         // 多点登录时，pc后缀就是pc，ios就是ios
                         // 在单点登录时，pc的消息后缀也是youjob,之前只判断了pc，所有丢失了回执消息
                         // 导致发消息收不到回执，一直转圈 
-                        bool isMySendMessage = "pc".Equals(device) || "youjob".Equals(device);
+                        // 2026-08-25 修复：多点登录时 Resource = "pc_" + Getpcid()，device 为 "pc_xxxx"，
+                        // 原判断 "pc".Equals(device) 永远为 false，导致群聊消息回执丢失一直转圈
+                        bool isMySendMessage = device.StartsWith("pc") || "youjob".Equals(device);
 
                         if (isMySendMessage && !message.messageHead.offline)
                         {
@@ -644,6 +646,15 @@ namespace WinFrmTalk.socket
             {
                 // 其他端退出登陆
                 MultiDeviceManager.Instance.ChangeDeviceState(auth.resources);
+            }
+            else
+            {
+                // 2026-11-20：认证失败（token 失效/过期）。原逻辑此处什么都不做，
+                // 服务端断开后重连线程会拿同一个死 token 无限重试（线上刷了几千次“token 认证失败”）。
+                Console.WriteLine("登陆失败 auth.status=" + auth.status + " resources=" + auth.resources);
+                ConnectState = SocketConnectionState.Disconnected;
+                mConnectManager.StopConnTask();
+                try { Disconnect(); } catch (Exception ex) { Console.WriteLine("认证失败后断开异常 " + ex.Message); }
             }
 
         }

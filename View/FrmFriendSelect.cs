@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text.RegularExpressions;
@@ -13,7 +13,7 @@ using WinFrmTalk.View.list;
 namespace WinFrmTalk
 {
     /// <summary>
-    /// ºÃÓÑÑ¡ÔñÆ÷
+    /// å¥½å‹é€‰æ‹©å™¨
     /// <para>lxq-3.12</para>
     /// </summary>
     public partial class FrmFriendSelect : FrmBase
@@ -24,9 +24,9 @@ namespace WinFrmTalk
         private SelectFriendAdapter mLeftAdapter;
         private SelectedFriendAdapter mRightAdapter;
 
-        private LodingUtils loding;//µÈ´ı·û¿Ø¼şÈ«¾Ö
-        public int max_number = 15;//×î¶àÑ¡Ôñ¶àÉÙºÃÓÑ
-        public Dictionary<string, Friend> checkDatas = new Dictionary<string, Friend>();//Ñ¡ÖĞºÃÓÑ
+        private LodingUtils loding;//ç­‰å¾…ç¬¦æ§ä»¶å…¨å±€
+        public int max_number = 15;//æœ€å¤šé€‰æ‹©å¤šå°‘å¥½å‹
+        public Dictionary<string, Friend> checkDatas = new Dictionary<string, Friend>();//é€‰ä¸­å¥½å‹
         private Action<Dictionary<string, Friend>> mListener;
 
         private void LoadLanguageText()
@@ -45,17 +45,17 @@ namespace WinFrmTalk
         {
             InitializeComponent();
             LoadLanguageText();
-            this.Icon = (Icon)Properties.Resources.Icon.Clone();//¼ÓÔØiconÍ¼±ê£¨¶ÀÁ¢¸±±¾£¬±ÜÃâ¹²Ïí¾ä±ú±»ÊÍ·Åµ¼ÖÂÉÁÍË£©//¼ÓÔØiconÍ¼±ê
+            this.Icon = (Icon)Properties.Resources.Icon.Clone();//åŠ è½½iconå›¾æ ‡ï¼ˆç‹¬ç«‹å‰¯æœ¬ï¼Œé¿å…å…±äº«å¥æŸ„è¢«é‡Šæ”¾å¯¼è‡´é—ªé€€ï¼‰//åŠ è½½iconå›¾æ ‡
 
             mLeftAdapter = new SelectFriendAdapter();
             mRightAdapter = new SelectedFriendAdapter();
 
             mLeftAdapter.FrmFriend = this;
             mRightAdapter.FrmFriend = this;
-            userSearch.tips = LanguageXmlUtils.GetValue("search", "ËÑË÷");
+            userSearch.tips = LanguageXmlUtils.GetValue("search", "æœç´¢");
             userSearch.SearchEvent += SearchFriend;
 
-            // Ôö¼Ó·ÖÒ³
+            // å¢åŠ åˆ†é¡µ
 
             leftList.FooterRefresh += LoadNextPageMenber;
 
@@ -65,7 +65,7 @@ namespace WinFrmTalk
 
         private bool isLoading;
 
-        // ·ÖÒ³¼ÓÔØÈº³ÉÔ±
+        // åˆ†é¡µåŠ è½½ç¾¤æˆå‘˜
         private void LoadNextPageMenber()
         {
             if (isLoading)
@@ -81,7 +81,7 @@ namespace WinFrmTalk
             isLoading = true;
             ShowLodingDialog();
 
-            // ·ÖÒ³»ñÈ¡Èº³ÉÔ±
+            // åˆ†é¡µè·å–ç¾¤æˆå‘˜
             HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/member/getMemberListByPage")
                 .AddParams("access_token", Applicate.Access_Token)
                 .AddParams("roomId", RoomId)
@@ -135,17 +135,17 @@ namespace WinFrmTalk
 
 
         /// <summary>
-        /// ´°Ìå´ò¿ªºóÊı¾İ¼ÓÔØ
-        /// <para>Ä¬ÈÏ0Ö»ÓĞºÃÓÑ£¬1ºÃÓÑÈº×é¶¼ÓĞ</para>
+        /// çª—ä½“æ‰“å¼€åæ•°æ®åŠ è½½
+        /// <para>é»˜è®¤0åªæœ‰å¥½å‹ï¼Œ1å¥½å‹ç¾¤ç»„éƒ½æœ‰</para>
         /// </summary>
         public void LoadFriendsData(int haveGroup = 0)
         {
             List<Friend> queryList = new List<Friend>();
 
-            lblCount.Text = checkDatas.Count.ToString() + "/" + max_number + LanguageXmlUtils.GetValue("people", "ÈË");
+            lblCount.Text = checkDatas.Count.ToString() + "/" + max_number + LanguageXmlUtils.GetValue("people", "äºº");
             CenterOpen();
 
-            ShowLodingDialog();//Ê¹ÓÃµÈ´ı·û
+            ShowLodingDialog();//ä½¿ç”¨ç­‰å¾…ç¬¦
 
             if (haveGroup == 1)
             {
@@ -164,8 +164,8 @@ namespace WinFrmTalk
 
         private bool isOpenSSLVerify;
         /// <summary>
-        /// ÌôÑ¡ºÏ·¨µÄÅóÓÑ
-        /// <para>Ä¬ÈÏ0Ö»ÓĞºÃÓÑ£¬1ºÃÓÑÈº×é¶¼ÓĞ</para>
+        /// æŒ‘é€‰åˆæ³•çš„æœ‹å‹
+        /// <para>é»˜è®¤0åªæœ‰å¥½å‹ï¼Œ1å¥½å‹ç¾¤ç»„éƒ½æœ‰</para>
         /// </summary>
         public void LoadSSLFriends()
         {
@@ -175,7 +175,7 @@ namespace WinFrmTalk
 
 
         /// <summary>
-        /// ¼ÓÔØ´«Èë¹ıÀ´µÄÊı¾İ
+        /// åŠ è½½ä¼ å…¥è¿‡æ¥çš„æ•°æ®
         /// </summary>
         /// <param name="friends"></param>
         public void LoadFriendsData(List<Friend> friends)
@@ -184,12 +184,12 @@ namespace WinFrmTalk
 
             ShowLodingDialog();
             BindDataToList(friends);
-            LogUtils.Log("¼ÓÔØÍê³É");
+            LogUtils.Log("åŠ è½½å®Œæˆ");
             loding.stop();
         }
 
         /// <summary>
-        /// ĞèÒªÌŞ³ıµÄºÃÓÑ
+        /// éœ€è¦å‰”é™¤çš„å¥½å‹
         /// </summary>
         /// <param name="removes"></param>
         public void LoadFriendsData(List<RoomMember> removes, bool ispagesize, bool isEncrypt = false)
@@ -201,7 +201,7 @@ namespace WinFrmTalk
                 leftList.FooterRefresh -= LoadNextPageMenber;
             }
             isOpenSSLVerify = isEncrypt;
-            lblCount.Text = checkDatas.Count.ToString() + "/" + max_number + LanguageXmlUtils.GetValue("people", "ÈË");
+            lblCount.Text = checkDatas.Count.ToString() + "/" + max_number + LanguageXmlUtils.GetValue("people", "äºº");
             CenterOpen();
             ShowLodingDialog();
 
@@ -220,7 +220,7 @@ namespace WinFrmTalk
             }
 
             BindDataToList(queryList);
-            LogUtils.Log("¼ÓÔØÍê³É");
+            LogUtils.Log("åŠ è½½å®Œæˆ");
             loding.stop();
         }
 
@@ -229,12 +229,12 @@ namespace WinFrmTalk
         public string RoomId = "";
         private int noShowRoom;
         /// <summary>
-        /// ÈºÊÓÆµµç»°
+        /// ç¾¤è§†é¢‘ç”µè¯
         /// </summary>
         /// <param name="Room"></param>
         public void LoadFriendsData(Friend Room, bool isAt = false, int noShowRoom = 0)
         {
-            lblCount.Text = checkDatas.Count.ToString() + "/" + max_number + LanguageXmlUtils.GetValue("people", "ÈË");
+            lblCount.Text = checkDatas.Count.ToString() + "/" + max_number + LanguageXmlUtils.GetValue("people", "äºº");
             CenterOpen();
             ShowLodingDialog();
 
@@ -246,7 +246,7 @@ namespace WinFrmTalk
 
             lastTime = "0";
 
-            // ·ÖÒ³»ñÈ¡Èº³ÉÔ±
+            // åˆ†é¡µè·å–ç¾¤æˆå‘˜
             HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/member/getMemberListByPage")
                 .AddParams("access_token", Applicate.Access_Token)
                 .AddParams("roomId", RoomId)
@@ -272,12 +272,12 @@ namespace WinFrmTalk
                             {
                                 Friend allRoomMember = new Friend();
                                 allRoomMember.UserId = "allRoomMember";
-                                allRoomMember.NickName = "È«Ìå³ÉÔ±";
+                                allRoomMember.NickName = "å…¨ä½“æˆå‘˜";
                                 friends.Add(allRoomMember);
                             }
                         }
 
-                        // ²»ÏÔÊ¾ÆÕÍ¨Èº³ÉÔ±
+                        // ä¸æ˜¾ç¤ºæ™®é€šç¾¤æˆå‘˜
                         if (isAt && noShowRoom == 1 && item.role >= 3)
                         {
                             continue;
@@ -288,7 +288,7 @@ namespace WinFrmTalk
                             Friend allRoomMember = new Friend();
                             allRoomMember.UserId = item.userId;
                             allRoomMember.NickName = item.nickName;
-                            allRoomMember.RemarkName = item.remarkName;//ÈºÖ÷±¸×¢
+                            allRoomMember.RemarkName = item.remarkName;//ç¾¤ä¸»å¤‡æ³¨
                             friends.Add(allRoomMember);
                         }
 
@@ -318,14 +318,14 @@ namespace WinFrmTalk
             //                    {
             //                        Friend allRoomMember = new Friend();
             //                        allRoomMember.UserId = "allRoomMember";
-            //                        allRoomMember.NickName = "È«Ìå³ÉÔ±";
+            //                        allRoomMember.NickName = "å…¨ä½“æˆå‘˜";
             //                        queryList.Add(allRoomMember);
             //                    }
             //                }
 
             //                if (friend.UserId != Applicate.MyAccount.userId)
             //                {
-            //                    //²»ÏÔÊ¾ÒşÉíÈË
+            //                    //ä¸æ˜¾ç¤ºéšèº«äºº
             //                    if (!UIUtils.DecodeString(arrayItem, "role").Equals("4"))
             //                        queryList.Add(friend);
             //                }
@@ -335,7 +335,7 @@ namespace WinFrmTalk
             //            BindDataToList(queryList);
             //            // HaoShiTask(list1, queryList);
             //            // paging(list1);
-            //            //LogUtils.Log("¼ÓÔØÍê³É");
+            //            //LogUtils.Log("åŠ è½½å®Œæˆ");
             //            loding.stop();
             //            // leftList.Controls.Remove(userLoding);
             //        }
@@ -358,11 +358,11 @@ namespace WinFrmTalk
         {
             if (item.CheckState)
             {
-                // È¡ÏûÑ¡ÖĞ
+                // å–æ¶ˆé€‰ä¸­
                 item.CheckState = !item.CheckState;
-                // ÒÆ³ıÊı¾İ
+                // ç§»é™¤æ•°æ®
                 ChangeCheckData(false, item.Friend);
-                // Çå³ıÓÒ±ßÏî
+                // æ¸…é™¤å³è¾¹é¡¹
                 int index = mRightAdapter.GetIndexById(item.Friend.UserId);
                 if (index > -1)
                 {
@@ -374,7 +374,7 @@ namespace WinFrmTalk
             {
                 if (checkDatas.Count >= max_number)
                 {
-                    ShowTip("×î¶àÖ»ÄÜÑ¡Ôñ" + max_number + "¸öÈË");
+                    ShowTip("æœ€å¤šåªèƒ½é€‰æ‹©" + max_number + "ä¸ªäºº");
                     return;
                 }
 
@@ -383,26 +383,26 @@ namespace WinFrmTalk
                 {
                     if (UIUtils.IsNull(item.Friend.RsaPublicKey))
                     {
-                        ShowTip("¼ÓÃÜÈº×éÖ»ÄÜÑûÇëĞÂ°æÓÃ»§");
+                        ShowTip("åŠ å¯†ç¾¤ç»„åªèƒ½é‚€è¯·æ–°ç‰ˆç”¨æˆ·");
                         return;
                     }
                 }
 
-                // Ñ¡ÖĞ
+                // é€‰ä¸­
                 item.CheckState = !item.CheckState;
-                // Ìí¼ÓÊı¾İ
+                // æ·»åŠ æ•°æ®
                 ChangeCheckData(true, item.Friend);
-                // Ìí¼ÓÓÒ±ßÏî
+                // æ·»åŠ å³è¾¹é¡¹
                 int index = mRightAdapter.GetItemCount();
                 mRightAdapter.InsertData(index, item.Friend);
                 rightList.InsertItem(index);
             }
         }
 
-        // È¡ÏûÑ¡ÖĞ
+        // å–æ¶ˆé€‰ä¸­
         public void OnUnSelectFriend(Friend friend)
         {
-            // ²éÑ¯×ó±ßÏîÎ»ÖÃ
+            // æŸ¥è¯¢å·¦è¾¹é¡¹ä½ç½®
             int index = mLeftAdapter.GetIndexById(friend.UserId);
             if (index > -1)
             {
@@ -414,7 +414,7 @@ namespace WinFrmTalk
 
 
         /// <summary>
-        /// ĞŞ¸ÄÊı¾İ¼¯ºÏ
+        /// ä¿®æ”¹æ•°æ®é›†åˆ
         /// </summary>
         /// <param name="check"></param>
         /// <param name="friend"></param>
@@ -433,17 +433,17 @@ namespace WinFrmTalk
 
 
             }
-            lblCount.Text = checkDatas.Count.ToString() + "/" + max_number + LanguageXmlUtils.GetValue("people", "ÈË");
+            lblCount.Text = checkDatas.Count.ToString() + "/" + max_number + LanguageXmlUtils.GetValue("people", "äºº");
         }
 
         /// <summary>
-        /// Ê¹ÓÃµÈ´ı·û
+        /// ä½¿ç”¨ç­‰å¾…ç¬¦
         /// </summary>
         private void ShowLodingDialog()
         {
             loding = new LodingUtils();
             loding.parent = leftList;
-            loding.Title = "¼ÓÔØÖĞ";
+            loding.Title = "åŠ è½½ä¸­";
             loding.start();
         }
         internal void AddConfrmListener(Action<Dictionary<string, Friend>> action)
@@ -451,7 +451,7 @@ namespace WinFrmTalk
             mListener = action;
         }
         /// <summary>
-        /// È·¶¨°´Å¥
+        /// ç¡®å®šæŒ‰é’®
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -464,7 +464,7 @@ namespace WinFrmTalk
             if (!this.btnConfirm.Enabled)
             { return; }
             this.btnConfirm.Enabled = false;
-            //ÎÒ½«ÒµÎñ·ÅÔÚÏß³ÌÀï´¦Àí,Èô²»ÈÃÔÚÏß³ÌÀï,this.btnConfirm.Enabled = false;²»»áÓĞ½ûÖ¹Ğ§¹û,ÒòÎª±¾´ÎÖ÷Ïß³ÌÃ»ÓĞÍê³É¡£
+            //æˆ‘å°†ä¸šåŠ¡æ”¾åœ¨çº¿ç¨‹é‡Œå¤„ç†,è‹¥ä¸è®©åœ¨çº¿ç¨‹é‡Œ,this.btnConfirm.Enabled = false;ä¸ä¼šæœ‰ç¦æ­¢æ•ˆæœ,å› ä¸ºæœ¬æ¬¡ä¸»çº¿ç¨‹æ²¡æœ‰å®Œæˆã€‚
             Task task = new Task(() =>
             {
                 if (mListener != null)
@@ -527,7 +527,7 @@ namespace WinFrmTalk
 
             if (string.IsNullOrEmpty(text))
             {
-                // »¹Ô­Êı¾İ
+                // è¿˜åŸæ•°æ®
                 if (!isPagesize)
                 {
                     leftList.FooterRefresh -= LoadNextPageMenber;
@@ -578,7 +578,7 @@ namespace WinFrmTalk
 
             ShowLodingDialog();
 
-            // ËÑË÷Èº³ÉÔ±
+            // æœç´¢ç¾¤æˆå‘˜
             HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/member/list")
                 .AddParams("roomId", roomId)
                 .AddParams("keyword", keyword)
@@ -717,7 +717,7 @@ namespace WinFrmTalk
 
 
         /// <summary>
-        /// È¡Ïû°´Å¥
+        /// å–æ¶ˆæŒ‰é’®
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -727,7 +727,7 @@ namespace WinFrmTalk
         }
 
         /// <summary>
-        /// ´°Ìå¾ÓÖĞ´ò¿ª
+        /// çª—ä½“å±…ä¸­æ‰“å¼€
         /// </summary>
         private void CenterOpen()
         {

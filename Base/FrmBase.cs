@@ -497,21 +497,13 @@ public class FrmBase : CCSkinMain
         //在主窗体按下Esc
         if (e.KeyChar == 27)
         {
-            ////关闭所有窗体
-            //FormCollection collection = Application.OpenForms;
-            //foreach (Form form in collection)
-            //{
-            //    if (form.GetType() == typeof(FrmLogin) || form.GetType() == typeof(CCWin.CCSkinForm) || form.GetType() == typeof(FrmMain))
-            //    {
-            //        continue;
-            //    }
-            //    form.Close();
-            //}
-
+            //2026-08-25 老张要求：主窗口按ESC不关闭、不隐藏
+            //修改前：FrmMain 按 ESC 会 Hide() 隐藏主窗口，其他窗体 Close()
+            //修改后：主窗口按 ESC 不做任何操作（保持打开），仅非主窗口保持关闭行为
             if (this is FrmMain)
             {
-                this.WindowState = FormWindowState.Normal;
-                this.Hide();
+                // 主窗口：ESC 不关闭、不隐藏、不最小化
+                return;
             }
             else
             {

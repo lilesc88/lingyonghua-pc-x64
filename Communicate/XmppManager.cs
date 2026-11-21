@@ -1,4 +1,4 @@
-using agsXMPP;
+ï»¿using agsXMPP;
 using agsXMPP.protocol.client;
 using agsXMPP.Xml.Dom;
 using Newtonsoft.Json;
@@ -14,6 +14,7 @@ using System.Timers;
 using System.Windows.Forms;
 using TestSocket.socket;
 using WinFrmTalk.Communicate;
+using WinFrmTalk.Helper;
 using WinFrmTalk.Helper.MVVM;
 using WinFrmTalk.Model;
 using WinFrmTalk.Model.dao;
@@ -24,13 +25,13 @@ using Message = agsXMPP.protocol.client.Message;
 namespace WinFrmTalk
 {
     /// <summary>
-    /// Xmpp¿ØÖÆÀà
+    /// Xmppæ§åˆ¶ç±»
     /// </summary>
     public class XmppManager
     {
 
-        private bool mConnected; // ÊÇ·ñÁ¬½Ó³É¹¦¹ı
-        private bool isOpenBatch; // ÊÇ·ñ¿ªÆôÅúÁ¿»ØÖ´
+        private bool mConnected; // æ˜¯å¦è¿æ¥æˆåŠŸè¿‡
+        private bool isOpenBatch; // æ˜¯å¦å¼€å¯æ‰¹é‡å›æ‰§
         private int timeCount;
         private StringBuilder messageIds;
         private string mRequestId;
@@ -57,36 +58,36 @@ namespace WinFrmTalk
             }
         }
 
-        #region ¹¹Ôìº¯Êı
+        #region æ„é€ å‡½æ•°
 
         /// <summary>
-        /// ¹¹Ôìº¯Êı£º³õÊ¼»¯XmppClientConnection¶ÔÏó
+        /// æ„é€ å‡½æ•°ï¼šåˆå§‹åŒ–XmppClientConnectionå¯¹è±¡
         /// </summary>
         public XmppManager()
         {
-            // ³õÊ¼»¯ÏûÏ¢¶ÓÁĞ
-            MessageLooper.Interval = 500; // 0.5ÃëÃ»ÓĞÏûÏ¢¾ÍÈ¥¸üĞÂ½çÃæ
+            // åˆå§‹åŒ–æ¶ˆæ¯é˜Ÿåˆ—
+            MessageLooper.Interval = 500; // 0.5ç§’æ²¡æœ‰æ¶ˆæ¯å°±å»æ›´æ–°ç•Œé¢
             MessageLooper.Elapsed += new ElapsedEventHandler(OnMessageLoop);
-            MessageLooper.AutoReset = false;   //ÉèÖÃÊÇÖ´ĞĞÒ»´Î£¨false£©»¹ÊÇÒ»Ö±Ö´ĞĞ(true)£»
-            MessageLooper.Enabled = true;     //ÊÇ·ñÖ´ĞĞSystem.Timers.Timer.ElapsedÊÂ¼ş£»
+            MessageLooper.AutoReset = false;   //è®¾ç½®æ˜¯æ‰§è¡Œä¸€æ¬¡ï¼ˆfalseï¼‰è¿˜æ˜¯ä¸€ç›´æ‰§è¡Œ(true)ï¼›
+            MessageLooper.Enabled = true;     //æ˜¯å¦æ‰§è¡ŒSystem.Timers.Timer.Elapsedäº‹ä»¶ï¼›
 
             string ip = Applicate.URLDATA.data.XMPPHost;
             string userId = Applicate.MyAccount.userId;
             string token = Applicate.Access_Token;
 
-            // ³õÊ¼»¯ ÉèÖÃip port
+            // åˆå§‹åŒ– è®¾ç½®ip port
             mSocketCore = new SocketCore(ip, 5666);
-            // ÉèÖÃµÇÂ¼ÓÃ»§
+            // è®¾ç½®ç™»å½•ç”¨æˆ·
             mSocketCore.SetLoginUser(token, userId);
-            // ÉèÖÃping¼ä¸ôÊ±¼ä Ãë
+            // è®¾ç½®pingé—´éš”æ—¶é—´ ç§’
             mSocketCore.PingTime = Applicate.URLDATA.data.xmppPingTime;
-            // ÉèÖÃsocket×´Ì¬»Øµ÷
+            // è®¾ç½®socketçŠ¶æ€å›è°ƒ
             mSocketCore.OnStateChanged += OnSocketStateChanged;
-            // ÉèÖÃÊÕµ½ÏûÏ¢»Øµ÷
+            // è®¾ç½®æ”¶åˆ°æ¶ˆæ¯å›è°ƒ
             mSocketCore.OnMessage += XmppCon_OnMessage;
-            // ÉèÖÃÏûÏ¢»ØÖ´»Øµ÷
+            // è®¾ç½®æ¶ˆæ¯å›æ‰§å›è°ƒ
             mSocketCore.OnReceipt += XmppCon_OnReceipt;
-            // ÉèÖÃÁ¬½Ó¶Ï¿ª»Øµ÷
+            // è®¾ç½®è¿æ¥æ–­å¼€å›è°ƒ
             //mSocketCore.OnClose += XmppCon_OnClose;
 
             mSocketCore.Connect();
@@ -95,28 +96,65 @@ namespace WinFrmTalk
 
         #endregion
 
-        #region ÄúÒÑÔÚÆäËûÉè±¸µÇÂ¼
+        #region æ‚¨å·²åœ¨å…¶ä»–è®¾å¤‡ç™»å½•
         /// <summary>
-        /// XmppÁ¬½Ó×´Ì¬¸Ä±äÊ± 
+        /// Xmppè¿æ¥çŠ¶æ€æ”¹å˜æ—¶ 
         /// <param name="sender"></param>
         /// <param name="e"></param>
+        private int _loginConflictHandled = 0;
+
         private void LoginConflict()
         {
-            var res = MessageBox.Show(Applicate.GetWindow<FrmMain>(), "ÄúÒÑÔÚÆäËûÉè±¸µÇÂ¼,ÇëÖØĞÂµÇÂ¼£¡", "ÆäËûÉè±¸µÇÂ¼ÌáÊ¾");
-            ShiKuManager.ApplicationExit();
-            Application.Restart();
+            // v23.10 ä¿®å¤ï¼ˆä»£ç å®¡æŸ¥ B5ï¼‰ï¼šå•æ¬¡å¤„ç†ä¿æŠ¤ + åˆ‡ UI çº¿ç¨‹ + çª—ä½“æœ‰æ•ˆæ€§æ£€æŸ¥ï¼Œ
+            // é˜²æ­¢é‡å¤çŠ¶æ€é€šçŸ¥å¯¼è‡´å¤šæ¬¡å¼¹çª—/å¹¶å‘é‡å¯/å¾ªç¯é€€å‡º
+            if (Interlocked.Exchange(ref _loginConflictHandled, 1) != 0)
+            {
+                return;
+            }
+            var frm = Applicate.GetWindow<FrmMain>();
+            if (frm == null || frm.IsDisposed || frm.Disposing)
+            {
+                return;
+            }
+            Action act = () =>
+            {
+                try
+                {
+                    var res = MessageBox.Show(frm, "è´¦å·å·²åœ¨å…¶ä»–è®¾å¤‡ç™»å½•ï¼Œæ˜¯å¦é‡æ–°ç™»å½•ï¼Ÿ", "å…¶ä»–è®¾å¤‡ç™»å½•æç¤º", MessageBoxButtons.YesNo);
+                    ShiKuManager.ApplicationExit();
+                    if (res == DialogResult.Yes)
+                    {
+                        Application.Restart();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogUtils.Log("LoginConflict error: " + ex.Message);
+                }
+            };
+            if (frm.InvokeRequired)
+            {
+                if (frm.IsHandleCreated)
+                {
+                    frm.BeginInvoke(act);
+                }
+            }
+            else
+            {
+                act();
+            }
         }
         #endregion
 
         #region --------------OnXmppStateChanged----------------
         /// <summary>
-        /// XmppÁ¬½Ó×´Ì¬¸Ä±äÊ± 
+        /// Xmppè¿æ¥çŠ¶æ€æ”¹å˜æ—¶ 
         /// <param name="sender"></param>
         /// <param name="state"></param>
         public void OnSocketStateChanged(SocketConnectionState state)
         {
 
-            LogUtils.Log("------OnSocketStateChanged£º" + state);
+            LogUtils.Log("------OnSocketStateChangedï¼š" + state);
             Messenger.Default.Send(state, MessageActions.XMPP_UPDATE_STATE);
             switch (state)
             {
@@ -129,10 +167,11 @@ namespace WinFrmTalk
                 case SocketConnectionState.Authenticating:
                     break;
                 case SocketConnectionState.Authenticated:
+                    _loginConflictHandled = 0; // v23.10 é‡ç½®ç™»å½•å†²çªæ ‡è®°ï¼Œä¸‹æ¬¡å†²çªå¯å†æ¬¡æç¤º
                     mLoginUserId = Applicate.MyAccount.userId;
-                    // È¥ÏÂÔØ×î½üÏûÏ¢ÁĞ±í
+                    // å»ä¸‹è½½æœ€è¿‘æ¶ˆæ¯åˆ—è¡¨
                     DownChatList();
-                    // Í¬²½ÆäËûÉè±¸²Ù×÷Êı¾İ
+                    // åŒæ­¥å…¶ä»–è®¾å¤‡æ“ä½œæ•°æ®
                     SyscMultiDeviceData();
                     break;
                 case SocketConnectionState.LoginConflict:
@@ -144,7 +183,7 @@ namespace WinFrmTalk
         }
         #endregion
 
-        #region XMPPÁ¬½Ó¹Ø±ÕÊ±
+        #region XMPPè¿æ¥å…³é—­æ—¶
         private void XmppCon_OnClose(SocketConnectionState state)
         {
 
@@ -159,9 +198,9 @@ namespace WinFrmTalk
         }
         #endregion
 
-        #region ÊÕµ½ÏûÏ¢»ØÖ´
+        #region æ”¶åˆ°æ¶ˆæ¯å›æ‰§
         /// <summary>
-        /// ÊÕµ½ÏûÏ¢»ØÖ´  
+        /// æ”¶åˆ°æ¶ˆæ¯å›æ‰§  
         /// </summary>
         /// <param name="packet"></param>
         /// <param name="success"></param>
@@ -173,7 +212,7 @@ namespace WinFrmTalk
             }
             else if (success == -2)
             {
-                // Ãô¸Ğ´Ê
+                // æ•æ„Ÿè¯
                 XmppReceiptManager.Instance.OnReceiveReceipt(XmppReceiptManager.RECEIPT_ERR_DIS, messageid);
             }
             else
@@ -183,26 +222,29 @@ namespace WinFrmTalk
         }
         #endregion
 
-        #region XmppCon_OnMessage½ÓÊÕµ½ÏûÏ¢---------------------------
+        #region XmppCon_OnMessageæ¥æ”¶åˆ°æ¶ˆæ¯---------------------------
         /// <summary>
-        /// Xmpp½ÓÊÕµ½ĞÅÏ¢Ê±  
+        /// Xmppæ¥æ”¶åˆ°ä¿¡æ¯æ—¶  
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="xmppMsg"></param>
         public void XmppCon_OnMessage(ChatMessage chat)
         {
-            //LogUtils.Log("XmppCon_OnMessage£º  " + xmppMsg);
+            // 2026-09-01 å¤šè®¾å¤‡ä¿®å¤: æ¶ˆæ¯å¤„ç†å¼‚å¸¸å…œåº•, é˜²æ­¢å¼‚å¸¸å¯¼è‡´ç¨‹åºå´©æºƒé—ªé€€(å¼‚å¸¸æ—¶è®°å½•æ—¥å¿—, ä¸å½±å“æ­£å¸¸æ¶ˆæ¯æµç¨‹)
+            try
+            {
+            //LogUtils.Log("XmppCon_OnMessageï¼š  " + xmppMsg);
 
-            // Ğ­ÒéÏûÏ¢ChatMessage ×ª»»³É pcÏûÏ¢ÊµÌåMessageObject
+            // åè®®æ¶ˆæ¯ChatMessage è½¬æ¢æˆ pcæ¶ˆæ¯å®ä½“MessageObject
             MessageObject message = ToMessageObject(chat);
             if (message == null)
             {
                 return;
             }
-            // ÒÑËÍ´ï: ÊÕµ½µÄÏûÏ¢¶¼ÊÇ³É¹¦µÄÏûÏ¢
+            // å·²é€è¾¾: æ”¶åˆ°çš„æ¶ˆæ¯éƒ½æ˜¯æˆåŠŸçš„æ¶ˆæ¯
             message.isSend = 1;
 
-            // ÅĞ¶ÏÊÇ·ñÀëÏßÏûÏ¢
+            // åˆ¤æ–­æ˜¯å¦ç¦»çº¿æ¶ˆæ¯
             bool isOfflieMsg = chat.messageHead.offline;
 
             if ("pc".Equals(message.toUserId))
@@ -211,39 +253,50 @@ namespace WinFrmTalk
                 message.toUserName = Applicate.MyAccount.nickname;
             }
 
-            // ´¦ÀíÈºÁÄÂşÓÎÈÎÎñ»úÖÆ
+            // å¤„ç†ç¾¤èŠæ¼«æ¸¸ä»»åŠ¡æœºåˆ¶
             CreateGroupDelayTask(message, isOfflieMsg);
 
-            // ±¾µØÒÑ´æÔÚµÄÏûÏ¢²»´¦Àí
+            // æœ¬åœ°å·²å­˜åœ¨çš„æ¶ˆæ¯ä¸å¤„ç†
             if (message.IsExist())
             {
                 return;
             }
 
-            // ÏûÏ¢½âÃÜ
+            // æ¶ˆæ¯è§£å¯†
             if (message.isEncrypt > 0)
             {
                 SkSSLUtils.DecryptXmppMessage(message, message.isGroup == 1);
 
                 if (message.isEncrypt > 0)
                 {
-                    // ±ê¼ÇÏûÏ¢½âÃÜÊ§°Ü
+                    // æ ‡è®°æ¶ˆæ¯è§£å¯†å¤±è´¥
                     message.IsDecryptFail = 1;
                 }
             }
 
 
-            // Ò»ÌõÕı³£µÄÏûÏ¢ ×öÏÂÒ»²½µÄÂß¼­´¦Àí
+            // ä¸€æ¡æ­£å¸¸çš„æ¶ˆæ¯ åšä¸‹ä¸€æ­¥çš„é€»è¾‘å¤„ç†
             ReceMessage(message, isOfflieMsg);
+            }
+            catch (Exception ex)
+            {
+                // 2026-09-01 å¤šè®¾å¤‡ä¿®å¤: æ¶ˆæ¯å¤„ç†å¼‚å¸¸å…œåº•, ä¸å†å¯¼è‡´ç¨‹åºå´©æºƒé—ªé€€(è®°å½•æ—¥å¿—ä¾›åç»­ç²¾ç¡®å®šä½)
+                try
+                {
+                    LogUtils.Log("XmppCon_OnMessage EXCEPTION: " + ex);
+                }
+                catch (Exception) { }
+                Console.WriteLine("XmppCon_OnMessage EXCEPTION: " + ex.Message);
+            }
         }
 
-        // ÈºÂşÓÎ»úÖÆ
+        // ç¾¤æ¼«æ¸¸æœºåˆ¶
         private void CreateGroupDelayTask(MessageObject chatMessage, bool isOfflieMsg)
         {
-            // ÈºÁÄÀëÏßÏûÏ¢
+            // ç¾¤èŠç¦»çº¿æ¶ˆæ¯
             if (chatMessage.isGroup == 1 && isOfflieMsg)
             {
-                // ÀëÏß100ÌõÏûÏ¢£¬µ¼ÖÂ¶îÍâµÄ100Ìõsql²éÑ¯
+                // ç¦»çº¿100æ¡æ¶ˆæ¯ï¼Œå¯¼è‡´é¢å¤–çš„100æ¡sqlæŸ¥è¯¢
                 var task = MsgRoamTaskDao.Instance.QueryLastTask(chatMessage.ChatJid);
 
                 if (task != null)
@@ -263,16 +316,16 @@ namespace WinFrmTalk
 
         #endregion
 
-        // xmpp ÊÕµ½ÏûÏ¢
+        // xmpp æ”¶åˆ°æ¶ˆæ¯
         private void ReceMessage(MessageObject msg, bool isOfflieMsg)
         {
             if (msg.type == kWCMessageType.IsRead)
             {
-                ProcessReadMessage(msg);//´¦ÀíÒÑ¶ÁÏûÏ¢
+                ProcessReadMessage(msg);//å¤„ç†å·²è¯»æ¶ˆæ¯
                 return;
             }
 
-            // ÕıÔÚÊäÈë
+            // æ­£åœ¨è¾“å…¥
             if (msg.type == kWCMessageType.Typing)
             {
                 if (!msg.IsMySend() && !isOfflieMsg)
@@ -283,47 +336,47 @@ namespace WinFrmTalk
                 return;
             }
 
-            //ÉêÇë½¨Á¢»á»°
+            //ç”³è¯·å»ºç«‹ä¼šè¯
             if (msg.type == kWCMessageType.CustomerBuiltConnnect)
             {
-                var content = "ÄúºÃÎÒÊÇ¿Í»§" + msg.fromUserName + ",ºÜ¸ßĞËÎªÄú·şÎñ£¬ÇëÎÊÓĞÊ²Ã´ÎÊÌâ¿ÉÒÔ°ïÄúµÄ?";
+                var content = "æ‚¨å¥½æˆ‘æ˜¯å®¢æˆ·" + msg.fromUserName + ",å¾ˆé«˜å…´ä¸ºæ‚¨æœåŠ¡ï¼Œè¯·é—®æœ‰ä»€ä¹ˆé—®é¢˜å¯ä»¥å¸®æ‚¨çš„?";
                 var friend = msg.GetFriend();
 
                 ShiKuManager.SendTextMessage(friend, content);
                 return;
             }
 
-            // ½áÊø»á»°
+            // ç»“æŸä¼šè¯
             if (msg.type == kWCMessageType.CustomerEndConnnect)
             {
                 var friend = msg.GetFriend();
-                // ´ÓÅóÓÑ±íÖĞÉ¾³ı
+                // ä»æœ‹å‹è¡¨ä¸­åˆ é™¤
                 friend.DeleteByUserId();
-                // Í¨Öª½çÃæ¸üĞÂ
+                // é€šçŸ¥ç•Œé¢æ›´æ–°
                 MessageObject msg1 = new MessageObject() { FromId = friend.UserId, ToId = mLoginUserId, type = kWCMessageType.RoomExit };
                 Messenger.Default.Send(msg1, MessageActions.XMPP_UPDATE_ROOM_DELETE);
                 return;
             }
 
-            // Ë«ÏòÉ¾³ı
+            // åŒå‘åˆ é™¤
             if (msg.type == kWCMessageType.SYNC_CLEAN)
             {
                 Messenger.Default.Send(msg.fromUserId, MessageActions.CLEAR_FRIEND_MSGS);
 
                 Messenger.Default.Send(msg.fromUserId, MessageActions.CLEAR_FRIEND_MSGS);
 
-                HttpUtils.Instance.ShowTip(msg.fromUserName + " Çå³ıÁËÄúÓëËûµÄÁÄÌì¼ÇÂ¼");
+                HttpUtils.Instance.ShowTip(msg.fromUserName + " æ¸…é™¤äº†æ‚¨ä¸ä»–çš„èŠå¤©è®°å½•");
                 return;
             }
 
-            // ½ØÍ¼
+            // æˆªå›¾
             if (msg.type == kWCMessageType.TYPE_SCREENSHOT)
             {
-                HttpUtils.Instance.ShowTip(msg.fromUserName + "ÕıÔÚ¶ÔÄúµÄÔÄºó¼´·ÙÏûÏ¢½ØÍ¼");
+                HttpUtils.Instance.ShowTip(msg.fromUserName + "æ­£åœ¨å¯¹æ‚¨çš„é˜…åå³ç„šæ¶ˆæ¯æˆªå›¾");
                 return;
             }
 
-            //Èº¿ØÖÆÏûÏ¢
+            //ç¾¤æ§åˆ¶æ¶ˆæ¯
             if (msg.type >= kWCMessageType.RoomMemberNameChange && msg.type <= kWCMessageType.RoomNoticeEdit)
             {
 
@@ -333,57 +386,57 @@ namespace WinFrmTalk
                 }
                 else
                 {
-                    //´¦ÀíÈºÁÄ¿ØÖÆÏûÏ¢
+                    //å¤„ç†ç¾¤èŠæ§åˆ¶æ¶ˆæ¯
                     ProcessGroupManageMessage(msg, isOfflieMsg);
                 }
 
                 return;
             }
 
-            //ĞÂÅóÓÑÑéÖ¤ÏûÏ¢
+            //æ–°æœ‹å‹éªŒè¯æ¶ˆæ¯
             if (msg.type >= kWCMessageType.FriendRequest && msg.type <= kWCMessageType.PhoneContactToFriend)
             {
-                ProcessFriendVerifyMessage(msg);//ĞÂÅóÓÑÑéÖ¤ÏûÏ¢
+                ProcessFriendVerifyMessage(msg);//æ–°æœ‹å‹éªŒè¯æ¶ˆæ¯
                 return;
             }
 
-            //ÈºÎÄ¼şÏûÏ¢
+            //ç¾¤æ–‡ä»¶æ¶ˆæ¯
             if (msg.type >= kWCMessageType.RoomFileUpload && msg.type <= kWCMessageType.RoomFileDownload)
             {
-                ProcessGroupFileMessage(msg);//ÈºÎÄ¼şÏûÏ¢
+                ProcessGroupFileMessage(msg);//ç¾¤æ–‡ä»¶æ¶ˆæ¯
 
                 return;
             }
 
-            //ÒôÊÓÆµÏûÏ¢
+            //éŸ³è§†é¢‘æ¶ˆæ¯
             if (msg.type >= kWCMessageType.AudioChatAsk && msg.type <= kWCMessageType.AudioMeetingSetSpeaker)
             {
-                ProcessPhoneCallMessage(msg, isOfflieMsg);//ÒôÊÓÆµÏûÏ¢
+                ProcessPhoneCallMessage(msg, isOfflieMsg);//éŸ³è§†é¢‘æ¶ˆæ¯
                 return;
             }
 
 
-            // ÌØÊâµÄÏûÏ¢ÀàĞÍÏÔÊ¾ ¡£ ºÏ²¢×ª·¢£¬´ÁÒ»´Á£¬Í¼ÎÄ
+            // ç‰¹æ®Šçš„æ¶ˆæ¯ç±»å‹æ˜¾ç¤º ã€‚ åˆå¹¶è½¬å‘ï¼Œæˆ³ä¸€æˆ³ï¼Œå›¾æ–‡
             if (msg.type >= kWCMessageType.ImageTextSingle && msg.type <= kWCMessageType.TYPE_93 && msg.type != kWCMessageType.Link)
             {
-                ProcessSpecialMessage(msg);//ÌØÊâµÄÏûÏ¢ÀàĞÍÏÔÊ¾
+                ProcessSpecialMessage(msg);//ç‰¹æ®Šçš„æ¶ˆæ¯ç±»å‹æ˜¾ç¤º
                 return;
             }
 
-            // ¶àÉè±¸Í¬²½ÏûÏ¢
+            // å¤šè®¾å¤‡åŒæ­¥æ¶ˆæ¯
             if (msg.type >= kWCMessageType.Device_SYNC_OTHER && msg.type <= kWCMessageType.Device_SYNC_GROUP)
             {
-                if (msg.InsertData() > 0) // Êı¾İ¿â³É¹¦²åÈë
+                if (msg.InsertData() > 0) // æ•°æ®åº“æˆåŠŸæ’å…¥
                 {
-                    ProcessDeviceSyncMessage(msg, isOfflieMsg);//¶àÉè±¸Í¬²½ÏûÏ¢
+                    ProcessDeviceSyncMessage(msg, isOfflieMsg);//å¤šè®¾å¤‡åŒæ­¥æ¶ˆæ¯
                 }
                 return;
             }
 
-            // ¶Ëµ½¶Ë¼ÓÃÜÏà¹ØÏûÏ¢
+            // ç«¯åˆ°ç«¯åŠ å¯†ç›¸å…³æ¶ˆæ¯
             if (msg.type >= kWCMessageType.TYPE_SECURE_REFRESH_KEY && msg.type <= kWCMessageType.TYPE_SECURE_NOTIFY_REFRESH_KEY)
             {
-                /* ¶Ëµ½¶Ë¼ÓÃÜÏà¹ØÏûÏ¢ ÀëÏßÏûÏ¢²»´¦Àí */
+                /* ç«¯åˆ°ç«¯åŠ å¯†ç›¸å…³æ¶ˆæ¯ ç¦»çº¿æ¶ˆæ¯ä¸å¤„ç† */
                 if (!isOfflieMsg && Applicate.ENABLE_ASY_ENCRYPT)
                 {
                     ProcessSecureMessage(msg);
@@ -392,69 +445,73 @@ namespace WinFrmTalk
                 return;
             }
 
-            // Ö§¸¶Æ¾Ö¤
+            // æ”¯ä»˜å‡­è¯
             if (msg.type == kWCMessageType.TYPE_PAY_CERTIFICATE)
             {
                 return;
             }
 
-            // ³·»ØÏûÏ¢
+            // æ’¤å›æ¶ˆæ¯
             if (msg.type == kWCMessageType.Withdraw)
             {
-                /* ´Ë´¦Ó¦ĞŞ¸ÄÏûÏ¢ÄÚÈİÎª"xx³·»ØÁËÒ»ÌõÏûÏ¢" */
+                /* æ­¤å¤„åº”ä¿®æ”¹æ¶ˆæ¯å†…å®¹ä¸º"xxæ’¤å›äº†ä¸€æ¡æ¶ˆæ¯" */
                 ProcessRecallMessage(msg);
                 return;
             }
 
-            // ºóÌ¨¹ÜÀíÏà¹ØÏûÏ¢
+            // åå°ç®¡ç†ç›¸å…³æ¶ˆæ¯
             if (msg.type >= kWCMessageType.NewContactRegistered && msg.type <= kWCMessageType.TYPE_DELETE_SELF)
             {
                 ProcessServiceManagerMessage(msg);
                 return;
             }
 
-            // ºóÌ¨Ëø¶¨
+            // åå°é”å®š
             if (msg.type == kWCMessageType.TYPE_SERVICE_LOCK_USER)
             {
                 ProcessServiceLockMessage(msg, isOfflieMsg);
                 return;
             }
 
-            // ºì°üÏûÏ¢
+            // çº¢åŒ…æ¶ˆæ¯
             if (msg.type == kWCMessageType.RedPacket || msg.type == kWCMessageType.TRANSFER)
             {
-                if (!Applicate.ENABLE_RED_PACKAGE)//Ã»ÓĞ¿ªÆôºì°ü
+                if (!Applicate.ENABLE_RED_PACKAGE)//æ²¡æœ‰å¼€å¯çº¢åŒ…
                 {
-                    msg.content = msg.type == kWCMessageType.RedPacket ? "ÊÕµ½ºì°üÇëÔÚÊÖ»ú¶Ë²é¿´" : "ÊÕµ½×ªÕËÇëÔÚÊÖ»ú¶Ë²é¿´";
+                    msg.content = msg.type == kWCMessageType.RedPacket ? "æ”¶åˆ°çº¢åŒ…è¯·åœ¨æ‰‹æœºç«¯æŸ¥çœ‹" : "æ”¶åˆ°è½¬è´¦è¯·åœ¨æ‰‹æœºç«¯æŸ¥çœ‹";
                     UpdateFriendLastContentTip(msg);
                     return;
                 }
             }
 
-            // Èİ´í´¦Àí
+            // å®¹é”™å¤„ç†
             if (string.IsNullOrEmpty(msg.content))
             {
                 return;
             }
             
-            // ÄÜ×ßµ½ÕâÀï¾ÍÊÇÆÕÍ¨ÏûÏ¢ÁË
-            if (msg.InsertData() > 0)//Êı¾İ¿â³É¹¦²åÈë
+            // èƒ½èµ°åˆ°è¿™é‡Œå°±æ˜¯æ™®é€šæ¶ˆæ¯äº†
+            if (msg.InsertData() > 0)//æ•°æ®åº“æˆåŠŸæ’å…¥
             {
                 int result = msg.UpdateLastSend();
                 if (result == -1)
                 {
                     var frd = msg.GetLastFriend();
-                    frd.Content = msg.content;
-                    HandlerNotRoomMethod(frd, true);
+                    // 2026-09-01 æ¾¶æ°³æ¾¶å›¦æ…¨æ¾¶? æ¾¶æ°³æ¾¶å›§æ‚“å§ãƒ¥æ´–æµ¼çŠ³ç§·é­ç´±éˆæ¹´éƒçŠºéƒ?/é‘±å©‚ã‰ç’æ¿ç¶éƒå‰â”–éŠç…é–¬å®å¤å¯®å‚šçˆ¶
+                    if (frd != null)
+                    {
+                        frd.Content = msg.content;
+                        HandlerNotRoomMethod(frd, true);
+                    }
                 }
                 else
                 {
-                    NotifactionNormalMessage(msg);//  Í¨ÖªUI  //Í¨Öª¸÷Ò³ÃæÊÕµ½ÏûÏ¢
+                    NotifactionNormalMessage(msg);//  é€šçŸ¥UI  //é€šçŸ¥å„é¡µé¢æ”¶åˆ°æ¶ˆæ¯
                 }
             }
 
 
-            // @Èº³ÉÔ±ÏûÏ¢ ±ØĞëÒªµÈÏûÏ¢´æÁËÖ®ºó²ÅÄÜÈ¥·¢¹ã²¥
+            // @ç¾¤æˆå‘˜æ¶ˆæ¯ å¿…é¡»è¦ç­‰æ¶ˆæ¯å­˜äº†ä¹‹åæ‰èƒ½å»å‘å¹¿æ’­
             if (msg.isGroup == 1 && msg.type == kWCMessageType.Text && (!string.IsNullOrEmpty(msg.objectId)))
             {
                 Friend room = msg.GetFriend();
@@ -462,23 +519,23 @@ namespace WinFrmTalk
                 {
                     if (room.UserId.Equals(msg.objectId))
                     {
-                        // @È«Ìå³ÉÔ±
+                        // @å…¨ä½“æˆå‘˜
                         room.UpdateAtMeState(2);
                         LocalDataUtils.SetStringData(room.UserId + "GROUP_AT_MESSAGEID" + msg.myUserId, msg.messageId);
-                        Messenger.Default.Send(room, MessageActions.ROOM_UPDATE_AT_ME);//Í¨Öª½çÃæË¢ĞÂ
+                        Messenger.Default.Send(room, MessageActions.ROOM_UPDATE_AT_ME);//é€šçŸ¥ç•Œé¢åˆ·æ–°
                     }
                     else if (msg.objectId.Contains(msg.myUserId))
                     {
-                        // ÎÒ±»@ÁË
+                        // æˆ‘è¢«@äº†
                         room.UpdateAtMeState(1);
                         LocalDataUtils.SetStringData(room.UserId + "GROUP_AT_MESSAGEID" + msg.myUserId, msg.messageId);
-                        Messenger.Default.Send(room, MessageActions.ROOM_UPDATE_AT_ME);//Í¨Öª½çÃæË¢ĞÂ
+                        Messenger.Default.Send(room, MessageActions.ROOM_UPDATE_AT_ME);//é€šçŸ¥ç•Œé¢åˆ·æ–°
                     }
                 }
             }
         }
         
-        // xmpp·¢ËÍÏûÏ¢
+        // xmppå‘é€æ¶ˆæ¯
         public void SendMessage(MessageObject msg)
         {
             if (!mSocketCore.Authenticated())
@@ -486,7 +543,7 @@ namespace WinFrmTalk
                 msg.isSend = -1;
                 msg.UpdateIsSend(-1, msg.messageId);
                 XmppReceiptManager.Instance.PushFailMessage(msg);
-                // ¸üĞÂUIÏûÏ¢·¢ËÍÊ§°Ü±êÖ¾ ÏûÏ¢ÒÑ·¢ËÍÊ§°Ü ²ÎÊı 
+                // æ›´æ–°UIæ¶ˆæ¯å‘é€å¤±è´¥æ ‡å¿— æ¶ˆæ¯å·²å‘é€å¤±è´¥ å‚æ•° 
                 Messenger.Default.Send(msg, MessageActions.XMPP_UPDATE_SEND_FAILED);
                 return;
             }
@@ -497,14 +554,14 @@ namespace WinFrmTalk
                 msg.isSend = -1;
                 msg.UpdateIsSend(-1, msg.messageId);
                 XmppReceiptManager.Instance.PushFailMessage(msg);
-                // ¸üĞÂUIÏûÏ¢·¢ËÍÊ§°Ü±êÖ¾ ÏûÏ¢ÒÑ·¢ËÍÊ§°Ü ²ÎÊı 
+                // æ›´æ–°UIæ¶ˆæ¯å‘é€å¤±è´¥æ ‡å¿— æ¶ˆæ¯å·²å‘é€å¤±è´¥ å‚æ•° 
                 Messenger.Default.Send(msg, MessageActions.XMPP_UPDATE_SEND_FAILED);
                 return;
             }
 
             MessageObject chatMessage = msg.CopyMessage();
 
-            // ÏûÏ¢¼ÓÃÜ´«Êä
+            // æ¶ˆæ¯åŠ å¯†ä¼ è¾“
             if (!NotEncrypt(chatMessage))
             {
                 var friend = new Friend() { UserId = msg.toUserId }.GetByUserId();
@@ -516,14 +573,14 @@ namespace WinFrmTalk
                 chatMessage.isEncrypt = 0;
             }
 
-            // ÊÇ·ñÊÇ·¢¸øÎÒµÄÉè±¸µÄÏûÏ¢
+            // æ˜¯å¦æ˜¯å‘ç»™æˆ‘çš„è®¾å¤‡çš„æ¶ˆæ¯
             if ("android".Equals(msg.toUserId) || "ios".Equals(msg.toUserId) || "web".Equals(msg.toUserId) || "mac".Equals(msg.toUserId))
             {
                 chatMessage.toUserName = msg.toUserId;
                 chatMessage.toUserId = msg.fromUserId;
             }
 
-            // ĞŞ¸ÄìøµÀbug # 8033
+            // ä¿®æ”¹ç¦…é“bug # 8033
             if (chatMessage.type == kWCMessageType.File)
             {
                 chatMessage.fileName = FileUtils.GetFileName(chatMessage.fileName);
@@ -531,10 +588,10 @@ namespace WinFrmTalk
 
             ChatMessage chat = ToChatMessage(chatMessage);
 
-            // Ìí¼Óµ½»ØÖ´¹ÜÀíÆ÷
+            // æ·»åŠ åˆ°å›æ‰§ç®¡ç†å™¨
             XmppReceiptManager.Instance.AddWillSendMessage(msg);
             mSocketCore.SendMessage(chat, Command.COMMAND_CHAT_REQ);
-            Console.WriteLine("·¢ËÍÏûÏ¢" + chat.content);
+            Console.WriteLine("å‘é€æ¶ˆæ¯" + chat.content);
         }
 
         private bool NotEncrypt(MessageObject chatMessage)
@@ -546,11 +603,11 @@ namespace WinFrmTalk
 
             if (chatMessage.type == kWCMessageType.Reply)
             {
-                // ĞŞ¸ÄìøµÀ9407 »Ø¸´ÏûÏ¢ĞèÒª¼ÓÃÜ
+                // ä¿®æ”¹ç¦…é“9407 å›å¤æ¶ˆæ¯éœ€è¦åŠ å¯†
                 return false;
             }
 
-            // ´óÓÚ10ÀàĞÍµÄÏûÏ¢È«²¿²»¼ÓÃÜ
+            // å¤§äº10ç±»å‹çš„æ¶ˆæ¯å…¨éƒ¨ä¸åŠ å¯†
             if (chatMessage.type >= kWCMessageType.Remind)
             {
                 return true;
@@ -566,7 +623,7 @@ namespace WinFrmTalk
                 return true;
             }
 
-            // ×ª·¢¸øÆäËû¶ËµÄÏûÏ¢Ò²²»¼ÓÃÜ
+            // è½¬å‘ç»™å…¶ä»–ç«¯çš„æ¶ˆæ¯ä¹Ÿä¸åŠ å¯†
             if (mLoginUserId.Equals(chatMessage.toUserId))
             {
                 return true;
@@ -575,11 +632,11 @@ namespace WinFrmTalk
             return false;
         }
 
-        #region ========================================================ÏûÏ¢´¦ÀíÄ£¿é====================================================
+        #region ========================================================æ¶ˆæ¯å¤„ç†æ¨¡å—====================================================
         /// <summary>
-        /// ĞÂÅóÓÑÑéÖ¤Ïà¹ØÏûÏ¢´¦Àí
+        /// æ–°æœ‹å‹éªŒè¯ç›¸å…³æ¶ˆæ¯å¤„ç†
         /// </summary>
-        /// <param name="msg">ÏûÏ¢</param>
+        /// <param name="msg">æ¶ˆæ¯</param>
         private void ProcessFriendVerifyMessage(MessageObject msg)
         {
             if (msg.IsExist())
@@ -587,7 +644,7 @@ namespace WinFrmTalk
                 return;
             }
 
-            // ×öÒ»¸öÈİ´í´¦Àí
+            // åšä¸€ä¸ªå®¹é”™å¤„ç†
             var tmpFriend = msg.GetFriend();
             if (tmpFriend == null || string.IsNullOrEmpty(tmpFriend.UserId))
             {
@@ -598,87 +655,87 @@ namespace WinFrmTalk
                     NickName = msg.fromUserName,
                 };
 
-                tmpFriend.InsertAuto();//Ìí¼Ó¶ÔÓ¦ºÃÓÑÖÁÊı¾İ¿â
+                tmpFriend.InsertAuto();//æ·»åŠ å¯¹åº”å¥½å‹è‡³æ•°æ®åº“
             }
 
 
             switch (msg.type)
             {
-                case kWCMessageType.DeleteFriend://±»É¾³ı
-                    // ÏÔÊ¾ÌáÊ¾
+                case kWCMessageType.DeleteFriend://è¢«åˆ é™¤
+                    // æ˜¾ç¤ºæç¤º
                     if (string.Equals(msg.fromUserId, msg.myUserId))
                     {
-                        HttpUtils.Instance.ShowTip("ÒÑÉ¾³ı" + tmpFriend.NickName);
-                        // ÉèÖÃ°ÑÉ¾³ı
+                        HttpUtils.Instance.ShowTip("å·²åˆ é™¤" + tmpFriend.NickName);
+                        // è®¾ç½®æŠŠåˆ é™¤
                         tmpFriend.UpdateFriendState(tmpFriend.UserId, Friend.STATUS_16);
                     }
                     else
                     {
-                        HttpUtils.Instance.ShowTip("ÎÒÒÑ±»" + tmpFriend.NickName + "É¾³ı");
-                        // ÉèÖÃÎª±»É¾³ı
+                        HttpUtils.Instance.ShowTip("æˆ‘å·²è¢«" + tmpFriend.NickName + "åˆ é™¤");
+                        // è®¾ç½®ä¸ºè¢«åˆ é™¤
                         tmpFriend.UpdateFriendState(tmpFriend.UserId, Friend.STATUS_17);
                     }
 
-                    // Í¨Öª½çÃæË¢ĞÂ
+                    // é€šçŸ¥ç•Œé¢åˆ·æ–°
                     Messenger.Default.Send(tmpFriend, MessageActions.DELETE_FRIEND);
-                    // Çå¿ÕÏûÏ¢¼ÇÂ¼
+                    // æ¸…ç©ºæ¶ˆæ¯è®°å½•
                     msg.DeleteTable();
-                    // ¸üĞÂĞÂµÄÅóÓÑÎ´¶ÁÊıÁ¿
+                    // æ›´æ–°æ–°çš„æœ‹å‹æœªè¯»æ•°é‡
                     Messenger.Default.Send(Friend.ID_NEW_FRIEND, FriendListLayout.NOTIFY_FRIENDLIST_UNREAD_COUNT);
                     break;
-                case kWCMessageType.BlackFriend://±»À­ºÚ
+                case kWCMessageType.BlackFriend://è¢«æ‹‰é»‘
 
-                    // ÏÔÊ¾ÌáÊ¾
+                    // æ˜¾ç¤ºæç¤º
                     if (string.Equals(msg.fromUserId, msg.myUserId))
                     {
-                        HttpUtils.Instance.ShowTip("ÒÑÀ­ºÚ" + tmpFriend.NickName);
-                        // ÉèÖÃÎª±»À­ºÚ
+                        HttpUtils.Instance.ShowTip("å·²æ‹‰é»‘" + tmpFriend.NickName);
+                        // è®¾ç½®ä¸ºè¢«æ‹‰é»‘
                         tmpFriend.UpdateFriendState(tmpFriend.UserId, Friend.STATUS_18);
                     }
                     else
                     {
-                        HttpUtils.Instance.ShowTip("ÎÒÒÑ±»" + tmpFriend.NickName + "À­ºÚ");
-                        // ÉèÖÃÎª±»À­ºÚ
+                        HttpUtils.Instance.ShowTip("æˆ‘å·²è¢«" + tmpFriend.NickName + "æ‹‰é»‘");
+                        // è®¾ç½®ä¸ºè¢«æ‹‰é»‘
                         tmpFriend.UpdateFriendState(tmpFriend.UserId, Friend.STATUS_19);
                     }
 
-                    // Í¨Öª½çÃæË¢ĞÂ
+                    // é€šçŸ¥ç•Œé¢åˆ·æ–°
                     Messenger.Default.Send(tmpFriend, MessageActions.ADD_BLACKLIST);
 
-                    // Çå¿ÕÁĞ±í À­ºÚ²Ù×÷²»ÔÚÉ¾³ıÏûÏ¢±í#9559
+                    // æ¸…ç©ºåˆ—è¡¨ æ‹‰é»‘æ“ä½œä¸åœ¨åˆ é™¤æ¶ˆæ¯è¡¨#9559
                     //msg.DeleteTable();
-                    // ¸üĞÂĞÂµÄÅóÓÑÎ´¶ÁÊıÁ¿
+                    // æ›´æ–°æ–°çš„æœ‹å‹æœªè¯»æ•°é‡
                     Messenger.Default.Send(Friend.ID_NEW_FRIEND, FriendListLayout.NOTIFY_FRIENDLIST_UNREAD_COUNT);
                     break;
-                case kWCMessageType.RequestRefuse://¶Ô·½»Ø»°
-                case kWCMessageType.FriendRequest://¶Ô·½ÇëÇóÌí¼ÓÎÒ
-                                                  // ¸üĞÂĞÂµÄÅóÓÑÎ´¶ÁÊıÁ¿
+                case kWCMessageType.RequestRefuse://å¯¹æ–¹å›è¯
+                case kWCMessageType.FriendRequest://å¯¹æ–¹è¯·æ±‚æ·»åŠ æˆ‘
+                                                  // æ›´æ–°æ–°çš„æœ‹å‹æœªè¯»æ•°é‡
                     Messenger.Default.Send(Friend.ID_NEW_FRIEND, FriendListLayout.NOTIFY_FRIENDLIST_UNREAD_COUNT);
                     break;
-                case kWCMessageType.RequestFriendDirectly://Ö±½ÓÌí¼ÓºÃÓÑ
-                case kWCMessageType.RequestAgree://±»Í¬Òâ
-                case kWCMessageType.CancelBlackFriend://±»¶Ô·½È¡ÏûºÚÃûµ¥
-                case kWCMessageType.PhoneContactToFriend://±»¶Ô·½´ÓÊÖ»úÁªÏµÈËÖ±½ÓÌí¼Ó³ÉºÃÓÑ
+                case kWCMessageType.RequestFriendDirectly://ç›´æ¥æ·»åŠ å¥½å‹
+                case kWCMessageType.RequestAgree://è¢«åŒæ„
+                case kWCMessageType.CancelBlackFriend://è¢«å¯¹æ–¹å–æ¶ˆé»‘åå•
+                case kWCMessageType.PhoneContactToFriend://è¢«å¯¹æ–¹ä»æ‰‹æœºè”ç³»äººç›´æ¥æ·»åŠ æˆå¥½å‹
 
                     MessageObject tip = msg.CopyMessage();
                     tip.type = kWCMessageType.Remind;
-                    tip.content = "ÄãÃÇÒÑ¾­³ÉÎªºÃÓÑ£¬¿ìÀ´ÁÄÌì°É";
+                    tip.content = "ä½ ä»¬å·²ç»æˆä¸ºå¥½å‹ï¼Œå¿«æ¥èŠå¤©å§";
                     if (tip.InsertData() == 1)
                     {
-                        Console.WriteLine("±£´æ³É¹¦");
-                    }//±£´æÌáÊ¾ÏûÏ¢
+                        Console.WriteLine("ä¿å­˜æˆåŠŸ");
+                    }//ä¿å­˜æç¤ºæ¶ˆæ¯
 
                     tmpFriend.BecomeFriend(msg.type);
-                    // ¸üĞÂºÃÓÑĞÅÏ¢
+                    // æ›´æ–°å¥½å‹ä¿¡æ¯
                     HandleFriendUpdate(tmpFriend.UserId);
 
-                    // ¸üĞÂÁÄÌì¼ÇÂ¼Ò³
+                    // æ›´æ–°èŠå¤©è®°å½•é¡µ
                     Messenger.Default.Send(tip, MessageActions.XMPP_UPDATE_NORMAL_MESSAGE);
                     Messenger.Default.Send(tip, MessageActions.XMPP_SHOW_SINGLE_MESSAGE);
 
-                    //Ìí¼ÓÖÁºÃÓÑÁĞ±í
+                    //æ·»åŠ è‡³å¥½å‹åˆ—è¡¨
                     Messenger.Default.Send(tmpFriend.UserId, FriendListLayout.ADD_EXISTS_FRIEND);
-                    // ¸üĞÂĞÂµÄÅóÓÑÎ´¶ÁÊıÁ¿
+                    // æ›´æ–°æ–°çš„æœ‹å‹æœªè¯»æ•°é‡
                     Messenger.Default.Send(Friend.ID_NEW_FRIEND, FriendListLayout.NOTIFY_FRIENDLIST_UNREAD_COUNT);
 
                     break;
@@ -686,10 +743,10 @@ namespace WinFrmTalk
                     break;
             }
 
-            // Ë¢ĞÂĞÂµÄÅóÓÑ½çÃæ
+            // åˆ·æ–°æ–°çš„æœ‹å‹ç•Œé¢
             if (string.Equals(msg.fromUserId, msg.myUserId))
             {
-                Messenger.Default.Send(msg, MessageActions.XMPP_UPDATE_VERIFY_RECEPIT);// ¸üĞÂUIÏûÏ¢·¢ËÍÊ§°Ü±êÖ¾ ÏûÏ¢ÒÑ·¢ËÍÊ§°Ü ²ÎÊı messageObject
+                Messenger.Default.Send(msg, MessageActions.XMPP_UPDATE_VERIFY_RECEPIT);// æ›´æ–°UIæ¶ˆæ¯å‘é€å¤±è´¥æ ‡å¿— æ¶ˆæ¯å·²å‘é€å¤±è´¥ å‚æ•° messageObject
             }
             else
             {
@@ -698,10 +755,10 @@ namespace WinFrmTalk
         }
 
 
-        // ³·»ØÏûÏ¢´¦Àí
+        // æ’¤å›æ¶ˆæ¯å¤„ç†
         private void ProcessRecallMessage(MessageObject msg)
         {
-            // ´æ¿â·ÀÖ¹ÏûÏ¢ÖØ¸´´¦Àí
+            // å­˜åº“é˜²æ­¢æ¶ˆæ¯é‡å¤å¤„ç†
             //msg.InsertData();
             string content = null;
             msg.messageId = msg.content;
@@ -712,28 +769,28 @@ namespace WinFrmTalk
             {
                 if (string.Equals(oMsg.fromUserId, oMsg.myUserId))
                 {
-                    content = "Äã³·»ØÁËÒ»ÌõÏûÏ¢";
+                    content = "ä½ æ’¤å›äº†ä¸€æ¡æ¶ˆæ¯";
                 }
                 else
                 {
-                    content = "Äã³·»ØÁË " + UIUtils.QuotationName(oMsg.fromUserName) + "µÄÒ»ÌõÏûÏ¢";
+                    content = "ä½ æ’¤å›äº† " + UIUtils.QuotationName(oMsg.fromUserName) + "çš„ä¸€æ¡æ¶ˆæ¯";
                 }
             }
             else
             {
                 if (string.Equals(oMsg.fromUserId, oMsg.myUserId))
                 {
-                    content = UIUtils.QuotationName(msg.fromUserName) + "³·»ØÁËÒ»ÌõÄãµÄÏûÏ¢";
+                    content = UIUtils.QuotationName(msg.fromUserName) + "æ’¤å›äº†ä¸€æ¡ä½ çš„æ¶ˆæ¯";
                 }
                 else
                 {
                     if (string.Equals(oMsg.fromUserId, msg.fromUserId))
                     {
-                        content = UIUtils.QuotationName(msg.fromUserName) + "³·»ØÁËÒ»ÌõÏûÏ¢";
+                        content = UIUtils.QuotationName(msg.fromUserName) + "æ’¤å›äº†ä¸€æ¡æ¶ˆæ¯";
                     }
                     else
                     {
-                        content = UIUtils.QuotationName(msg.fromUserName) + "³·»ØÁËÒ»Ìõ³ÉÔ±µÄÏûÏ¢";
+                        content = UIUtils.QuotationName(msg.fromUserName) + "æ’¤å›äº†ä¸€æ¡æˆå‘˜çš„æ¶ˆæ¯";
                     }
                 }
             }
@@ -741,7 +798,7 @@ namespace WinFrmTalk
             oMsg.content = content;
             oMsg.type = kWCMessageType.Remind;
 
-            // È¥¸üĞÂ³·»ØÏûÏ¢
+            // å»æ›´æ–°æ’¤å›æ¶ˆæ¯
             if (oMsg.UpdateData() > 0)
             {
                 NotifactionRecallMessage(oMsg);
@@ -755,7 +812,7 @@ namespace WinFrmTalk
         }
 
         /// <summary>
-        /// ´¦ÀíÒôÊÓÆµÁÄÌìÏûÏ¢
+        /// å¤„ç†éŸ³è§†é¢‘èŠå¤©æ¶ˆæ¯
         /// </summary>
         /// <param name="msg"></param>
         private void ProcessPhoneCallMessage(MessageObject msg, bool delay)
@@ -774,13 +831,13 @@ namespace WinFrmTalk
                 }
             }
 
-            // ĞŞ¸ÄìøµÀ7474ÎÊÌâ£¬web¹Ò¶ÏÏûÏ¢³öÏÖÔÚ¹«ÖÚºÅµÄÎÊÌâ
+            // ä¿®æ”¹ç¦…é“7474é—®é¢˜ï¼ŒwebæŒ‚æ–­æ¶ˆæ¯å‡ºç°åœ¨å…¬ä¼—å·çš„é—®é¢˜
             if ("10000".Equals(msg.toUserId))
             {
                 return;
             }
 
-            // ÀëÏßÏûÏ¢²»ÔÚ´¦Àí ìøµÀ11263  time:2020-3-16 16:03:24
+            // ç¦»çº¿æ¶ˆæ¯ä¸åœ¨å¤„ç† ç¦…é“11263  time:2020-3-16 16:03:24
             if (!delay)
             {
                 Messenger.Default.Send(msg, MessageActions.XMPP_UPDATE_MEETING_MESSAGE);//
@@ -793,44 +850,44 @@ namespace WinFrmTalk
 
                     if (msg.timeLen == 1)
                     {
-                        msg.content = "ÒÑ¾Ü¾ø";
+                        msg.content = "å·²æ‹’ç»";
                     }
                     else
                     {
-                        msg.content = LanguageXmlUtils.GetValue("AudioChatCancel", "È¡ÏûÁËÓïÒôÍ¨»°");
+                        msg.content = LanguageXmlUtils.GetValue("AudioChatCancel", "å–æ¶ˆäº†è¯­éŸ³é€šè¯");
                     }
 
                     UpdateFriendLastContentTip(msg);
                     break;
                 case kWCMessageType.AudioChatEnd://
-                    msg.content = "½áÊøÁËÓïÒôÍ¨»°£º" + TimeUtils.FromatCountdown(msg.timeLen);
+                    msg.content = "ç»“æŸäº†è¯­éŸ³é€šè¯ï¼š" + TimeUtils.FromatCountdown(msg.timeLen);
                     UpdateFriendLastContentTip(msg);
                     break;
                 case kWCMessageType.VideoChatCancel://
                     if (msg.timeLen == 1)
                     {
-                        msg.content = "ÒÑ¾Ü¾ø";
+                        msg.content = "å·²æ‹’ç»";
                     }
                     else
                     {
-                        msg.content = LanguageXmlUtils.GetValue("VideoChatCancel", "È¡ÏûÁËÊÓÆµÍ¨»°");
+                        msg.content = LanguageXmlUtils.GetValue("VideoChatCancel", "å–æ¶ˆäº†è§†é¢‘é€šè¯");
                     }
 
                     UpdateFriendLastContentTip(msg);
                     break;
                 case kWCMessageType.VideoChatEnd://
-                    msg.content = "½áÊøÁËÊÓÆµÍ¨»°£º" + TimeUtils.FromatCountdown(msg.timeLen);
+                    msg.content = "ç»“æŸäº†è§†é¢‘é€šè¯ï¼š" + TimeUtils.FromatCountdown(msg.timeLen);
                     UpdateFriendLastContentTip(msg);
                     break;
                 case kWCMessageType.AudioMeetingSetSpeaker://
-                    msg.content = "¶Ô·½Ã¦ÏßÖĞ";
+                    msg.content = "å¯¹æ–¹å¿™çº¿ä¸­";
                     UpdateFriendLastContentTip(msg);
                     break;
             }
         }
 
         /// <summary>
-        /// ´¦Àíºì°üÏà¹ØÏûÏ¢
+        /// å¤„ç†çº¢åŒ…ç›¸å…³æ¶ˆæ¯
         /// </summary>
         /// <param name="msg"></param>
         private void ProcessMoenyMessage(MessageObject msg)
@@ -839,19 +896,19 @@ namespace WinFrmTalk
             {
 
                 case kWCMessageType.RedBack:
-                    msg.content = "ÓĞºì°üÍË»ØÇëÔÚÊÖ»ú¶Ë²é¿´";
+                    msg.content = "æœ‰çº¢åŒ…é€€å›è¯·åœ¨æ‰‹æœºç«¯æŸ¥çœ‹";
                     break;
-                case kWCMessageType.TYPE_TRANSFER_RECEIVE://É¾³ıÈºÎÄ¼ş
-                    msg.content = "×ªÕËÒÑ±»ÁìÈ¡ÇëÔÚÊÖ»ú¶Ë²é¿´";
+                case kWCMessageType.TYPE_TRANSFER_RECEIVE://åˆ é™¤ç¾¤æ–‡ä»¶
+                    msg.content = "è½¬è´¦å·²è¢«é¢†å–è¯·åœ¨æ‰‹æœºç«¯æŸ¥çœ‹";
                     break;
                 case kWCMessageType.TYPE_93:
-                    msg.content = "ÊÕµ½ÊÕ¿îÏûÏ¢ÇëÔÚÊÖ»ú¶Ë²é¿´";
+                    msg.content = "æ”¶åˆ°æ”¶æ¬¾æ¶ˆæ¯è¯·åœ¨æ‰‹æœºç«¯æŸ¥çœ‹";
                     break;
                 case kWCMessageType.TYPE_TRANSFER_BACK:
-                    msg.content = "×ªÕËÒÑÍË»ØÇëÔÚÊÖ»ú¶Ë²é¿´";
+                    msg.content = "è½¬è´¦å·²é€€å›è¯·åœ¨æ‰‹æœºç«¯æŸ¥çœ‹";
                     break;
                 default:
-                    msg.content = "Ôİ²»Ö§³Ö´ËÀàĞÍµÄÏûÏ¢ÏÔÊ¾";
+                    msg.content = "æš‚ä¸æ”¯æŒæ­¤ç±»å‹çš„æ¶ˆæ¯æ˜¾ç¤º";
                     break;
             }
 
@@ -859,37 +916,37 @@ namespace WinFrmTalk
         }
 
         /// <summary>
-        /// ´¦Àíºì°üÏà¹ØÏûÏ¢
+        /// å¤„ç†çº¢åŒ…ç›¸å…³æ¶ˆæ¯
         /// </summary>
         /// <param name="msg"></param>
         private void ProcessSpecialMessage(MessageObject msg)
         {
-            // ºì°ü ×ªÕËÏà¹ØÏûÏ¢ 
+            // çº¢åŒ… è½¬è´¦ç›¸å…³æ¶ˆæ¯ 
             if (msg.type >= kWCMessageType.RedBack && msg.type <= kWCMessageType.TYPE_93)
             {
                 switch (msg.type)
                 {
                     case kWCMessageType.RedBack:
-                        msg.content = "ÓĞºì°üÍË»ØÇëÔÚÊÖ»ú¶Ë²é¿´";
+                        msg.content = "æœ‰çº¢åŒ…é€€å›è¯·åœ¨æ‰‹æœºç«¯æŸ¥çœ‹";
                         break;
                     case kWCMessageType.TYPE_TRANSFER_RECEIVE:
-                        msg.content = "×ªÕËÒÑ±»ÁìÈ¡ÇëÔÚÊÖ»ú¶Ë²é¿´";
+                        msg.content = "è½¬è´¦å·²è¢«é¢†å–è¯·åœ¨æ‰‹æœºç«¯æŸ¥çœ‹";
                         break;
                     case kWCMessageType.TYPE_93:
-                        msg.content = "ÊÕµ½ÊÕ¿îÏûÏ¢ÇëÔÚÊÖ»ú¶Ë²é¿´";
+                        msg.content = "æ”¶åˆ°æ”¶æ¬¾æ¶ˆæ¯è¯·åœ¨æ‰‹æœºç«¯æŸ¥çœ‹";
                         break;
                     case kWCMessageType.TYPE_TRANSFER_BACK:
-                        msg.content = "×ªÕËÒÑÍË»ØÇëÔÚÊÖ»ú¶Ë²é¿´";
+                        msg.content = "è½¬è´¦å·²é€€å›è¯·åœ¨æ‰‹æœºç«¯æŸ¥çœ‹";
                         break;
                     case kWCMessageType.TYPE_CODE_ACCOUNT:
-                        msg.fromUserName = "ÏµÍ³Í¨Öª";
-                        msg.content = "Ôİ²»Ö§³Ö´ËÀàĞÍµÄÏûÏ¢ÏÔÊ¾";
+                        msg.fromUserName = "ç³»ç»Ÿé€šçŸ¥";
+                        msg.content = "æš‚ä¸æ”¯æŒæ­¤ç±»å‹çš„æ¶ˆæ¯æ˜¾ç¤º";
                         break;
                     case kWCMessageType.TYPE_CODE_PAY:
-                        msg.content = "Ôİ²»Ö§³Ö´ËÀàĞÍµÄÏûÏ¢ÏÔÊ¾";
+                        msg.content = "æš‚ä¸æ”¯æŒæ­¤ç±»å‹çš„æ¶ˆæ¯æ˜¾ç¤º";
                         break;
                     default:
-                        msg.content = "Ôİ²»Ö§³Ö´ËÀàĞÍµÄÏûÏ¢ÏÔÊ¾";
+                        msg.content = "æš‚ä¸æ”¯æŒæ­¤ç±»å‹çš„æ¶ˆæ¯æ˜¾ç¤º";
                         break;
                 }
 
@@ -897,19 +954,19 @@ namespace WinFrmTalk
                 return;
             }
 
-            // ÌØÊâÏûÏ¢ÀàĞÍÏÔÊ¾
+            // ç‰¹æ®Šæ¶ˆæ¯ç±»å‹æ˜¾ç¤º
             switch (msg.type)
             {
                 case kWCMessageType.ImageTextSingle:
                 case kWCMessageType.ImageTextMany:
-                    if (msg.InsertData() > 0)//Êı¾İ¿â³É¹¦²åÈë
+                    if (msg.InsertData() > 0)//æ•°æ®åº“æˆåŠŸæ’å…¥
                     {
                         msg.UpdateLastSend();
-                        NotifactionNormalMessage(msg);//  Í¨ÖªUI  //Í¨Öª¸÷Ò³ÃæÊÕµ½ÏûÏ¢
+                        NotifactionNormalMessage(msg);//  é€šçŸ¥UI  //é€šçŸ¥å„é¡µé¢æ”¶åˆ°æ¶ˆæ¯
                     }
                     break;
                 case kWCMessageType.PokeMessage:
-                    msg.content = "´ÁÒ»´Á";
+                    msg.content = "æˆ³ä¸€æˆ³";
                     UpdateFriendLastContentTip(msg);
                     break;
                 case kWCMessageType.Link:
@@ -921,11 +978,11 @@ namespace WinFrmTalk
                     string seetext = "";
                     if (!Applicate.ENABLE_RED_PACKAGE)
                     {
-                        seetext = ",ÇëÔÚÊÖ»úÉÏ²é¿´";
+                        seetext = ",è¯·åœ¨æ‰‹æœºä¸ŠæŸ¥çœ‹";
                     }
                     if (msg.fromUserId.Equals(msg.myUserId))
                     {
-                        fromName = "Äã";
+                        fromName = "ä½ ";
                     }
                     else
                     {
@@ -936,7 +993,7 @@ namespace WinFrmTalk
                     {
                         if (msg.fromUserId.Equals(msg.myUserId))
                         {
-                            toName = "×Ô¼º";
+                            toName = "è‡ªå·±";
                         }
                         else
                         {
@@ -950,15 +1007,15 @@ namespace WinFrmTalk
                     msg.ToId = msg.myUserId;
                     msg.FromId = msg.objectId;
                     msg.isGroup = 1;
-                    msg.content = fromName + "ÁìÈ¡ÁË" + toName + "µÄºì°ü" + seetext;
+                    msg.content = fromName + "é¢†å–äº†" + toName + "çš„çº¢åŒ…" + seetext;
                     UpdateFriendLastContentTip(msg);
                     break;
                 case kWCMessageType.History:
 
-                    if (msg.InsertData() > 0)//Êı¾İ¿â³É¹¦²åÈë
+                    if (msg.InsertData() > 0)//æ•°æ®åº“æˆåŠŸæ’å…¥
                     {
                         msg.UpdateLastSend();
-                        NotifactionNormalMessage(msg);//  Í¨ÖªUI  //Í¨Öª¸÷Ò³ÃæÊÕµ½ÏûÏ¢
+                        NotifactionNormalMessage(msg);//  é€šçŸ¥UI  //é€šçŸ¥å„é¡µé¢æ”¶åˆ°æ¶ˆæ¯
                     }
 
                     break;
@@ -966,13 +1023,13 @@ namespace WinFrmTalk
         }
 
         /// <summary>
-        /// ÒÑ¶ÁÏûÏ¢µÄ´¦Àí
+        /// å·²è¯»æ¶ˆæ¯çš„å¤„ç†
         /// </summary>
         /// <param name="msg"></param>
         private void ProcessReadMessage(MessageObject msg)
         {
 
-            // ÏÈÈ¥ÕÒµ½ÎÒ·¢³öµÄÕâÌõÏûÏ¢
+            // å…ˆå»æ‰¾åˆ°æˆ‘å‘å‡ºçš„è¿™æ¡æ¶ˆæ¯
             var target = new MessageObject()
             {
                 FromId = msg.ChatJid,
@@ -985,11 +1042,11 @@ namespace WinFrmTalk
 
             if (target == null || string.IsNullOrEmpty(target.messageId))
             {
-                Console.WriteLine("ÊÕµ½ÒÑ¶ÁÏûÏ¢£º" + msg.content + "±¾µØÃ»ÓĞÕÒµ½Ô­ÏûÏ¢");
+                Console.WriteLine("æ”¶åˆ°å·²è¯»æ¶ˆæ¯ï¼š" + msg.content + "æœ¬åœ°æ²¡æœ‰æ‰¾åˆ°åŸæ¶ˆæ¯");
                 return;
             }
 
-            Console.WriteLine("ÊÕµ½ÒÑ¶ÁÏûÏ¢£º" + msg.content + "ÄÚÈİ£º" + target.content);
+            Console.WriteLine("æ”¶åˆ°å·²è¯»æ¶ˆæ¯ï¼š" + msg.content + "å†…å®¹ï¼š" + target.content);
 
             if (msg.isGroup == 1)
             {
@@ -1001,16 +1058,16 @@ namespace WinFrmTalk
                     int preson = target.readPersons + 1;
                     if (target.UpdateIsReadPersons(preson) > 0)
                     {
-                        Messenger.Default.Send(target, MessageActions.XMPP_UPDATE_RECEIVED_READ);//ÒÑ¶ÁÏûÏ¢µÄ´¦Àí
+                        Messenger.Default.Send(target, MessageActions.XMPP_UPDATE_RECEIVED_READ);//å·²è¯»æ¶ˆæ¯çš„å¤„ç†
                     }
                     else
                     {
-                        Console.WriteLine("ÒÑ¶ÁÈËÊıĞŞ¸ÄÊ§°Ü£º" + msg.content + " , " + target.content);
+                        Console.WriteLine("å·²è¯»äººæ•°ä¿®æ”¹å¤±è´¥ï¼š" + msg.content + " , " + target.content);
                     }
                 }
                 else
                 {
-                    Console.WriteLine("ÒÑ¶ÁÏûÏ¢²åÈëÊ§°Ü£º" + msg.content + " , " + target.content);
+                    Console.WriteLine("å·²è¯»æ¶ˆæ¯æ’å…¥å¤±è´¥ï¼š" + msg.content + " , " + target.content);
                 }
             }
             else
@@ -1022,14 +1079,14 @@ namespace WinFrmTalk
                         var friend = target.GetFriend();
                         if (string.Equals(target.fromUserId, target.myUserId))
                         {
-                            // ¶Ô·½²é¿´ÁËÎÒµÄÒ»ÌõÔÄºó¼´·ÙÏûÏ¢
-                            friend.UpdateLastContent("¶Ô·½²é¿´ÁËÄúµÄÒ»ÌõÔÄºó¼´·ÙÏûÏ¢", msg.timeSend);
-                            // Ë¢ĞÂ×îºóÒ»ÌõÁÄÌì¼ÇÂ¼
+                            // å¯¹æ–¹æŸ¥çœ‹äº†æˆ‘çš„ä¸€æ¡é˜…åå³ç„šæ¶ˆæ¯
+                            friend.UpdateLastContent("å¯¹æ–¹æŸ¥çœ‹äº†æ‚¨çš„ä¸€æ¡é˜…åå³ç„šæ¶ˆæ¯", msg.timeSend);
+                            // åˆ·æ–°æœ€åä¸€æ¡èŠå¤©è®°å½•
                             Messenger.Default.Send(friend, token: MessageActions.UPDATE_FRIEND_LAST_CONTENT);
                         }
                         else
                         {
-                            // ¸üĞÂÏûÏ¢ÁĞ±í
+                            // æ›´æ–°æ¶ˆæ¯åˆ—è¡¨
                             var local = msg.GetLastMessage();
                             if (local != null && !UIUtils.IsNull(local.messageId))
                             {
@@ -1038,7 +1095,7 @@ namespace WinFrmTalk
                                 {
                                     if (local.isReadDel == 1)
                                     {
-                                        content = "[ÔÄºó¼´·ÙÏûÏ¢]";
+                                        content = "[é˜…åå³ç„šæ¶ˆæ¯]";
                                     }
                                     else
                                     {
@@ -1060,17 +1117,17 @@ namespace WinFrmTalk
                     }
 
 
-                    // È¥¸üĞÂÏûÏ¢½çÃæ ÒÑ¶Á
+                    // å»æ›´æ–°æ¶ˆæ¯ç•Œé¢ å·²è¯»
                     if (target.UpdateIsRead(msg.content) > 0)
                     {
-                        Messenger.Default.Send(target, MessageActions.XMPP_UPDATE_RECEIVED_READ);//ÒÑ¶ÁÏûÏ¢µÄ´¦Àí
+                        Messenger.Default.Send(target, MessageActions.XMPP_UPDATE_RECEIVED_READ);//å·²è¯»æ¶ˆæ¯çš„å¤„ç†
                     }
                 }
             }
         }
 
         /// <summary>
-        /// ÈºÎÄ¼şÏûÏ¢´¦Àí
+        /// ç¾¤æ–‡ä»¶æ¶ˆæ¯å¤„ç†
         /// </summary>
         /// <param name="msg"></param>     
         public void ProcessGroupFileMessage(MessageObject msg)
@@ -1079,17 +1136,17 @@ namespace WinFrmTalk
             msg.fromUserId = msg.objectId;
 
             Messenger.Default.Send(msg, MessageActions.XMPP_UPDATE_ROOM_CHANGE_MESSAGE);
-            // ¸üĞÂ×îºóÒ»ÌõÏûÏ¢ÄÚÈİ£¬Í¨ÖªUIË¢ĞÂ
+            // æ›´æ–°æœ€åä¸€æ¡æ¶ˆæ¯å†…å®¹ï¼Œé€šçŸ¥UIåˆ·æ–°
             switch (msg.type)
             {
-                case kWCMessageType.RoomFileUpload://ÉÏ´«ÈºÎÄ¼ş
-                    msg.content = UIUtils.QuotationName(msg.fromUserName) + "ÉÏ´«ÁËÈºÎÄ¼ş:" + msg.fileName;
+                case kWCMessageType.RoomFileUpload://ä¸Šä¼ ç¾¤æ–‡ä»¶
+                    msg.content = UIUtils.QuotationName(msg.fromUserName) + "ä¸Šä¼ äº†ç¾¤æ–‡ä»¶:" + msg.fileName;
                     break;
-                case kWCMessageType.RoomFileDelete://É¾³ıÈºÎÄ¼ş
-                    msg.content = UIUtils.QuotationName(msg.fromUserName) + "É¾³ıÁËÈºÎÄ¼ş:" + msg.fileName;
+                case kWCMessageType.RoomFileDelete://åˆ é™¤ç¾¤æ–‡ä»¶
+                    msg.content = UIUtils.QuotationName(msg.fromUserName) + "åˆ é™¤äº†ç¾¤æ–‡ä»¶:" + msg.fileName;
                     break;
-                case kWCMessageType.RoomFileDownload://ÏÂÔØÈºÎÄ¼ş
-                    msg.content = UIUtils.QuotationName(msg.fromUserName) + "ÏÂÔØÁËÈºÎÄ¼ş:" + msg.fileName;
+                case kWCMessageType.RoomFileDownload://ä¸‹è½½ç¾¤æ–‡ä»¶
+                    msg.content = UIUtils.QuotationName(msg.fromUserName) + "ä¸‹è½½äº†ç¾¤æ–‡ä»¶:" + msg.fileName;
                     break;
                 default:
                     break;
@@ -1099,13 +1156,13 @@ namespace WinFrmTalk
         }
 
         /// <summary>
-        /// Èº¿ØÖÆÏûÏ¢´¦Àí
+        /// ç¾¤æ§åˆ¶æ¶ˆæ¯å¤„ç†
         /// <para>
-        /// RoomMemberNameChangeºÍRoomManagerTransferÖ®¼äµÄÈºÉèÖÃÏûÏ¢
-        /// ÏÈÖ´ĞĞÊı¾İ¿â²Ù×÷ÔÙÖ´ĞĞUI
+        /// RoomMemberNameChangeå’ŒRoomManagerTransferä¹‹é—´çš„ç¾¤è®¾ç½®æ¶ˆæ¯
+        /// å…ˆæ‰§è¡Œæ•°æ®åº“æ“ä½œå†æ‰§è¡ŒUI
         /// </para>
         /// </summary>
-        /// <param name="msg">¶ÔÓ¦µÄ´¦ÀíÏûÏ¢</param>
+        /// <param name="msg">å¯¹åº”çš„å¤„ç†æ¶ˆæ¯</param>
         private void ProcessGroupManageMessage(MessageObject msg, bool deley)
         {
             msg.FromId = msg.objectId;
@@ -1117,22 +1174,22 @@ namespace WinFrmTalk
             {
                 room = new Friend();
                 room.RoomId = msg.fileName;//RoomId
-                room.UserId = msg.objectId;//ÉèÖÃRoomJid
+                room.UserId = msg.objectId;//è®¾ç½®RoomJid
                 room.NickName = msg.content;
                 room.IsGroup = 1;
             }
 
             switch (msg.type)
             {
-                case kWCMessageType.RoomMemberNameChange://¸ÄÈºÄÚêÇ³Æ
+                case kWCMessageType.RoomMemberNameChange://æ”¹ç¾¤å†…æ˜µç§°
 
-                    // Í¨ÖªÁÄÌì¼ÇÂ¼Ò³Ë¢ĞÂ
+                    // é€šçŸ¥èŠå¤©è®°å½•é¡µåˆ·æ–°
                     NotifactionRoomControlMsg(msg);
 
                     RoomMemberDao.Instance.UpdateNickname(room.RoomId, msg.toUserId, msg.content);
 
-                    // ¸üĞÂ×îºóÒ»ÌõÏûÏ¢ÄÚÈİ£¬Í¨ÖªUIË¢ĞÂ
-                    msg.content = UIUtils.QuotationName(msg.toUserName) + "ĞŞ¸ÄêÇ³ÆÎª:" + UIUtils.QuotationName(msg.content);
+                    // æ›´æ–°æœ€åä¸€æ¡æ¶ˆæ¯å†…å®¹ï¼Œé€šçŸ¥UIåˆ·æ–°
+                    msg.content = UIUtils.QuotationName(msg.toUserName) + "ä¿®æ”¹æ˜µç§°ä¸º:" + UIUtils.QuotationName(msg.content);
 
                     msg.type = kWCMessageType.Remind;
                     if (msg.InsertData() > 0)
@@ -1143,15 +1200,15 @@ namespace WinFrmTalk
                     }
 
                     break;
-                case kWCMessageType.RoomNameChange://¸ÄÈºÃû
+                case kWCMessageType.RoomNameChange://æ”¹ç¾¤å
 
-                    // Í¨ÖªÁÄÌì¼ÇÂ¼Ò³Ë¢ĞÂ
+                    // é€šçŸ¥èŠå¤©è®°å½•é¡µåˆ·æ–°
                     NotifactionRoomControlMsg(msg);
 
                     room.NickName = msg.content;
                     room.UpdateNickName();
 
-                    msg.content = UIUtils.QuotationName(msg.fromUserName) + "ĞŞ¸ÄÈºÃûÎª:" + UIUtils.QuotationName(msg.content);
+                    msg.content = UIUtils.QuotationName(msg.fromUserName) + "ä¿®æ”¹ç¾¤åä¸º:" + UIUtils.QuotationName(msg.content);
 
                     msg.type = kWCMessageType.Remind;
 
@@ -1162,38 +1219,38 @@ namespace WinFrmTalk
                     }
 
                     break;
-                case kWCMessageType.RoomDismiss://½âÉ¢
+                case kWCMessageType.RoomDismiss://è§£æ•£
 
                     if (msg.InsertData() > 0)
                     {
-                        // xmppÍË³öÈº×é
+                        // xmppé€€å‡ºç¾¤ç»„
                         ExitRoom(msg.objectId);
-                        // ´ÓÅóÓÑ±íÖĞÉ¾³ı
+                        // ä»æœ‹å‹è¡¨ä¸­åˆ é™¤
                         room.DeleteByUserId();
-                        // Í¨Öª½çÃæ¸üĞÂ
+                        // é€šçŸ¥ç•Œé¢æ›´æ–°
                         Messenger.Default.Send(msg, MessageActions.XMPP_UPDATE_ROOM_DELETE);
 
                         Messenger.Default.Send(room, MessageActions.DELETE_FRIEND);
                     }
 
                     break;
-                case kWCMessageType.RoomExit://ÍËÈº
+                case kWCMessageType.RoomExit://é€€ç¾¤
 
-                    // ÀëÏßÏûÏ¢µ¼ÖÂÈº¿ØÖÆÍ¨ÖªµÄÒì³£¼Ó¼õÈËÊı£¨»ñÈ¡ºóÈÔ¼Ó¼õµÄÎÊÌâ£¬ìøµÀ#9810£©
+                    // ç¦»çº¿æ¶ˆæ¯å¯¼è‡´ç¾¤æ§åˆ¶é€šçŸ¥çš„å¼‚å¸¸åŠ å‡äººæ•°ï¼ˆè·å–åä»åŠ å‡çš„é—®é¢˜ï¼Œç¦…é“#9810ï¼‰
                     if (deley)
                     {
                         msg.readPersons = -1;
                     }
 
-                    // ÎÒÍË³öÈº×é£¬»òÕßÎÒ±»t³ö
+                    // æˆ‘é€€å‡ºç¾¤ç»„ï¼Œæˆ–è€…æˆ‘è¢«tå‡º
                     if (msg.toUserId.Equals(msg.myUserId))
                     {
-                        // xmppÍË³öÈº×é
+                        // xmppé€€å‡ºç¾¤ç»„
                         ExitRoom(msg.objectId);
 
-                        // ´ÓÅóÓÑ±íÖĞÉ¾³ı
+                        // ä»æœ‹å‹è¡¨ä¸­åˆ é™¤
                         room.DeleteByUserId();
-                        // Í¨Öª½çÃæ¸üĞÂ
+                        // é€šçŸ¥ç•Œé¢æ›´æ–°
                         Messenger.Default.Send(msg, MessageActions.XMPP_UPDATE_ROOM_DELETE);
                         Messenger.Default.Send(room, MessageActions.DELETE_FRIEND);
 
@@ -1202,7 +1259,7 @@ namespace WinFrmTalk
                     }
                     else
                     {
-                        // Í¨ÖªÁÄÌì¼ÇÂ¼Ò³Ë¢ĞÂ
+                        // é€šçŸ¥èŠå¤©è®°å½•é¡µåˆ·æ–°
                         NotifactionRoomControlMsg(msg);
 
                         if (UIUtils.IsNull(room.RoomId))
@@ -1212,63 +1269,63 @@ namespace WinFrmTalk
 
                         if (msg.fromUserId.Equals(msg.toUserId))
                         {
-                            msg.content = UIUtils.QuotationName(msg.fromUserName) + "ÍË³öÁËÈº×é";
+                            msg.content = UIUtils.QuotationName(msg.fromUserName) + "é€€å‡ºäº†ç¾¤ç»„";
                         }
                         else
                         {
-                            msg.content = UIUtils.QuotationName(msg.fromUserName) + "ÒÆ³ı³ÉÔ±:" + UIUtils.QuotationName(msg.toUserName);
+                            msg.content = UIUtils.QuotationName(msg.fromUserName) + "ç§»é™¤æˆå‘˜:" + UIUtils.QuotationName(msg.toUserName);
                         }
 
                         if (room != null)
                         {
-                            // É¾³ıÈº³ÉÔ±
+                            // åˆ é™¤ç¾¤æˆå‘˜
                             RoomMemberDao.Instance.DeleteMemberById(room.RoomId, msg.toUserId);
-                            // Ë¢ĞÂÈºÍ·Ïñ
+                            // åˆ·æ–°ç¾¤å¤´åƒ
                             Messenger.Default.Send(room.RoomId, MessageActions.UPDATE_HEAD);
                         }
 
-                        // Ë¢ĞÂ×î½üÏûÏ¢ÁĞ±í
+                        // åˆ·æ–°æœ€è¿‘æ¶ˆæ¯åˆ—è¡¨
                         UpdateFriendLastContentTip(msg);
                     }
                     break;
-                case kWCMessageType.RoomNotice://¹«¸æ
+                case kWCMessageType.RoomNotice://å…¬å‘Š
 
-                    // Í¨ÖªÁÄÌì¼ÇÂ¼Ò³Ë¢ĞÂ
+                    // é€šçŸ¥èŠå¤©è®°å½•é¡µåˆ·æ–°
                     NotifactionRoomControlMsg(msg);
 
-                    // ¸üĞÂ×îºóÒ»ÌõÏûÏ¢ÄÚÈİ£¬Í¨ÖªUIË¢ĞÂ
-                    msg.content = UIUtils.QuotationName(msg.fromUserName) + "·¢²¼ĞÂ¹«¸æ: \n" + msg.content;
+                    // æ›´æ–°æœ€åä¸€æ¡æ¶ˆæ¯å†…å®¹ï¼Œé€šçŸ¥UIåˆ·æ–°
+                    msg.content = UIUtils.QuotationName(msg.fromUserName) + "å‘å¸ƒæ–°å…¬å‘Š: \n" + msg.content;
                     UpdateFriendLastContentTip(msg);
 
                     break;
-                case kWCMessageType.RoomInvite://½øÈº
+                case kWCMessageType.RoomInvite://è¿›ç¾¤
 
                     if (msg.IsExist())
                     {
                         return;
                     }
 
-                    if (deley)  //ÀëÏßÏûÏ¢µ¼ÖÂÈº¿ØÖÆÍ¨ÖªµÄÒì³£¼Ó¼õÈËÊı£¨»ñÈ¡ºóÈÔ¼Ó¼õµÄÎÊÌâ£¬ìøµÀ#9810£©
+                    if (deley)  //ç¦»çº¿æ¶ˆæ¯å¯¼è‡´ç¾¤æ§åˆ¶é€šçŸ¥çš„å¼‚å¸¸åŠ å‡äººæ•°ï¼ˆè·å–åä»åŠ å‡çš„é—®é¢˜ï¼Œç¦…é“#9810ï¼‰
                     {
                         msg.readPersons = -1;
                     }
 
-                    // Í¨ÖªÁÄÌì¼ÇÂ¼Ò³Ë¢ĞÂ
+                    // é€šçŸ¥èŠå¤©è®°å½•é¡µåˆ·æ–°
 
 
                     string desc = "";
 
                     if (msg.fromUserId.Equals(msg.toUserId))
                     {
-                        desc = UIUtils.QuotationName(msg.fromUserName) + "½øÈëÈº×é";
+                        desc = UIUtils.QuotationName(msg.fromUserName) + "è¿›å…¥ç¾¤ç»„";
                         //msg.content = desc;
                     }
                     else
                     {
-                        desc = UIUtils.QuotationName(msg.fromUserName) + "ÑûÇë³ÉÔ±:" + UIUtils.QuotationName(msg.toUserName);
+                        desc = UIUtils.QuotationName(msg.fromUserName) + "é‚€è¯·æˆå‘˜:" + UIUtils.QuotationName(msg.toUserName);
                     }
 
-                    Console.WriteLine("xmpp ¼ÓÈëÈº×é  :" + desc);
+                    Console.WriteLine("xmpp åŠ å…¥ç¾¤ç»„  :" + desc);
                     NotifactionRoomControlMsg(msg);
 
                     if (!UIUtils.IsNull(msg.other) && msg.toUserId.Equals(msg.myUserId))
@@ -1278,17 +1335,17 @@ namespace WinFrmTalk
                         if (otherPairs.ContainsKey("chatKeyGroup"))
                         {
                             string enkey = otherPairs["chatKeyGroup"].ToString();
-                            // ½âÃÜ³ö ÃÜÔ¿G
+                            // è§£å¯†å‡º å¯†é’¥G
                             string key = RSA.DecryptFromBase64Pk1(enkey, Applicate.MyAccount.rsaPrivateKey);
-                            // ¼ÓÃÜ³É chatkeygroup
+                            // åŠ å¯†æˆ chatkeygroup
                             string chatKey = SecureChatUtil.EncryptChatKey(msg.objectId, key, Applicate.API_KEY);
 
                             room.ChatKeyGroup = chatKey;
-                            Console.WriteLine("¸üĞÂÃÜÔ¿1" + room.ChatKeyGroup);
+                            Console.WriteLine("æ›´æ–°å¯†é’¥1" + room.ChatKeyGroup);
                             room.UpdateChatKeyGroup(room.ChatKeyGroup);
                         }
 
-                        //¸üĞÂÈºÉèÖÃ£¬±»ÑûÇë½øÈº£¬ÈºÉèÖÃÊÇÄ¬ÈÏµÄ£¬²»ÊÇ×îĞÂµÄ£¬½â¾öbug10189
+                        //æ›´æ–°ç¾¤è®¾ç½®ï¼Œè¢«é‚€è¯·è¿›ç¾¤ï¼Œç¾¤è®¾ç½®æ˜¯é»˜è®¤çš„ï¼Œä¸æ˜¯æœ€æ–°çš„ï¼Œè§£å†³bug10189
                         if (otherPairs.ContainsKey("showMember"))
                         {
                             int enkey = Convert.ToInt32(otherPairs["showMember"]);
@@ -1317,13 +1374,13 @@ namespace WinFrmTalk
 
 
                     bool isExistsRoom = room.ExistsFriend();
-                    if (isExistsRoom) // Èç¹ûÎÒÒÑ¾­ÔÚÈºÀïÁË
+                    if (isExistsRoom) // å¦‚æœæˆ‘å·²ç»åœ¨ç¾¤é‡Œäº†
                     {
                         room.UpdateLastContent(desc, msg.timeSend);
 
                         if (!UIUtils.IsNull(room.ChatKeyGroup))
                         {
-                            Console.WriteLine("¸üĞÂÃÜÔ¿2" + room.ChatKeyGroup);
+                            Console.WriteLine("æ›´æ–°å¯†é’¥2" + room.ChatKeyGroup);
                             room.UpdateChatKeyGroup(room.ChatKeyGroup);
                         }
                     }
@@ -1332,14 +1389,14 @@ namespace WinFrmTalk
                         room.Status = 2;
                         room.LastMsgTime = (int)msg.timeSend;
                         var result = room.InsertAuto();
-                        Console.WriteLine("±£´æÈº×é×´Ì¬£º£º£º£º£º£º£º" + result);
+                        Console.WriteLine("ä¿å­˜ç¾¤ç»„çŠ¶æ€ï¼šï¼šï¼šï¼šï¼šï¼šï¼š" + result);
                     }
 
                     msg.content = desc;
-                    //msg.fromUserId.Equals(msg.toUserId £©Ö÷¶¯½øÈëÈº×éµÄÊ±ºòÕâÁ½¸öidÒ²ÊÇÒ»ÑùµÄ,ÀıÈçËÑË÷½øÈº #ìøµÀ10092
+                    //msg.fromUserId.Equals(msg.toUserId ï¼‰ä¸»åŠ¨è¿›å…¥ç¾¤ç»„çš„æ—¶å€™è¿™ä¸¤ä¸ªidä¹Ÿæ˜¯ä¸€æ ·çš„,ä¾‹å¦‚æœç´¢è¿›ç¾¤ #ç¦…é“10092
                     if (msg.fromUserId.Equals(msg.toUserId) && msg.toUserId.Equals(msg.myUserId))
                     {
-                        // ÈºÖ÷²»ÔÙÏÔÊ¾×Ô¼º½øÈëÈº×éµÄÏûÏ¢
+                        // ç¾¤ä¸»ä¸å†æ˜¾ç¤ºè‡ªå·±è¿›å…¥ç¾¤ç»„çš„æ¶ˆæ¯
                         msg.type = kWCMessageType.kWCMessageTypeNone;
                     }
                     else
@@ -1352,7 +1409,7 @@ namespace WinFrmTalk
                         if (msg.toUserId.Equals(msg.myUserId))
                         {
                             room.UpdateCreateTime(msg.timeSend);
-                            JoinRoom(msg.objectId, 0);//Xmpp¼ÓÈëÈºÁÄ(´¦ÀíÍêÈº×éºó¼ÓÈë)
+                            JoinRoom(msg.objectId, 0);//XmppåŠ å…¥ç¾¤èŠ(å¤„ç†å®Œç¾¤ç»„ååŠ å…¥)
                         }
                         msg.UpdateLastSend(deley);
                         NotifactionNormalMessage(msg);
@@ -1361,17 +1418,17 @@ namespace WinFrmTalk
 
                     if (!isExistsRoom) // && !deley
                     {
-                        Messenger.Default.Send(room, MessageActions.ROOM_UPDATE_INVITE);//Ë¢ĞÂÁĞ±í
+                        Messenger.Default.Send(room, MessageActions.ROOM_UPDATE_INVITE);//åˆ·æ–°åˆ—è¡¨
                     }
                     else
                     {
-                        Messenger.Default.Send(room.RoomId, MessageActions.UPDATE_HEAD);//·¢ËÍË¢ĞÂÍ·ÏñÍ¨Öª
+                        Messenger.Default.Send(room.RoomId, MessageActions.UPDATE_HEAD);//å‘é€åˆ·æ–°å¤´åƒé€šçŸ¥
                     }
 
                     break;
-                case kWCMessageType.RoomReadVisiblity://ÏÔÊ¾ÔÄ¶ÁÈËÊı
+                case kWCMessageType.RoomReadVisiblity://æ˜¾ç¤ºé˜…è¯»äººæ•°
 
-                    // Í¨ÖªÁÄÌì¼ÇÂ¼Ò³Ë¢ĞÂ
+                    // é€šçŸ¥èŠå¤©è®°å½•é¡µåˆ·æ–°
                     NotifactionRoomControlMsg(msg);
 
                     room.ShowRead = int.Parse(msg.content);
@@ -1379,11 +1436,11 @@ namespace WinFrmTalk
 
                     if (room.ShowRead == 1)
                     {
-                        msg.content = UIUtils.QuotationName(msg.fromUserName) + "¿ªÆôÁËÏÔÊ¾ÏûÏ¢ÒÑ¶ÁÈËÊı¹¦ÄÜ";
+                        msg.content = UIUtils.QuotationName(msg.fromUserName) + "å¼€å¯äº†æ˜¾ç¤ºæ¶ˆæ¯å·²è¯»äººæ•°åŠŸèƒ½";
                     }
                     else
                     {
-                        msg.content = UIUtils.QuotationName(msg.fromUserName) + "¹Ø±ÕÁËÏÔÊ¾ÏûÏ¢ÒÑ¶ÁÈËÊı¹¦ÄÜ";
+                        msg.content = UIUtils.QuotationName(msg.fromUserName) + "å…³é—­äº†æ˜¾ç¤ºæ¶ˆæ¯å·²è¯»äººæ•°åŠŸèƒ½";
                     }
 
                     msg.type = kWCMessageType.Remind;
@@ -1392,24 +1449,24 @@ namespace WinFrmTalk
                         msg.UpdateLastSend();
                         NotifactionNormalMessage(msg);
                     }
-                    //¸üĞÂÈºÁÄÊÇ·ñÏÔÊ¾ÈËÊı  room.UpdateShowRead(int.Parse(msg.content));
+                    //æ›´æ–°ç¾¤èŠæ˜¯å¦æ˜¾ç¤ºäººæ•°  room.UpdateShowRead(int.Parse(msg.content));
                     break;
-                case kWCMessageType.RoomIsVerify://ÈºÑéÖ¤
+                case kWCMessageType.RoomIsVerify://ç¾¤éªŒè¯
 
-                    //ĞŞ¸ÄìøµÀbug10093 ¶àµãµÇÂ¼µÄÊ±ºò°²×¿ÉêÇëÈëÈº£¬pcÊÕµ½ÁËÒ»ÌõÈºÑéÖ¤ÏûÏ¢£¬ÊÂÊµÉÏÕâÌõÏûÏ¢ÊÇÈºÖ÷²ÅÄÜÊÕµ½£¬µ«ÕâÌõÏûÏ¢µÄfromuseridÊÇ×Ô¼ºÒ²ÊÇÉêÇëÈË£¬touseridÊÇÈºÖ÷£¬µ«ÊÇfromusername¸útousernameÒ»Ñù 
+                    //ä¿®æ”¹ç¦…é“bug10093 å¤šç‚¹ç™»å½•çš„æ—¶å€™å®‰å“ç”³è¯·å…¥ç¾¤ï¼Œpcæ”¶åˆ°äº†ä¸€æ¡ç¾¤éªŒè¯æ¶ˆæ¯ï¼Œäº‹å®ä¸Šè¿™æ¡æ¶ˆæ¯æ˜¯ç¾¤ä¸»æ‰èƒ½æ”¶åˆ°ï¼Œä½†è¿™æ¡æ¶ˆæ¯çš„fromuseridæ˜¯è‡ªå·±ä¹Ÿæ˜¯ç”³è¯·äººï¼Œtouseridæ˜¯ç¾¤ä¸»ï¼Œä½†æ˜¯fromusernameè·Ÿtousernameä¸€æ · 
                     if (msg.fromUserName == msg.toUserName)
                     {
                         return;
                     }
 
-                    // Í¨ÖªÁÄÌì¼ÇÂ¼Ò³Ë¢ĞÂ
+                    // é€šçŸ¥èŠå¤©è®°å½•é¡µåˆ·æ–°
                     NotifactionRoomControlMsg(msg);
 
                     if ("0".Equals(msg.content) || "1".Equals(msg.content))
                     {
                         room.IsNeedVerify = int.Parse(msg.content);
                         room.UpdateNeedVerify();
-                        msg.content = room.IsNeedVerify == 0 ? " ÒÑ¹Ø±Õ½øÈºÑéÖ¤" : " ÒÑ¿ªÆô½øÈºÑéÖ¤";
+                        msg.content = room.IsNeedVerify == 0 ? " å·²å…³é—­è¿›ç¾¤éªŒè¯" : " å·²å¼€å¯è¿›ç¾¤éªŒè¯";
                         msg.content = UIUtils.QuotationName(msg.fromUserName) + msg.content;
                         UpdateFriendLastContentTip(msg);
                     }
@@ -1429,20 +1486,20 @@ namespace WinFrmTalk
                             userids = useids.Split(',');
                             if (msg.fromUserId == useids)
                             {
-                                //msg.content = msg.fromUserName + "ÉêÇë¼ÓÈë";//×Ô¼ºÖ÷¶¯¼ÓÈë
-                                msg.content = msg.fromUserName + LanguageXmlUtils.GetValue("apply_to_join_group", "ÉêÇë¼ÓÈëÈºÁÄ");//×Ô¼ºÖ÷¶¯¼ÓÈë
+                                //msg.content = msg.fromUserName + "ç”³è¯·åŠ å…¥";//è‡ªå·±ä¸»åŠ¨åŠ å…¥
+                                msg.content = msg.fromUserName + LanguageXmlUtils.GetValue("apply_to_join_group", "ç”³è¯·åŠ å…¥ç¾¤èŠ");//è‡ªå·±ä¸»åŠ¨åŠ å…¥
                             }
                             else
                             {
-                                //msg.content = msg.fromUserName + "ÏëÑûÇë" + userids.Length + "Î»ÅóÓÑ¼ÓÈëÈºÁÄ";
-                                msg.content = msg.fromUserName + LanguageXmlUtils.GetValue("invite_fd_join_group", "ÏëÑûÇë" + userids.Length.ToString() + "Î»ÅóÓÑ½øÈëÈºÁÄ").Replace("%s", userids.Length.ToString());
+                                //msg.content = msg.fromUserName + "æƒ³é‚€è¯·" + userids.Length + "ä½æœ‹å‹åŠ å…¥ç¾¤èŠ";
+                                msg.content = msg.fromUserName + LanguageXmlUtils.GetValue("invite_fd_join_group", "æƒ³é‚€è¯·" + userids.Length.ToString() + "ä½æœ‹å‹è¿›å…¥ç¾¤èŠ").Replace("%s", userids.Length.ToString());
                             }
                         }
                         else
                         {
                             msg.type = kWCMessageType.Remind;
-                            //msg.content = "ÈºÁÄÑûÇëÒÑ·¢ËÍ¸øÈºÖ÷,ÇëµÈ´ıÈºÖ÷È·ÈÏ";
-                            msg.content = LanguageXmlUtils.GetValue("wait_invite_result", "ÈºÁÄÑûÇëÒÑ·¢ËÍ¸øÈºÖ÷,ÇëµÈ´ıÈºÖ÷È·ÈÏ");
+                            //msg.content = "ç¾¤èŠé‚€è¯·å·²å‘é€ç»™ç¾¤ä¸»,è¯·ç­‰å¾…ç¾¤ä¸»ç¡®è®¤";
+                            msg.content = LanguageXmlUtils.GetValue("wait_invite_result", "ç¾¤èŠé‚€è¯·å·²å‘é€ç»™ç¾¤ä¸»,è¯·ç­‰å¾…ç¾¤ä¸»ç¡®è®¤");
                         }
 
                         msg.FromId = roomJid;
@@ -1455,9 +1512,9 @@ namespace WinFrmTalk
                     }
 
                     break;
-                case kWCMessageType.RoomUnseenRole://ÒşÉíÈË
+                case kWCMessageType.RoomUnseenRole://éšèº«äºº
 
-                    // ĞŞ¸Ä±¾µØ×´Ì¬
+                    // ä¿®æ”¹æœ¬åœ°çŠ¶æ€
                     RoomMember roomMember = new RoomMember();
                     roomMember.roomId = room.RoomId;
                     roomMember.role = "1".Equals(msg.content) ? 4 : 3;
@@ -1465,7 +1522,7 @@ namespace WinFrmTalk
                     roomMember.nickName = msg.toUserName;
                     RoomMemberDao.Instance.InsertOrUpdate(roomMember);
 
-                    // Í¨ÖªÁÄÌì¼ÇÂ¼Ò³Ë¢ĞÂ
+                    // é€šçŸ¥èŠå¤©è®°å½•é¡µåˆ·æ–°
                     NotifactionRoomControlMsg(msg);
 
                     if (msg.fromUserId.Equals(msg.myUserId) || msg.myUserId.Equals(msg.toUserId))
@@ -1473,11 +1530,11 @@ namespace WinFrmTalk
 
                         if ("1".Equals(msg.content))
                         {
-                            msg.content = UIUtils.QuotationName(msg.fromUserName) + "ÉèÖÃÒşÉíÈË" + UIUtils.QuotationName(msg.toUserName);
+                            msg.content = UIUtils.QuotationName(msg.fromUserName) + "è®¾ç½®éšèº«äºº" + UIUtils.QuotationName(msg.toUserName);
                         }
                         else
                         {
-                            msg.content = UIUtils.QuotationName(msg.fromUserName) + "È¡ÏûÒşÉíÈË" + UIUtils.QuotationName(msg.toUserName);
+                            msg.content = UIUtils.QuotationName(msg.fromUserName) + "å–æ¶ˆéšèº«äºº" + UIUtils.QuotationName(msg.toUserName);
                         }
 
                         msg.type = kWCMessageType.Remind;
@@ -1490,56 +1547,56 @@ namespace WinFrmTalk
 
 
                     break;
-                case kWCMessageType.RoomAdmin://¹ÜÀíÔ±
+                case kWCMessageType.RoomAdmin://ç®¡ç†å‘˜
 
-                    // Í¨ÖªÁÄÌì¼ÇÂ¼Ò³Ë¢ĞÂ
+                    // é€šçŸ¥èŠå¤©è®°å½•é¡µåˆ·æ–°
                     NotifactionRoomControlMsg(msg);
-                    if (msg.content == "0")//È¡Ïû¹ÜÀíÔ±
+                    if (msg.content == "0")//å–æ¶ˆç®¡ç†å‘˜
                     {
-                        msg.content = UIUtils.QuotationName(msg.fromUserName) + "È¡Ïû¹ÜÀíÔ±" + UIUtils.QuotationName(msg.toUserName);
+                        msg.content = UIUtils.QuotationName(msg.fromUserName) + "å–æ¶ˆç®¡ç†å‘˜" + UIUtils.QuotationName(msg.toUserName);
                     }
-                    else if (msg.content == "1")//ÉèÖÃ¹ÜÀíÔ±8
+                    else if (msg.content == "1")//è®¾ç½®ç®¡ç†å‘˜8
                     {
-                        msg.content = UIUtils.QuotationName(msg.fromUserName) + "ÉèÖÃ:" + UIUtils.QuotationName(msg.toUserName) + "Îª¹ÜÀíÔ±";
+                        msg.content = UIUtils.QuotationName(msg.fromUserName) + "è®¾ç½®:" + UIUtils.QuotationName(msg.toUserName) + "ä¸ºç®¡ç†å‘˜";
                     }
 
-                    // ¸üĞÂ×îºóÒ»ÌõÏûÏ¢ÄÚÈİ£¬Í¨ÖªUIË¢ĞÂ
+                    // æ›´æ–°æœ€åä¸€æ¡æ¶ˆæ¯å†…å®¹ï¼Œé€šçŸ¥UIåˆ·æ–°
                     UpdateFriendLastContentTip(msg);
 
                     break;
-                case kWCMessageType.RoomIsPublic://¹«¿ªÈº
+                case kWCMessageType.RoomIsPublic://å…¬å¼€ç¾¤
 
-                    // Í¨ÖªÁÄÌì¼ÇÂ¼Ò³Ë¢ĞÂ
+                    // é€šçŸ¥èŠå¤©è®°å½•é¡µåˆ·æ–°
                     NotifactionRoomControlMsg(msg);
-                    msg.content = msg.content == "0" ? " ½«±¾ÈºĞŞ¸ÄÎª¹«¿ªÈº×é" : " ½«±¾ÈºĞŞ¸ÄÎªË½ÃÜÈº×é";
+                    msg.content = msg.content == "0" ? " å°†æœ¬ç¾¤ä¿®æ”¹ä¸ºå…¬å¼€ç¾¤ç»„" : " å°†æœ¬ç¾¤ä¿®æ”¹ä¸ºç§å¯†ç¾¤ç»„";
                     msg.content = UIUtils.QuotationName(msg.fromUserName) + msg.content;
-                    // ¸üĞÂ×îºóÒ»ÌõÏûÏ¢ÄÚÈİ£¬Í¨ÖªUIË¢ĞÂ
+                    // æ›´æ–°æœ€åä¸€æ¡æ¶ˆæ¯å†…å®¹ï¼Œé€šçŸ¥UIåˆ·æ–°
                     UpdateFriendLastContentTip(msg);
 
                     break;
-                case kWCMessageType.RoomInsideVisiblity://ÏÔÊ¾ÈºÄÚ³ÉÔ±
-                                                        // Í¨ÖªÁÄÌì¼ÇÂ¼Ò³Ë¢ĞÂ
+                case kWCMessageType.RoomInsideVisiblity://æ˜¾ç¤ºç¾¤å†…æˆå‘˜
+                                                        // é€šçŸ¥èŠå¤©è®°å½•é¡µåˆ·æ–°
                     NotifactionRoomControlMsg(msg);
                     room.UpdateShowMember(int.Parse(msg.content));
-                    msg.content = msg.content == "0" ? " ¹Ø±ÕÁË²é¿´Èº³ÉÔ±¹¦ÄÜ" : " ¿ªÆôÁË²é¿´Èº³ÉÔ±¹¦ÄÜ";
+                    msg.content = msg.content == "0" ? " å…³é—­äº†æŸ¥çœ‹ç¾¤æˆå‘˜åŠŸèƒ½" : " å¼€å¯äº†æŸ¥çœ‹ç¾¤æˆå‘˜åŠŸèƒ½";
                     msg.content = UIUtils.QuotationName(msg.fromUserName) + msg.content;
-                    // ¸üĞÂ×îºóÒ»ÌõÏûÏ¢ÄÚÈİ£¬Í¨ÖªUIË¢ĞÂ
+                    // æ›´æ–°æœ€åä¸€æ¡æ¶ˆæ¯å†…å®¹ï¼Œé€šçŸ¥UIåˆ·æ–°
                     UpdateFriendLastContentTip(msg);
 
                     break;
-                case kWCMessageType.RoomUserRecommend://ÊÇ·ñÔÊĞí·¢ËÍÃûÆ¬
-                    NotifactionRoomControlMsg(msg); // Í¨ÖªÁÄÌì¼ÇÂ¼Ò³Ë¢ĞÂ
+                case kWCMessageType.RoomUserRecommend://æ˜¯å¦å…è®¸å‘é€åç‰‡
+                    NotifactionRoomControlMsg(msg); // é€šçŸ¥èŠå¤©è®°å½•é¡µåˆ·æ–°
                     room.UpdateAllowSendCard(int.Parse(msg.content));//
-                    msg.content = msg.content == "0" ? " ¹Ø±ÕÁËÈºÄÚË½ÁÄ¹¦ÄÜ" : " ¿ªÆôÁËÈºÄÚË½ÁÄ¹¦ÄÜ";
+                    msg.content = msg.content == "0" ? " å…³é—­äº†ç¾¤å†…ç§èŠåŠŸèƒ½" : " å¼€å¯äº†ç¾¤å†…ç§èŠåŠŸèƒ½";
                     msg.content = UIUtils.QuotationName(msg.fromUserName) + msg.content;
-                    // ¸üĞÂ×îºóÒ»ÌõÏûÏ¢ÄÚÈİ£¬Í¨ÖªUIË¢ĞÂ
+                    // æ›´æ–°æœ€åä¸€æ¡æ¶ˆæ¯å†…å®¹ï¼Œé€šçŸ¥UIåˆ·æ–°
                     UpdateFriendLastContentTip(msg);
                     break;
-                case kWCMessageType.RoomMemberBan://½ûÑÔ³ÉÔ±
+                case kWCMessageType.RoomMemberBan://ç¦è¨€æˆå‘˜
 
                     double banTime = double.Parse(msg.content);
 
-                    if (msg.myUserId.Equals(msg.toUserId)) // ÎÒ±»½ûÑÔ
+                    if (msg.myUserId.Equals(msg.toUserId)) // æˆ‘è¢«ç¦è¨€
                     {
                         if (banTime > TimeUtils.CurrentTime() + 3)
                         {
@@ -1547,7 +1604,7 @@ namespace WinFrmTalk
                         }
                         else
                         {
-                            // È¡Ïû½ûÑÔ
+                            // å–æ¶ˆç¦è¨€
                             RoomMemberDao.Instance.UpdateMemberTalkTime(room.RoomId, msg.myUserId, 0);
                         }
 
@@ -1558,18 +1615,18 @@ namespace WinFrmTalk
                     {
                         var date = Helpers.StampToDatetime(banTime);
                         string time = date.Month + "-" + date.Day + " " + date.Hour + ":" + date.Minute;
-                        msg.content = UIUtils.QuotationName(msg.fromUserName) + "¶Ô" + UIUtils.QuotationName(msg.toUserName) + "ÉèÖÃÁË½ûÑÔ,½ØÖ¹:" + time;
+                        msg.content = UIUtils.QuotationName(msg.fromUserName) + "å¯¹" + UIUtils.QuotationName(msg.toUserName) + "è®¾ç½®äº†ç¦è¨€,æˆªæ­¢:" + time;
                     }
                     else
                     {
-                        msg.content = UIUtils.QuotationName(msg.toUserName) + "ÒÑ±»" + UIUtils.QuotationName(msg.fromUserName) + "È¡Ïû½ûÑÔ";
+                        msg.content = UIUtils.QuotationName(msg.toUserName) + "å·²è¢«" + UIUtils.QuotationName(msg.fromUserName) + "å–æ¶ˆç¦è¨€";
                     }
 
-                    // ¸üĞÂ×îºóÒ»ÌõÏûÏ¢ÄÚÈİ£¬Í¨ÖªUIË¢ĞÂ
+                    // æ›´æ–°æœ€åä¸€æ¡æ¶ˆæ¯å†…å®¹ï¼Œé€šçŸ¥UIåˆ·æ–°
                     UpdateFriendLastContentTip(msg);
 
                     break;
-                case kWCMessageType.RoomAllBanned://Èº×éÈ«Ô±½ûÑÔ 
+                case kWCMessageType.RoomAllBanned://ç¾¤ç»„å…¨å‘˜ç¦è¨€ 
 
 
                     long state = Convert.ToInt64(msg.content);
@@ -1580,73 +1637,73 @@ namespace WinFrmTalk
                         Messenger.Default.Send(msg, MessageActions.ROOM_UPDATE_BANNED_TALK);
                     }
 
-                    msg.content = msg.content == "0" ? "ÒÑ¹Ø±ÕÈ«Ìå½ûÑÔ" : "ÒÑ¿ªÆôÈ«Ìå½ûÑÔ";
-                    // ¸üĞÂ×îºóÒ»ÌõÏûÏ¢ÄÚÈİ£¬Í¨ÖªUIË¢ĞÂ
+                    msg.content = msg.content == "0" ? "å·²å…³é—­å…¨ä½“ç¦è¨€" : "å·²å¼€å¯å…¨ä½“ç¦è¨€";
+                    // æ›´æ–°æœ€åä¸€æ¡æ¶ˆæ¯å†…å®¹ï¼Œé€šçŸ¥UIåˆ·æ–°
                     UpdateFriendLastContentTip(msg);
 
                     break;
-                case kWCMessageType.RoomAllowMemberInvite://ÊÇ·ñÔÊĞíÈºÄÚÆÕÍ¨³ÉÔ±ÑûÇëÄ°ÉúÈË
-                    NotifactionRoomControlMsg(msg); // Í¨ÖªÁÄÌì¼ÇÂ¼Ò³Ë¢ĞÂ
+                case kWCMessageType.RoomAllowMemberInvite://æ˜¯å¦å…è®¸ç¾¤å†…æ™®é€šæˆå‘˜é‚€è¯·é™Œç”Ÿäºº
+                    NotifactionRoomControlMsg(msg); // é€šçŸ¥èŠå¤©è®°å½•é¡µåˆ·æ–°
                     room.UpdateAllowInviteFriend(int.Parse(msg.content));
-                    msg.content = msg.content == "0" ? " ¹Ø±ÕÁËÆÕÍ¨³ÉÔ±ÑûÇë¹¦ÄÜ" : " ¿ªÆôÁËÆÕÍ¨³ÉÔ±ÑûÇë¹¦ÄÜ";
+                    msg.content = msg.content == "0" ? " å…³é—­äº†æ™®é€šæˆå‘˜é‚€è¯·åŠŸèƒ½" : " å¼€å¯äº†æ™®é€šæˆå‘˜é‚€è¯·åŠŸèƒ½";
                     msg.content = UIUtils.QuotationName(msg.fromUserName) + msg.content;
 
-                    // ¸üĞÂ×îºóÒ»ÌõÏûÏ¢ÄÚÈİ£¬Í¨ÖªUIË¢ĞÂ
+                    // æ›´æ–°æœ€åä¸€æ¡æ¶ˆæ¯å†…å®¹ï¼Œé€šçŸ¥UIåˆ·æ–°
                     UpdateFriendLastContentTip(msg);
 
                     break;
-                case kWCMessageType.RoomManagerTransfer://×ªÈÃÈºÖ÷
+                case kWCMessageType.RoomManagerTransfer://è½¬è®©ç¾¤ä¸»
 
-                    // ĞŞ¸ÄÀÏÈº×éÉí·İ
+                    // ä¿®æ”¹è€ç¾¤ç»„èº«ä»½
                     RoomMemberDao.Instance.UpdateMemberRole(room.RoomId, msg.fromUserId, 3);
-                    // ĞŞ¸ÄĞÂÈºÖ÷Éí·İ
+                    // ä¿®æ”¹æ–°ç¾¤ä¸»èº«ä»½
                     RoomMemberDao.Instance.UpdateMemberRole(room.RoomId, msg.toUserId, 1);
 
-                    NotifactionRoomControlMsg(msg); // Í¨ÖªÁÄÌì¼ÇÂ¼Ò³Ë¢ĞÂ
+                    NotifactionRoomControlMsg(msg); // é€šçŸ¥èŠå¤©è®°å½•é¡µåˆ·æ–°
 
-                    msg.content = UIUtils.QuotationName(msg.toUserName) + "ÒÑ³ÉÎªĞÂÈºÖ÷";
-                    // ¸üĞÂ×îºóÒ»ÌõÏûÏ¢ÄÚÈİ£¬Í¨ÖªUIË¢ĞÂ
+                    msg.content = UIUtils.QuotationName(msg.toUserName) + "å·²æˆä¸ºæ–°ç¾¤ä¸»";
+                    // æ›´æ–°æœ€åä¸€æ¡æ¶ˆæ¯å†…å®¹ï¼Œé€šçŸ¥UIåˆ·æ–°
                     UpdateFriendLastContentTip(msg);
 
                     break;
-                case kWCMessageType.RoomAllowUploadFile://ÊÇ·ñÔÊĞí³ÉÔ±ÉÏ´«ÈºÎÄ¼ş
-                    NotifactionRoomControlMsg(msg); // Í¨ÖªÁÄÌì¼ÇÂ¼Ò³Ë¢ĞÂ
+                case kWCMessageType.RoomAllowUploadFile://æ˜¯å¦å…è®¸æˆå‘˜ä¸Šä¼ ç¾¤æ–‡ä»¶
+                    NotifactionRoomControlMsg(msg); // é€šçŸ¥èŠå¤©è®°å½•é¡µåˆ·æ–°
 
                     room.UpdateAllowUploadFile(int.Parse(msg.content));
-                    msg.content = msg.content == "0" ? " ¹Ø±ÕÁËÆÕÍ¨³ÉÔ±ÉÏ´«Èº¹²Ïí" : " ¿ªÆôÁËÆÕÍ¨³ÉÔ±ÉÏ´«Èº¹²Ïí";
+                    msg.content = msg.content == "0" ? " å…³é—­äº†æ™®é€šæˆå‘˜ä¸Šä¼ ç¾¤å…±äº«" : " å¼€å¯äº†æ™®é€šæˆå‘˜ä¸Šä¼ ç¾¤å…±äº«";
                     msg.content = UIUtils.QuotationName(msg.fromUserName) + msg.content;
-                    // ¸üĞÂ×îºóÒ»ÌõÏûÏ¢ÄÚÈİ£¬Í¨ÖªUIË¢ĞÂ
+                    // æ›´æ–°æœ€åä¸€æ¡æ¶ˆæ¯å†…å®¹ï¼Œé€šçŸ¥UIåˆ·æ–°
                     UpdateFriendLastContentTip(msg);
 
                     break;
-                case kWCMessageType.RoomAllowConference://ÊÇ·ñÔÊĞíÈº»áÒé
-                    NotifactionRoomControlMsg(msg); // Í¨ÖªÁÄÌì¼ÇÂ¼Ò³Ë¢ĞÂ 
+                case kWCMessageType.RoomAllowConference://æ˜¯å¦å…è®¸ç¾¤ä¼šè®®
+                    NotifactionRoomControlMsg(msg); // é€šçŸ¥èŠå¤©è®°å½•é¡µåˆ·æ–° 
                     room.UpdateAllowConference(int.Parse(msg.content));
-                    msg.content = msg.content == "0" ? " ¹Ø±ÕÁËÆÕÍ¨³ÉÔ±·¢Æğ»áÒé¹¦ÄÜ" : " ¿ªÆôÁËÆÕÍ¨³ÉÔ±·¢Æğ»áÒé¹¦ÄÜ";
+                    msg.content = msg.content == "0" ? " å…³é—­äº†æ™®é€šæˆå‘˜å‘èµ·ä¼šè®®åŠŸèƒ½" : " å¼€å¯äº†æ™®é€šæˆå‘˜å‘èµ·ä¼šè®®åŠŸèƒ½";
                     msg.content = UIUtils.QuotationName(msg.fromUserName) + msg.content;
-                    // ¸üĞÂ×îºóÒ»ÌõÏûÏ¢ÄÚÈİ£¬Í¨ÖªUIË¢ĞÂ
+                    // æ›´æ–°æœ€åä¸€æ¡æ¶ˆæ¯å†…å®¹ï¼Œé€šçŸ¥UIåˆ·æ–°
                     UpdateFriendLastContentTip(msg);
 
                     break;
-                case kWCMessageType.RoomAllowSpeakCourse://ÊÇ·ñÔÊĞíÈº³ÉÔ±¿ª¿Î
+                case kWCMessageType.RoomAllowSpeakCourse://æ˜¯å¦å…è®¸ç¾¤æˆå‘˜å¼€è¯¾
 
-                    NotifactionRoomControlMsg(msg); // Í¨ÖªÁÄÌì¼ÇÂ¼Ò³Ë¢ĞÂ 
+                    NotifactionRoomControlMsg(msg); // é€šçŸ¥èŠå¤©è®°å½•é¡µåˆ·æ–° 
                     room.UpdateAllowSpeakCourse(int.Parse(msg.content));
-                    msg.content = msg.content == "0" ? " ¹Ø±ÕÁËÆÕÍ¨³ÉÔ±·¢ËÍ¿Î¼ş¹¦ÄÜ" : " ¿ªÆôÁËÆÕÍ¨³ÉÔ±·¢ËÍ¿Î¼ş¹¦ÄÜ";
+                    msg.content = msg.content == "0" ? " å…³é—­äº†æ™®é€šæˆå‘˜å‘é€è¯¾ä»¶åŠŸèƒ½" : " å¼€å¯äº†æ™®é€šæˆå‘˜å‘é€è¯¾ä»¶åŠŸèƒ½";
                     msg.content = UIUtils.QuotationName(msg.fromUserName) + msg.content;
-                    // ¸üĞÂ×îºóÒ»ÌõÏûÏ¢ÄÚÈİ£¬Í¨ÖªUIË¢ĞÂ
+                    // æ›´æ–°æœ€åä¸€æ¡æ¶ˆæ¯å†…å®¹ï¼Œé€šçŸ¥UIåˆ·æ–°
                     UpdateFriendLastContentTip(msg);
                     break;
-                case kWCMessageType.RoomNewOverDate://ÈºÏûÏ¢¹ıÆÚ
-                    LogUtils.Log("ÊÕµ½ÈºÏûÏ¢¹ıÆÚ   " + msg.content);
+                case kWCMessageType.RoomNewOverDate://ç¾¤æ¶ˆæ¯è¿‡æœŸ
+                    LogUtils.Log("æ”¶åˆ°ç¾¤æ¶ˆæ¯è¿‡æœŸ   " + msg.content);
                     LocalDataUtils.SetStringData(msg.ChatJid + "chatRecordTimeOut" + Applicate.MyAccount.userId, msg.content);
                     break;
-                case kWCMessageType.RoomNoticeEdit://±à¼­Èº¹«¸æ
-                                                   // Í¨ÖªÁÄÌì¼ÇÂ¼Ò³Ë¢ĞÂ
+                case kWCMessageType.RoomNoticeEdit://ç¼–è¾‘ç¾¤å…¬å‘Š
+                                                   // é€šçŸ¥èŠå¤©è®°å½•é¡µåˆ·æ–°
                     NotifactionRoomControlMsg(msg);
 
-                    // ¸üĞÂ×îºóÒ»ÌõÏûÏ¢ÄÚÈİ£¬Í¨ÖªUIË¢ĞÂ
-                    msg.content = UIUtils.QuotationName(msg.fromUserName) + "ĞŞ¸ÄÁËÈº¹«¸æ:\n" + msg.content;
+                    // æ›´æ–°æœ€åä¸€æ¡æ¶ˆæ¯å†…å®¹ï¼Œé€šçŸ¥UIåˆ·æ–°
+                    msg.content = UIUtils.QuotationName(msg.fromUserName) + "ä¿®æ”¹äº†ç¾¤å…¬å‘Š:\n" + msg.content;
                     UpdateFriendLastContentTip(msg);
 
                     break;
@@ -1658,9 +1715,9 @@ namespace WinFrmTalk
 
         #endregion
 
-        #region ¶àµãµÇÂ¼Í¬²½ÏûÏ¢´¦Àí
+        #region å¤šç‚¹ç™»å½•åŒæ­¥æ¶ˆæ¯å¤„ç†
         /// <summary>
-        /// ¶àµãµÇÂ¼Í¬²½ÏûÏ¢´¦Àí
+        /// å¤šç‚¹ç™»å½•åŒæ­¥æ¶ˆæ¯å¤„ç†
         /// </summary>
         /// <param name="msg"></param>
         private void ProcessDeviceSyncMessage(MessageObject msg, bool isOfflieMsgppMsg)
@@ -1671,27 +1728,24 @@ namespace WinFrmTalk
 
                 if (SYNC_LOGIN_PASSWORD.Equals(msg.objectId))
                 {
-                    // ÀëÏßÏûÏ¢²»ÔÚ´¦Àí
-                    if (!isOfflieMsgppMsg)
-                    {
-                        UpdatePwdRestart();
-                    }
-                    Console.WriteLine("ÆäËû¶ËĞŞ¸ÄÁËµÇÂ½ÃÜÂë");
-
+                    // 2026-08-31 ä¿®å¤ï¼šæ–°æ³¨å†Œè´¦å·ç™»å½•åæœåŠ¡å™¨ä¼šæ¨é€ sync_login_password åŒæ­¥æ¶ˆæ¯ï¼Œ
+                    // åŸé€»è¾‘è¯¯åˆ¤ä¸º"å¯†ç å·²è¢«ä¿®æ”¹"å¯¼è‡´å¼¹çª—+æ¸…ç©ºå¯†ç +æ€è¿›ç¨‹é‡å¯ï¼ˆæ–°è´¦å·å¿…ç°ã€æ— é™å¾ªç¯ï¼‰ã€‚
+                    // æ–¹æ¡ˆAï¼šå¿½ç•¥è¯¥åŒæ­¥æ¶ˆæ¯ï¼Œæ–°è´¦å·å¯æ­£å¸¸ç™»å½•ä½¿ç”¨ã€‚
+                    Console.WriteLine("æ”¶åˆ° sync_login_password åŒæ­¥æ¶ˆæ¯ï¼ˆå·²å¿½ç•¥ï¼‰");
                 }
                 else if (SYNC_PAY_PASSWORD.Equals(msg.objectId))
                 {
-                    Console.WriteLine("ÆäËû¶ËĞŞ¸ÄÁËÖ§¸¶ÃÜÂë");
+                    Console.WriteLine("å…¶ä»–ç«¯ä¿®æ”¹äº†æ”¯ä»˜å¯†ç ");
 
                 }
                 else if (SYNC_PRIVATE_SETTINGS.Equals(msg.objectId))
                 {
-                    Console.WriteLine("ÆäËû¶ËĞŞ¸ÄÁËÒşË½ÉèÖÃ");
+                    Console.WriteLine("å…¶ä»–ç«¯ä¿®æ”¹äº†éšç§è®¾ç½®");
 
                 }
                 else if (SYNC_LABEL.Equals(msg.objectId))
                 {
-                    Console.WriteLine("ÆäËû¶ËĞŞ¸ÄÁË±êÇ©");
+                    Console.WriteLine("å…¶ä»–ç«¯ä¿®æ”¹äº†æ ‡ç­¾");
                     FriendLabelDao.Instance.UpdateLableByHttp(null);
                     Messenger.Default.Send("1", MessageActions.UPDATE_LABLE_LIST);
                 }
@@ -1701,11 +1755,11 @@ namespace WinFrmTalk
 
                 if (string.Equals(msg.toUserId, msg.myUserId))
                 {
-                    Console.WriteLine("¶àµãµÇÂ¼Í¬²½--->¸üĞÂ×Ô¼ºµÄĞÅÏ¢");
+                    Console.WriteLine("å¤šç‚¹ç™»å½•åŒæ­¥--->æ›´æ–°è‡ªå·±çš„ä¿¡æ¯");
                 }
                 else
                 {
-                    Console.WriteLine("¶àµãµÇÂ¼Í¬²½--->¸üĞÂºÃÓÑµÄĞÅÏ¢");
+                    Console.WriteLine("å¤šç‚¹ç™»å½•åŒæ­¥--->æ›´æ–°å¥½å‹çš„ä¿¡æ¯");
                     HandleFriendUpdate(msg.toUserId);
                 }
             }
@@ -1713,27 +1767,27 @@ namespace WinFrmTalk
             {
                 if (!isOfflieMsgppMsg)
                 {
-                    Console.WriteLine("¶àµãµÇÂ¼Í¬²½--->¸üĞÂÈº×éµÄĞÅÏ¢");
+                    Console.WriteLine("å¤šç‚¹ç™»å½•åŒæ­¥--->æ›´æ–°ç¾¤ç»„çš„ä¿¡æ¯");
                     HandleGroupUpdate(msg.toUserId);
                 }
             }
         }
 
         /// <summary>
-        /// ÃÜÂëÒÑ±»ĞŞ¸ÄĞèÖØĞÂµÇÂ¼
+        /// å¯†ç å·²è¢«ä¿®æ”¹éœ€é‡æ–°ç™»å½•
         /// </summary>
         private void UpdatePwdRestart()
         {
-            HttpUtils.Instance.ShowTip("ÃÜÂëÒÑ±»ĞŞ¸ÄĞèÖØĞÂµÇÂ¼");
+            HttpUtils.Instance.ShowTip("å¯†ç å·²è¢«ä¿®æ”¹éœ€é‡æ–°ç™»å½•");
 
-            //µÇÂ¼¼Ç×¡ÃÜÂëÇå¿Õ
+            //ç™»å½•è®°ä½å¯†ç æ¸…ç©º
             Configuration cfa = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             cfa.AppSettings.Settings["passWord"].Value = String.Empty;
             cfa.Save();
 
             ShiKuManager.ApplicationExit();
             LocalDataUtils.SetStringData(Applicate.QUIT_TIME, TimeUtils.CurrentIntTime().ToString());
-            //´Ë´¦µ÷ÓÃÍË³ö½Ó¿Ú
+            //æ­¤å¤„è°ƒç”¨é€€å‡ºæ¥å£
             Application.ExitThread();
             Application.Exit();
             Application.Restart();
@@ -1741,26 +1795,26 @@ namespace WinFrmTalk
         }
         #endregion
 
-        #region ¶Ëµ½¶Ë¼ÓÃÜÍ¨Ñ¶ÏûÏ¢´¦Àí
+        #region ç«¯åˆ°ç«¯åŠ å¯†é€šè®¯æ¶ˆæ¯å¤„ç†
         /// <summary>
-        /// ¶Ëµ½¶Ë¼ÓÃÜÍ¨Ñ¶ÏûÏ¢´¦Àí
+        /// ç«¯åˆ°ç«¯åŠ å¯†é€šè®¯æ¶ˆæ¯å¤„ç†
         /// </summary>
         private void ProcessSecureMessage(MessageObject msg)
         {
-            // Èº³ÉÔ±ÇëÇóÈº×éÃÜÔ¿ÃÜÔ¿ 
+            // ç¾¤æˆå‘˜è¯·æ±‚ç¾¤ç»„å¯†é’¥å¯†é’¥ 
             if (msg.type == kWCMessageType.TYPE_SECURE_LOST_KEY)
             {
-                if (msg.InsertData() > 0)//Êı¾İ¿â³É¹¦²åÈë
+                if (msg.InsertData() > 0)//æ•°æ®åº“æˆåŠŸæ’å…¥
                 {
                     msg.UpdateLastSend();
-                    NotifactionNormalMessage(msg);//  Í¨ÖªUI  //Í¨Öª¸÷Ò³ÃæÊÕµ½ÏûÏ¢
+                    NotifactionNormalMessage(msg);//  é€šçŸ¥UI  //é€šçŸ¥å„é¡µé¢æ”¶åˆ°æ¶ˆæ¯
 
                     if (string.Equals(msg.fromUserId, msg.myUserId))
                     {
                         var room = msg.GetFriend();
                         room.IsLostKeyGroup = 1;
                         room.UpdateLostKeyGroup();
-                        Messenger.Default.Send(room, MessageActions.UPDATE_CHATKEY_STATE);//Èº¿ØÖÆÏà¹ØÏûÏ¢Í¨Öª
+                        Messenger.Default.Send(room, MessageActions.UPDATE_CHATKEY_STATE);//ç¾¤æ§åˆ¶ç›¸å…³æ¶ˆæ¯é€šçŸ¥
                     }
                 }
                 return;
@@ -1772,15 +1826,15 @@ namespace WinFrmTalk
 
                 var room = new Friend() { UserId = msg.objectId, IsGroup = 1 }.GetByUserId();
 
-                // ÆäËûÈº³ÉÔ±ÕıÔÚ¸øÎÒ·¢ËÍµÄÃÜÔ¿
+                // å…¶ä»–ç¾¤æˆå‘˜æ­£åœ¨ç»™æˆ‘å‘é€çš„å¯†é’¥
                 if (msg.toUserId.Equals(msg.myUserId))
                 {
-                    // ½âÃÜ³ö ÃÜÔ¿G
+                    // è§£å¯†å‡º å¯†é’¥G
                     string key = RSA.DecryptFromBase64Pk1(msg.content, Applicate.MyAccount.rsaPrivateKey);
 
                     if (!UIUtils.IsNull(room.NickName) && !UIUtils.IsNull(key))
                     {
-                        // ¼ÓÃÜ³É chatkeygroup
+                        // åŠ å¯†æˆ chatkeygroup
                         string chatKey = SecureChatUtil.EncryptChatKey(msg.objectId, key, Applicate.API_KEY);
 
 
@@ -1788,7 +1842,7 @@ namespace WinFrmTalk
                         room.UpdateLostKeyGroup();
 
                         room.UpdateChatKeyGroup(chatKey);
-                        // Ë¢ĞÂUI×´Ì¬
+                        // åˆ·æ–°UIçŠ¶æ€
                         Messenger.Default.Send(room, MessageActions.UPDATE_CHATKEY_STATE);
 
                         List<MessageObject> messages = room.GetFailMessageList();
@@ -1803,7 +1857,7 @@ namespace WinFrmTalk
                             };
                         }
 
-                        // ¸üĞÂ×îºóÒ»ÌõÏûÏ¢ÄÚÈİ
+                        // æ›´æ–°æœ€åä¸€æ¡æ¶ˆæ¯å†…å®¹
                         MessageObject local = new MessageObject() { isGroup = 1, FromId = room.UserId }.GetLastMessage();
                         if (!UIUtils.IsNull(local.messageId) && !NotEncrypt(local))
                         {
@@ -1812,29 +1866,29 @@ namespace WinFrmTalk
                             Messenger.Default.Send(room, token: MessageActions.UPDATE_FRIEND_LAST_CONTENT);
                         }
 
-                        // ¸üĞÂ×Ô¼ºµÄchatkey
+                        // æ›´æ–°è‡ªå·±çš„chatkey
                         HandleGroupChatkeyUpdate(room.RoomId, msg.content);
                     }
                 }
 
                 if (string.Equals(msg.toUserId, msg.ChatJid))
                 {
-                    // ¸üĞÂÇëÇó×´Ì¬
+                    // æ›´æ–°è¯·æ±‚çŠ¶æ€
                     msg.UpdateDownloadState(msg.content, 1);
                 }
 
                 return;
             }
 
-            // ÈºÖ÷ÖØÖÃÃÜÔ¿
+            // ç¾¤ä¸»é‡ç½®å¯†é’¥
             if (kWCMessageType.TYPE_SECURE_NOTIFY_REFRESH_KEY == msg.type)
             {
                 var room = msg.GetFriend();
                 HandleGroupUpdate(room.RoomId);
 
-                //// ¸üĞÂ×îºóÒ»ÌõÏûÏ¢ÄÚÈİ£¬Í¨ÖªUIË¢ĞÂ
+                //// æ›´æ–°æœ€åä¸€æ¡æ¶ˆæ¯å†…å®¹ï¼Œé€šçŸ¥UIåˆ·æ–°
                 msg.type = kWCMessageType.Remind;
-                msg.content = "ÈºÖ÷ÖØÖÃÁËÈº×éÃÜÔ¿";
+                msg.content = "ç¾¤ä¸»é‡ç½®äº†ç¾¤ç»„å¯†é’¥";
                 if (msg.InsertData() > 0)
                 {
                     msg.DeleteMessageLow(msg.timeSend);
@@ -1845,12 +1899,12 @@ namespace WinFrmTalk
 
                 room.IsLostKeyGroup = 0;
                 room.UpdateLostKeyGroup();
-                Messenger.Default.Send(room, MessageActions.UPDATE_CHATKEY_STATE);//Èº¿ØÖÆÏà¹ØÏûÏ¢Í¨Öª
+                Messenger.Default.Send(room, MessageActions.UPDATE_CHATKEY_STATE);//ç¾¤æ§åˆ¶ç›¸å…³æ¶ˆæ¯é€šçŸ¥
 
                 return;
             }
 
-            // Íü¼ÇÃÜÔ¿ ¸üĞÂÃÜÔ¿¶Ô
+            // å¿˜è®°å¯†é’¥ æ›´æ–°å¯†é’¥å¯¹
             if (kWCMessageType.TYPE_SECURE_REFRESH_KEY == msg.type)
             {
                 HandleFriendUpdate(msg.fromUserId);
@@ -1858,36 +1912,36 @@ namespace WinFrmTalk
             }
 
 
-            LogUtils.Save("==========Î´´¦ÀíµÄ¶Ëµ½¶ËĞ­Òé===========\n" + msg.ToJson(true));
+            LogUtils.Save("==========æœªå¤„ç†çš„ç«¯åˆ°ç«¯åè®®===========\n" + msg.ToJson(true));
         }
 
         #endregion
 
-        #region ºóÌ¨¹ÜÀíÏà¹ØÏûÏ¢
+        #region åå°ç®¡ç†ç›¸å…³æ¶ˆæ¯
         /// <summary>
-        /// ¶Ëµ½¶Ë¼ÓÃÜÍ¨Ñ¶ÏûÏ¢´¦Àí
+        /// ç«¯åˆ°ç«¯åŠ å¯†é€šè®¯æ¶ˆæ¯å¤„ç†
         /// </summary>
         private void ProcessServiceManagerMessage(MessageObject msg)
         {
-            // ±»ºóÌ¨É¾³ı£¨É¾³ı¸ÃºÃÓÑÕË»§£©
+            // è¢«åå°åˆ é™¤ï¼ˆåˆ é™¤è¯¥å¥½å‹è´¦æˆ·ï¼‰
             if (msg.type == kWCMessageType.TYPE_REMOVE_ACCOUNT)
             {
                 var tmpFriend = new Friend() { UserId = msg.objectId }.GetByUserId();
-                // ÉèÖÃÎª±»É¾³ı
+                // è®¾ç½®ä¸ºè¢«åˆ é™¤
                 tmpFriend.UpdateFriendState(tmpFriend.UserId, Friend.STATUS_26);
-                // Çå¿ÕÏûÏ¢¼ÇÂ¼
+                // æ¸…ç©ºæ¶ˆæ¯è®°å½•
                 msg.FromId = tmpFriend.UserId;
                 msg.ToId = msg.myUserId;
                 msg.DeleteTable();
-                // Í¨Öª½çÃæË¢ĞÂ
+                // é€šçŸ¥ç•Œé¢åˆ·æ–°
                 Messenger.Default.Send(tmpFriend, MessageActions.DELETE_FRIEND);
-                // ÏÔÊ¾ÌáÊ¾
-                HttpUtils.Instance.ShowTip("·şÎñÆ÷É¾³ıÁË" + tmpFriend.NickName);
+                // æ˜¾ç¤ºæç¤º
+                HttpUtils.Instance.ShowTip("æœåŠ¡å™¨åˆ é™¤äº†" + tmpFriend.NickName);
 
                 return;
             }
 
-            //ºóÌ¨É¾³ıºÃÓÑ(½â³ıÓÃ»§ÓëºÃÓÑ¹ØÏµ)
+            //åå°åˆ é™¤å¥½å‹(è§£é™¤ç”¨æˆ·ä¸å¥½å‹å…³ç³»)
             if (msg.type == kWCMessageType.TYPE_DELETEFRIENDS)
             {
                 var list = JsonConvert.DeserializeObject<Dictionary<string, object>>(msg.objectId);
@@ -1897,20 +1951,20 @@ namespace WinFrmTalk
                 string toUserName = UIUtils.DecodeString(list, "toUserName");
 
                 var tmpFriend = new Friend() { UserId = toUserId }.GetByUserId();
-                // ÉèÖÃÎª±»É¾³ı
+                // è®¾ç½®ä¸ºè¢«åˆ é™¤
                 tmpFriend.UpdateFriendState(tmpFriend.UserId, Friend.STATUS_26);
-                // Çå¿ÕÏûÏ¢¼ÇÂ¼
+                // æ¸…ç©ºæ¶ˆæ¯è®°å½•
                 msg.FromId = tmpFriend.UserId;
                 msg.ToId = msg.myUserId;
                 msg.DeleteTable();
-                // Í¨Öª½çÃæË¢ĞÂ
+                // é€šçŸ¥ç•Œé¢åˆ·æ–°
                 Messenger.Default.Send(tmpFriend, MessageActions.DELETE_FRIEND);
-                // ÏÔÊ¾ÌáÊ¾
-                HttpUtils.Instance.ShowTip("·şÎñÆ÷½â³ıÁËÄãÓë" + tmpFriend.NickName + "µÄºÃÓÑ¹ØÏµ");
+                // æ˜¾ç¤ºæç¤º
+                HttpUtils.Instance.ShowTip("æœåŠ¡å™¨è§£é™¤äº†ä½ ä¸" + tmpFriend.NickName + "çš„å¥½å‹å…³ç³»");
                 return;
             }
 
-            //ºóÌ¨¼ÓÈëºÚÃûµ¥
+            //åå°åŠ å…¥é»‘åå•
             if (msg.type == kWCMessageType.TYPE_JOINBLACKLIST)
             {
                 var list = JsonConvert.DeserializeObject<Dictionary<string, object>>(msg.objectId);
@@ -1920,10 +1974,10 @@ namespace WinFrmTalk
                 string toUserName = UIUtils.DecodeString(list, "toUserName");
                 Friend friend = new Friend { UserId = toUserId }.GetByUserId();
 
-                ShiKuManager.SendBlockfriend(friend);//·¢ËÍÀ­ºÚºÃÓÑÍÆËÍ
+                ShiKuManager.SendBlockfriend(friend);//å‘é€æ‹‰é»‘å¥½å‹æ¨é€
             }
 
-            //´ÓºÚÃûµ¥ÒÆ³ı
+            //ä»é»‘åå•ç§»é™¤
             if (msg.type == kWCMessageType.TYPE_MOVE_BALACKLIST)
             {
                 var list = JsonConvert.DeserializeObject<Dictionary<string, object>>(msg.objectId);
@@ -1933,42 +1987,42 @@ namespace WinFrmTalk
                 string toUserName = UIUtils.DecodeString(list, "toUserName");
                 Friend friend = new Friend { UserId = toUserId }.GetByUserId();
 
-                ShiKuManager.SendCancelBlockFriendMsg(friend);//·¢ËÍÈ¡ÏûÀ­ºÚºÃÓÑÍÆËÍ
+                ShiKuManager.SendCancelBlockFriendMsg(friend);//å‘é€å–æ¶ˆæ‹‰é»‘å¥½å‹æ¨é€
             }
 
 
-            // ÎÒ±»ºóÌ¨É¾³ıÁË
+            // æˆ‘è¢«åå°åˆ é™¤äº†
             if (msg.type == kWCMessageType.TYPE_DELETE_SELF)
             {
                 ShiKuManager.ApplicationExit();
-                // ¹Ø±ÕÈÎÎñÀ¸Í¼±ê
+                // å…³é—­ä»»åŠ¡æ å›¾æ ‡
                 Messenger.Default.Send("1030102", MessageActions.CLOSE_NOTIFY_INCO);
-                //´Ë´¦µ÷ÓÃÍË³ö½Ó¿Ú
+                //æ­¤å¤„è°ƒç”¨é€€å‡ºæ¥å£
                 Application.ExitThread();
 
                 Applicate.ConflictClose();
 
-                var res = MessageBox.Show(Applicate.GetWindow<FrmLogin>(), "´ËÕËºÅÒÑ±»ºóÌ¨¹ÜÀíÔ±É¾³ı", "ºóÌ¨ÌáÊ¾");
+                var res = MessageBox.Show(Applicate.GetWindow<FrmLogin>(), "æ­¤è´¦å·å·²è¢«åå°ç®¡ç†å‘˜åˆ é™¤", "åå°æç¤º");
             }
         }
 
         #endregion
 
-        #region ºóÌ¨Ëø¶¨ÓÃ»§Ïà¹ØÏûÏ¢
+        #region åå°é”å®šç”¨æˆ·ç›¸å…³æ¶ˆæ¯
         /// <summary>
-        /// ¶Ëµ½¶Ë¼ÓÃÜÍ¨Ñ¶ÏûÏ¢´¦Àí
+        /// ç«¯åˆ°ç«¯åŠ å¯†é€šè®¯æ¶ˆæ¯å¤„ç†
         /// </summary>
         private void ProcessServiceLockMessage(MessageObject msg, bool delay)
         {
-            // ±»ºóÌ¨Ëø¶¨ÕËºÅ
+            // è¢«åå°é”å®šè´¦å·
             if (msg.type == kWCMessageType.TYPE_SERVICE_LOCK_USER)
             {
                 if (!delay)
                 {
-                    var res = MessageBox.Show(Applicate.GetWindow<FrmMain>(), "µ±Ç°ÕËºÅÒÑ±»ºóÌ¨¹ÜÀíÔ±Ëø¶¨!", "ºóÌ¨Ëø¶¨");
+                    var res = MessageBox.Show(Applicate.GetWindow<FrmMain>(), "å½“å‰è´¦å·å·²è¢«åå°ç®¡ç†å‘˜é”å®š!", "åå°é”å®š");
                     mSocketCore.Disconnect();
                     LocalDataUtils.SetStringData(Applicate.QUIT_TIME, TimeUtils.CurrentIntTime().ToString());
-                    //´Ë´¦µ÷ÓÃÍË³ö½Ó¿Ú
+                    //æ­¤å¤„è°ƒç”¨é€€å‡ºæ¥å£
                     Application.ExitThread();
                     Application.Exit();
                     Application.Restart();
@@ -1978,25 +2032,25 @@ namespace WinFrmTalk
                 return;
             }
 
-            // ±»ºóÌ¨Ëø¶¨Èº×é
+            // è¢«åå°é”å®šç¾¤ç»„
             if (msg.type == kWCMessageType.TYPE_SERVICE_LOCK_GROUP)
             {
                 var tmpFriend = new Friend() { UserId = msg.objectId }.GetByUserId();
 
                 if ("-1".Equals(msg.content))
                 {
-                    // Ëø¶¨´ËÓÃ»§
+                    // é”å®šæ­¤ç”¨æˆ·
                     tmpFriend.IsDismiss = 2;
                     tmpFriend.UpdateDismiss(2);
                 }
                 else if ("1".Equals(msg.content))
                 {
-                    // ½âËø´ËÓÃ»§
+                    // è§£é”æ­¤ç”¨æˆ·
                     tmpFriend.IsDismiss = 0;
                     tmpFriend.UpdateDismiss(0);
                 }
 
-                // Ë¢ĞÂ ÏûÏ¢½çÃæ
+                // åˆ·æ–° æ¶ˆæ¯ç•Œé¢
                 Messenger.Default.Send(tmpFriend, MessageActions.UPDATE_SERVICE_LOCK);
                 return;
             }
@@ -2006,7 +2060,7 @@ namespace WinFrmTalk
 
 
 
-        #region ========================================================Í¨ÖªÄ£¿é========================================================  
+        #region ========================================================é€šçŸ¥æ¨¡å—========================================================  
 
         private List<MessageObject> mssageList = new List<MessageObject>();
 
@@ -2014,6 +2068,7 @@ namespace WinFrmTalk
 
         private void OnMessageLoop(object source, ElapsedEventArgs e)
         {
+            LogUtils.Error("[DIAG-XM] loop count=" + mssageList.Count);
             //Console.WriteLine("OnMessageLoop  + OnMessageLoop");
 
             if (mssageList.Count == 0)
@@ -2023,21 +2078,21 @@ namespace WinFrmTalk
 
             if (mssageList.Count > 1)
             {
-                // Ò»´ÎĞÔ¸üĞÂ¶àÌõ ²ÎÊı List<MessageObject>
+                // ä¸€æ¬¡æ€§æ›´æ–°å¤šæ¡ å‚æ•° List<MessageObject>
                 NotifactionListAllMessage(mssageList);
             }
             else
             {
-                // µ¥ÌõË¢ĞÂ ²ÎÊı MessageObject
+                // å•æ¡åˆ·æ–° å‚æ•° MessageObject
                 NotifactionListSingleMessage(mssageList[0]);
             }
 
-            mssageList.Clear();// ÇåÀíÏûÏ¢¶ÓÁĞ
+            mssageList.Clear();// æ¸…ç†æ¶ˆæ¯é˜Ÿåˆ—
         }
 
         public void NotifactionListAllMessage(List<MessageObject> messages)
         {
-            LogUtils.Log("xmpp Í¨Öª ¸üĞÂÏî all");
+            LogUtils.Log("xmpp é€šçŸ¥ æ›´æ–°é¡¹ all");
             Messenger.Default.Send(messages, MessageActions.XMPP_SHOW_ALL_MESSAGE);
         }
 
@@ -2049,35 +2104,36 @@ namespace WinFrmTalk
 
 
         /// <summary>
-        /// ÆÕÍ¨ÏûÏ¢µÄÍ¨Öª
+        /// æ™®é€šæ¶ˆæ¯çš„é€šçŸ¥
         /// </summary>
         /// <param name="msg"></param>
         public void NotifactionNormalMessage(MessageObject msg)
         {
-            // ÏûÏ¢ÅÅ¶Ó»úÖÆ -> Õë¶ÔÓëÏûÏ¢ÁĞ±í
+            LogUtils.Error("[DIAG-XM] normal msg jid=" + msg.ChatJid + " type=" + msg.type + " isReadDel=" + msg.isReadDel + " len=" + (msg.content == null ? 0 : msg.content.Length));
+            // æ¶ˆæ¯æ’é˜Ÿæœºåˆ¶ -> é’ˆå¯¹ä¸æ¶ˆæ¯åˆ—è¡¨
             if (mssageList.Count > 0)
             {
-                mssageList.Add(msg); // ÒÑ¾­Æô¶¯¹ı¼ÆÊ±Æ÷ÁË£¬Ö±½ÓÍùÁĞ±íÀï¼ÓÏûÏ¢¾Í¿ÉÒÔ
+                mssageList.Add(msg); // å·²ç»å¯åŠ¨è¿‡è®¡æ—¶å™¨äº†ï¼Œç›´æ¥å¾€åˆ—è¡¨é‡ŒåŠ æ¶ˆæ¯å°±å¯ä»¥
                 MessageLooper.Stop();
                 MessageLooper.Start();
             }
             else
             {
-                MessageLooper.Start();// Æô¶¯¶¨Ê±Æ÷ -> 0.5Ãëºóµ÷ÓÃ OnMessageLoop ¸üĞÂÁĞ±í
+                MessageLooper.Start();// å¯åŠ¨å®šæ—¶å™¨ -> 0.5ç§’åè°ƒç”¨ OnMessageLoop æ›´æ–°åˆ—è¡¨
                 mssageList.Add(msg);
             }
 
-            // ¸üĞÂÁÄÌì¼ÇÂ¼Ò³
+            // æ›´æ–°èŠå¤©è®°å½•é¡µ
             Messenger.Default.Send(msg, MessageActions.XMPP_UPDATE_NORMAL_MESSAGE);
         }
 
         /// <summary>
-        /// ³·»ØÏûÏ¢µÄÍ¨Öª
+        /// æ’¤å›æ¶ˆæ¯çš„é€šçŸ¥
         /// </summary>
         /// <param name="msg"></param>
         public void NotifactionRecallMessage(MessageObject msg)
         {
-            Messenger.Default.Send(msg, MessageActions.XMPP_UPDATE_RECALL_MESSAGE);//Í¨Öª¸÷Ò³ÃæÊÕµ½ÏûÏ¢
+            Messenger.Default.Send(msg, MessageActions.XMPP_UPDATE_RECALL_MESSAGE);//é€šçŸ¥å„é¡µé¢æ”¶åˆ°æ¶ˆæ¯
         }
 
         /// <summary>
@@ -2086,36 +2142,36 @@ namespace WinFrmTalk
         /// <param name="msg"></param>
         public void NotifactionVerifyMessage(MessageObject msg)
         {
-            Messenger.Default.Send(msg, MessageActions.XMPP_UPDATE_VERIFY_MESSAGE);//ÅóÓÑÑéÖ¤Ïà¹ØÏûÏ¢Í¨Öª
+            Messenger.Default.Send(msg, MessageActions.XMPP_UPDATE_VERIFY_MESSAGE);//æœ‹å‹éªŒè¯ç›¸å…³æ¶ˆæ¯é€šçŸ¥
         }
 
         /// <summary>
-        /// Èº¿ØÖÆÏà¹ØÏûÏ¢Í¨Öª
+        /// ç¾¤æ§åˆ¶ç›¸å…³æ¶ˆæ¯é€šçŸ¥
         /// </summary>
         /// <param name="msg"></param>
         public void NotifactionRoomControlMsg(MessageObject msg)
         {
-            Messenger.Default.Send(msg, MessageActions.XMPP_UPDATE_ROOM_CHANGE_MESSAGE);//Èº¿ØÖÆÏà¹ØÏûÏ¢Í¨Öª
+            Messenger.Default.Send(msg, MessageActions.XMPP_UPDATE_ROOM_CHANGE_MESSAGE);//ç¾¤æ§åˆ¶ç›¸å…³æ¶ˆæ¯é€šçŸ¥
         }
 
         /// <summary>
-        /// ÒôÊÓÆµĞ­ÒéÏà¹ØÏûÏ¢Í¨Öª
+        /// éŸ³è§†é¢‘åè®®ç›¸å…³æ¶ˆæ¯é€šçŸ¥
         /// </summary>
         /// <param name="msg"></param>
         public void NotifactionMeetingMessage(MessageObject msg)
         {
-            Messenger.Default.Send(msg, MessageActions.XMPP_UPDATE_MEETING_MESSAGE);//ÊÕµ½ÁËÒ»¸öÒôÊÓÆµĞ­ÒéÏûÏ¢
+            Messenger.Default.Send(msg, MessageActions.XMPP_UPDATE_MEETING_MESSAGE);//æ”¶åˆ°äº†ä¸€ä¸ªéŸ³è§†é¢‘åè®®æ¶ˆæ¯
         }
 
         #endregion
 
-        #region ========================================================Èº×éÏà¹Ø========================================================
+        #region ========================================================ç¾¤ç»„ç›¸å…³========================================================
 
         /// <summary>
-        /// ´´½¨Èº×é
+        /// åˆ›å»ºç¾¤ç»„
         /// </summary>
-        /// <param name="roomName">ÈºÃû×Ö</param>
-        /// <param name="description">ÈºÃèÊö</param>
+        /// <param name="roomName">ç¾¤åå­—</param>
+        /// <param name="description">ç¾¤æè¿°</param>
         /// <returns>roomJid</returns>
         public string CreateGroup(string roomName, string description, string jid = null)
         {
@@ -2134,7 +2190,7 @@ namespace WinFrmTalk
         }
 
         /// <summary>
-        /// ¼ÓÈëÈºÁÄ
+        /// åŠ å…¥ç¾¤èŠ
         /// </summary>
         /// <param name="roomJid">RoomJId</param>
         /// <param name="lastExitTime"></param>
@@ -2152,12 +2208,12 @@ namespace WinFrmTalk
             join.messageHead = head;
 
             mSocketCore.SendMessage(join, Command.COMMAND_JOIN_GROUP_REQ);
-            Console.WriteLine("·¢ËÍ¼ÓÈëÈº×éÏûÏ¢");
+            Console.WriteLine("å‘é€åŠ å…¥ç¾¤ç»„æ¶ˆæ¯");
 
         }
 
         /// <summary>
-        /// ÍË³öÈº×é
+        /// é€€å‡ºç¾¤ç»„
         /// </summary>
         /// <param name="roomJid">RoomJId</param>
         public void ExitRoom(string roomJid)
@@ -2174,13 +2230,162 @@ namespace WinFrmTalk
             exit.messageHead = head;
 
             mSocketCore.SendMessage(exit, Command.COMMAND_EXIT_GROUP_REQ);
-            Console.WriteLine("·¢ËÍÍË³öÈº×éÏûÏ¢");
+            Console.WriteLine("å‘é€é€€å‡ºç¾¤ç»„æ¶ˆæ¯");
         }
 
 
         #endregion
 
-        #region ========================================================ÄÚ²¿·½·¨========================================================
+        #region ========================================================å†…éƒ¨æ–¹æ³•========================================================
+
+        // ============ 2026-11-21 æ–°å¢ï¼šç™»å½•åè¡¥æ‹‰ç¦»çº¿æ¶ˆæ¯ + æœªè¯»çº¢ç‚¹ï¼ˆå¤ç”¨ç°æœ‰è§£å¯†/æ’å…¥é“¾è·¯ï¼‰ ============
+
+        /// <summary>æœ¬åœ°æ¶ˆæ¯è¡¨æœ€åä¸€æ¡æ¶ˆæ¯æ—¶é—´ï¼ˆç§’ï¼‰ã€‚è£¸ SQLï¼Œä¸å»ºè¡¨ï¼Œé¿å…è¯¯æ“ä½œ</summary>
+        private static double GetLocalLastMsgTime(string jid)
+        {
+            try
+            {
+                object o = DBSetting.SQLiteDBContext.Ado.GetScalar("select max(timeSend) from \"msg_" + jid + "\"");
+                if (o == null || o == DBNull.Value)
+                {
+                    return 0;
+                }
+                return Convert.ToDouble(o);
+            }
+            catch { return 0; }
+        }
+
+        /// <summary>æ˜¯å¦æ•°å­—å•èŠ jidï¼ˆç¾¤/æœåŠ¡å· jid è°ƒå•èŠæ¥å£ä¼šè¢«æœåŠ¡å™¨æ‹’ç»ï¼Œå¿…é¡»æ’é™¤ï¼‰</summary>
+        private static bool IsSingleNumberJid(string jid)
+        {
+            if (string.IsNullOrEmpty(jid)) { return false; }
+            long v;
+            return long.TryParse(jid, out v);
+        }
+
+        private static DateTime _lastUnreadSyncTime = DateTime.MinValue;
+
+        /// <summary>ç™»å½•åï¼šæ‰¾å‡ºæœåŠ¡å™¨æœ‰æ–°æ¶ˆæ¯è€Œæœ¬åœ°ç¼ºå¤±çš„å•èŠä¼šè¯ï¼Œé€ä¸ªè¡¥æ‹‰</summary>
+        private void SyncUnreadAndRoam(JsonLastChats list)
+        {
+            try
+            {
+                if (list == null || list.data == null || list.data.Count == 0) { return; }
+                // getLastChatList ç™»å½•æ—¶ä¼šå›è°ƒä¸¤æ¬¡ï¼Œ5 ç§’å†…åªæ‰§è¡Œä¸€æ¬¡ï¼Œé¿å…é‡å¤æ‹‰å–
+                if ((DateTime.Now - _lastUnreadSyncTime).TotalSeconds < 5) { return; }
+                _lastUnreadSyncTime = DateTime.Now;
+
+                List<string> jids = new List<string>();
+                List<long> ends = new List<long>();
+
+                for (int i = 0; i < list.data.Count; i++)
+                {
+                    DataItem item = list.data[i];
+                    if (item == null || string.IsNullOrEmpty(item.jid)) { continue; }
+                    if (item.isRoom == 1) { continue; }                   // ç¾¤èŠæ²¿ç”¨åŸæœ‰ MsgRoamTask æœºåˆ¶ï¼Œä¸åŠ¨
+                    if (item.type == 90 || item.type == 91) { continue; } // æ”¶ä»˜æ¬¾å‡­è¯
+                    if (!IsSingleNumberJid(item.jid)) { continue; }        // åªå¤„ç†æ•°å­—å•èŠ
+                    if (Applicate.MyAccount == null) { continue; }
+                    if (item.jid.Equals(Applicate.MyAccount.userId)) { continue; }
+                    if (item.timeSend <= 0) { continue; }
+
+                    double localLast = GetLocalLastMsgTime(item.jid);
+                    if (item.timeSend > localLast * 1000 + 1000)          // æœåŠ¡å™¨æ›´æ–°æ—¶é—´ > æœ¬åœ°æœ€åä¸€æ¡
+                    {
+                        jids.Add(item.jid);
+                        ends.Add(item.timeSend);
+                    }
+                }
+
+                if (jids.Count == 0) { return; }
+                LogHelper.log.Error("[SYNC] éœ€è¡¥æ‹‰ä¼šè¯=" + jids.Count + " : " + string.Join(",", jids.ToArray()));
+                PullRoamChat(jids, ends, 0);
+            }
+            catch (Exception ex) { LogHelper.log.Error("[SYNC-EX] " + ex.Message); }
+        }
+
+        /// <summary>é€ä¸ªä¼šè¯è¡¥æ‹‰ç¼ºå¤±æ¶ˆæ¯ï¼Œè¡¥å®Œå†™æœªè¯»æ•°å¹¶åˆ·æ–°ä¼šè¯åˆ—è¡¨</summary>
+        private void PullRoamChat(List<string> jids, List<long> ends, int index)
+        {
+            if (index >= jids.Count)
+            {
+                Messenger.Default.Send("1", MessageActions.DOWN_CHATLIST_COMPT);
+                return;
+            }
+
+            string jid = jids[index];
+            long endMs = ends[index];
+
+            try
+            {
+                double localLast = GetLocalLastMsgTime(jid);
+                bool hasLocal = localLast > 0;
+                long startMs = hasLocal ? (long)Math.Floor(localLast * 1000) : 1262275200000L;
+
+                HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "tigase/shiku_msgs")
+                    .AddParams("access_token", Applicate.Access_Token)
+                    .AddParams("receiver", jid)
+                    .AddParams("startTime", startMs.ToString())
+                    .AddParams("endTime", (endMs + 1000).ToString())
+                    .AddParams("pageIndex", "0")
+                    .AddParams("pageSize", "100")
+                    .NoErrorTip()
+                    .Build().ExecuteList<MessageRecordList>((success, result) =>
+                    {
+                        int unread = 0;
+                        int insert = 0;
+                        bool apiOk = false;
+                        try
+                        {
+                            if (success && result != null && result.data != null)
+                            {
+                                apiOk = true;
+                                for (int i = 0; i < result.data.Count; i++)
+                                {
+                                    // ä¸ DownMsgRecord å®Œå…¨ä¸€è‡´çš„è§£æé“¾è·¯ï¼šmessage(json) -> ChatMessage -> MessageObject
+                                    MessageObject mo = result.data[i].ToMessageObject();
+                                    if (mo == null) { continue; }
+                                    if (!mo.IsVisibleMsg()) { continue; }
+                                    if (mo.deleteTime > 0 && mo.deleteTime < TimeUtils.CurrentTimeDouble()) { continue; }
+
+                                    // ç»Ÿä¸€è§£å¯†å…¥å£ï¼šisEncrypt=1/2/3 è‡ªåŠ¨å¤„ç†ï¼Œä¸åŠ å¯†åŸæ ·è¿”å›
+                                    SkSSLUtils.DecryptRecordMessage(mo, false);
+
+                                    bool isNew = hasLocal && mo.timeSend > localLast;
+                                    mo.isSend = 1;
+                                    mo.isRead = isNew ? 0 : 1;
+
+                                    if (mo.InsertData() > 0)   // InsertData æŒ‰ messageId å»é‡
+                                    {
+                                        insert++;
+                                        if (isNew && !jid.Equals(mo.fromUserId)) { unread++; }
+                                    }
+                                }
+                            }
+                        }
+                        catch (Exception ex) { LogHelper.log.Error("[ROAM] jid=" + jid + " " + ex.Message); }
+
+                        try
+                        {
+                            // ä»¥â€œæœ¬æ¬¡è¡¥æ‹‰åˆ°çš„æ–°æ¶ˆæ¯æ¡æ•°â€ä¸ºå‡†ï¼šæœ‰ 2 æ¡å°±æ˜¾ç¤º 2ï¼Œæ²¡æœ‰å°±æ¸…é›¶
+                            if (apiOk)
+                            {
+                                new Friend() { UserId = jid }.UpdateRedNum(Math.Min(unread, 99));
+                            }
+                            new Friend() { UserId = jid }.UpdateDownTime(0, 0); // æ¸…æ¼«æ¸¸çª—å£æ ‡è®°
+                            LogHelper.log.Error("[ROAM-DONE] jid=" + jid + " insert=" + insert + " unread=" + unread);
+                        }
+                        catch (Exception ex) { LogHelper.log.Error("[ROAM-DB] " + ex.Message); }
+
+                        PullRoamChat(jids, ends, index + 1);
+                    });
+            }
+            catch (Exception ex)
+            {
+                LogHelper.log.Error("[ROAM-OUTER] jid=" + jid + " " + ex.Message);
+                PullRoamChat(jids, ends, index + 1);
+            }
+        }
 
         private void UpdateChatListData(JsonLastChats list)
         {
@@ -2189,6 +2394,27 @@ namespace WinFrmTalk
                 Messenger.Default.Send("1", MessageActions.DOWN_CHATLIST_COMPT);
                 return;
             }
+
+            // 2026-11-21 ä¿®å¤ï¼šæœåŠ¡å™¨æ•°æ®å¯èƒ½æ»åï¼Œå…ˆå–æœ¬åœ°æ—¶é—´å¿«ç…§ï¼Œé¿å…æ—§æ•°æ®è¦†ç›–æœ¬åœ°æ–°æ¶ˆæ¯
+
+
+            var localFriends = new Friend().GetRecentList();
+
+
+            var localTimeMap = new System.Collections.Generic.Dictionary<string, double>();
+
+
+            for (int li = 0; li < localFriends.Count; li++)
+
+
+            {
+
+
+                localTimeMap[localFriends[li].UserId] = localFriends[li].LastMsgTime;
+
+
+            }
+
 
             List<Friend> fd_list = new List<Friend>();
             //int count = 0;
@@ -2201,7 +2427,7 @@ namespace WinFrmTalk
                     IsGroup = item.isRoom,
                 };
 
-                // ¹ıÂËµôÊÕ¸¶¿îÆ¾Ö¤
+                // è¿‡æ»¤æ‰æ”¶ä»˜æ¬¾å‡­è¯
                 if (item.type == 90 || item.type == 91)
                 {
                     continue;
@@ -2209,7 +2435,7 @@ namespace WinFrmTalk
 
                 string lastContent = SkSSLUtils.DecryptLastMessage(item);
 
-                // ÁÄÌì¼ÇÂ¼ÂşÓÎ
+                // èŠå¤©è®°å½•æ¼«æ¸¸
                 long startTime = new MessageObject() { FromId = friend.UserId }.GetLastTimeStamp();
                 if (item.timeSend > startTime)
                 {
@@ -2218,12 +2444,12 @@ namespace WinFrmTalk
                         if (startTime != 0)
                         {
                             MessageObject local = new MessageObject() { isGroup = 1, FromId = friend.UserId }.GetLastMessage();
-                            // Éú³ÉÀëÏßÈÎÎñ
+                            // ç”Ÿæˆç¦»çº¿ä»»åŠ¡
                             MsgRoamTaskDao.Instance.CreateTask(friend.UserId, local);
                         }
                         else
                         {
-                            // ±¾µØÃ»ÓĞ¼ÇÂ¼£¬ Ö±½Ó¾ÍÊÇÕı³£µÄÂşÓÎÂß¼­
+                            // æœ¬åœ°æ²¡æœ‰è®°å½•ï¼Œ ç›´æ¥å°±æ˜¯æ­£å¸¸çš„æ¼«æ¸¸é€»è¾‘
                             long time = startTime == 0 ? 1262275200000L : startTime;
                             friend.UpdateDownTime(time, item.timeSend);
                         }
@@ -2249,16 +2475,17 @@ namespace WinFrmTalk
                 }
 
                 friend.Content = lastContent;
-                // ĞŞ¸´£ºÓÃ×î½üÁÄÌìÊ±¼äÌî³ä LastMsgTime£¨ºÁÃë×ªÃë£©£¬±£Ö¤×î½üÁÄÌìÅÅĞòÕıÈ·
-                if (item.timeSend > 0)
-                {
-                    friend.LastMsgTime = item.timeSend / 1000.0;
-                }
+                        // ä¿®å¤ï¼šç”¨æœ€è¿‘èŠå¤©æ—¶é—´å¡«å…… LastMsgTimeï¼ˆæ¯«ç§’è½¬ç§’ï¼‰ï¼Œä¿è¯æœ€è¿‘èŠå¤©æ’åºæ­£ç¡®
+                        if (item.timeSend > 0)
+                        {
+                            friend.LastMsgTime = item.timeSend / 1000.0;
+                        }
+
                 //int a = friend.UpdateFriendLastContent(lastContent, item.type, (int)item.timeSend);
 
                 //if (a == 0 && item.isRoom == 1)
                 //{
-                //    // ËµÃ÷±¾µØÃ»ÓĞÕâ¸öºÃÓÑ
+                //    // è¯´æ˜æœ¬åœ°æ²¡æœ‰è¿™ä¸ªå¥½å‹
                 //    HandlerNotRoomMethod(friend, false);
                 //}
                 fd_list.Add(friend);
@@ -2266,6 +2493,7 @@ namespace WinFrmTalk
             Thread thread = new Thread(() =>
             {
                 bool ret = new Friend().UpdateFriendLastContent(fd_list);
+                SyncUnreadAndRoam(list);
                 Messenger.Default.Send("1", MessageActions.DOWN_CHATLIST_COMPT);
             });
             thread.IsBackground = true;
@@ -2274,9 +2502,14 @@ namespace WinFrmTalk
 
         private void HandlerNotRoomMethod(Friend notFriend, bool refresh)
         {
-            Console.WriteLine("³öÏÖÁËÒ»¸ö±¾µØÃ»ÓĞ´ËÈº×éµÄÏûÏ¢£º" + notFriend.UserId);
+            // 2026-09-01 å¤šè®¾å¤‡ä¿®å¤: null ä¿æŠ¤, é¿å…ç©ºå¼•ç”¨å¼‚å¸¸
+            if (notFriend == null)
+            {
+                return;
+            }
+            Console.WriteLine("å‡ºç°äº†ä¸€ä¸ªæœ¬åœ°æ²¡æœ‰æ­¤ç¾¤ç»„çš„æ¶ˆæ¯ï¼š" + notFriend.UserId);
 
-            HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/getRoomByJid") //»ñÈ¡ÈºÏêÇé
+            HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/getRoomByJid") //è·å–ç¾¤è¯¦æƒ…
                     .AddParams("access_token", Applicate.Access_Token)
                     .AddParams("roomJid", notFriend.UserId)
                     .NoErrorTip()
@@ -2285,18 +2518,18 @@ namespace WinFrmTalk
                         if (success)
                         {
                             Friend friend = DecodeFriend(result);
-                            // ÎÒÔÚ´ËÈºµÄ×´Ì¬
+                            // æˆ‘åœ¨æ­¤ç¾¤çš„çŠ¶æ€
                             string roomByme = UIUtils.DecodeString(result, "member"); ;
                             if (UIUtils.IsNull(roomByme))
                             {
-                                // ±»Ìß³öÈº×é
+                                // è¢«è¸¢å‡ºç¾¤ç»„
                                 if (friend != null)
                                 {
-                                    // xmppÍË³öÈº×é
+                                    // xmppé€€å‡ºç¾¤ç»„
                                     ExitRoom(friend.UserId);
-                                    // ´ÓÅóÓÑ±íÖĞÉ¾³ı
+                                    // ä»æœ‹å‹è¡¨ä¸­åˆ é™¤
                                     friend.DeleteByUserId();
-                                    // Í¨Öª½çÃæ¸üĞÂ
+                                    // é€šçŸ¥ç•Œé¢æ›´æ–°
                                     MessageObject msg = new MessageObject()
                                     { type = kWCMessageType.RoomExit, FromId = friend.UserId, ToId = Applicate.MyAccount.userId };
                                     Messenger.Default.Send(msg, MessageActions.XMPP_UPDATE_ROOM_DELETE);
@@ -2319,10 +2552,10 @@ namespace WinFrmTalk
 
         public void SyscMultiDeviceData()
         {
-            // »ñÈ¡×îºóÀëÏßÊ±¼ä
+            // è·å–æœ€åç¦»çº¿æ—¶é—´
             string quitTime = Applicate.MyAccount.OfflineTime.ToString();
 
-            // ±¾µØ×îºóµÄÀëÏßÊ±¼ä ĞŞ¸Ä¶àµãµÇÂ¼±»ÑûÇëÉÏÏßºóÈº×é¶ªÊ§ÎÊÌâ
+            // æœ¬åœ°æœ€åçš„ç¦»çº¿æ—¶é—´ ä¿®æ”¹å¤šç‚¹ç™»å½•è¢«é‚€è¯·ä¸Šçº¿åç¾¤ç»„ä¸¢å¤±é—®é¢˜
             string localTime = LocalDataUtils.GetStringData(Applicate.QUIT_TIME);
             if (!UIUtils.IsNull(localTime))
             {
@@ -2333,7 +2566,7 @@ namespace WinFrmTalk
                 }
             }
 
-            // ĞŞ¸ÄìøµÀbug9856
+            // ä¿®æ”¹ç¦…é“bug9856
             //if (string.Equals(quitTime, Applicate.DEF_START_TIME.ToString()))
             //{
             //    return;
@@ -2367,7 +2600,7 @@ namespace WinFrmTalk
                  });
         }
 
-        // ¸üĞÂ×Ô¼ºÔÚÈº×éµÄÃÜÔ¿
+        // æ›´æ–°è‡ªå·±åœ¨ç¾¤ç»„çš„å¯†é’¥
         private void HandleGroupChatkeyUpdate(string roomId, string enchatkey)
         {
             HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/updateGroupChatKey")
@@ -2381,17 +2614,17 @@ namespace WinFrmTalk
         }
 
 
-        //¸üĞÂºÃÓÑµÄĞÅÏ¢
+        //æ›´æ–°å¥½å‹çš„ä¿¡æ¯
         public void HandleFriendUpdate(string userId)
         {
             if (userId.Equals(Applicate.MyAccount.userId))
             {
-                // ¸üĞÂ×Ô¼ºµÄÊı¾İ
+                // æ›´æ–°è‡ªå·±çš„æ•°æ®
                 //handleSelfUpdate();
                 return;
             }
 
-            Console.WriteLine("¶àµãµÇÂ¼Í¬²½--->¸üĞÂºÃÓÑµÄĞÅÏ¢" + userId);
+            Console.WriteLine("å¤šç‚¹ç™»å½•åŒæ­¥--->æ›´æ–°å¥½å‹çš„ä¿¡æ¯" + userId);
 
             HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "user/get")
                    .AddParams("access_token", Applicate.Access_Token)
@@ -2400,12 +2633,12 @@ namespace WinFrmTalk
                    {
                        if (suus)
                        {
-                           Friend jsonFriend = JsonConvert.DeserializeObject<Friend>(JsonConvert.SerializeObject(data)); //Ê¹ÓÃFriend½âÎö³öÀ´
+                           Friend jsonFriend = JsonConvert.DeserializeObject<Friend>(JsonConvert.SerializeObject(data)); //ä½¿ç”¨Friendè§£æå‡ºæ¥
 
-                           //·şÎñÆ÷´æÔÚ¹ØÏµ ĞÂÔö±¾µØÊı¾İ
+                           //æœåŠ¡å™¨å­˜åœ¨å…³ç³» æ–°å¢æœ¬åœ°æ•°æ®
                            if (data.ContainsKey("friends"))
                            {
-                               // ½âÎö·şÎñÆ÷Êı¾İ
+                               // è§£ææœåŠ¡å™¨æ•°æ®
                                AttentionFriend attention = JsonConvert.DeserializeObject<AttentionFriend>(data["friends"].ToString());
                                jsonFriend.Status = attention.ToFriendStatus();
                                jsonFriend.RemarkName = attention.remarkName;
@@ -2413,18 +2646,18 @@ namespace WinFrmTalk
                                jsonFriend.RsaPublicKey = attention.rsaMsgPublicKey;
                                jsonFriend.IsEncrypt = attention.encryptType;
 
-                               // »ñÈ¡±¾µØÊı¾İ
+                               // è·å–æœ¬åœ°æ•°æ®
                                Friend local = new Friend() { UserId = userId }.GetFdByUserId();
-                               // ±¾µØ²»´æÔÚ£¬ ĞÂÔö
+                               // æœ¬åœ°ä¸å­˜åœ¨ï¼Œ æ–°å¢
                                if (local == null || UIUtils.IsNull(local.NickName))
                                {
-                                   // ±¾µØ²»´æÔÚĞÂÔö
+                                   // æœ¬åœ°ä¸å­˜åœ¨æ–°å¢
                                    string name = UIUtils.IsNull(attention.remarkName) ? attention.toNickname : attention.remarkName;
                                    //jsonFriend.fristAscII = PinYinUtils.GetFristASCIICode(name);
                                    jsonFriend.TopTime = attention.openTopChatTime;
                                    jsonFriend.InsertAuto();
 
-                                   //Ìí¼ÓÖÁºÃÓÑÁĞ±í
+                                   //æ·»åŠ è‡³å¥½å‹åˆ—è¡¨
                                    if (jsonFriend.Status == Friend.STATUS_FRIEND || jsonFriend.Status == 4)
                                    {
                                        Messenger.Default.Send(jsonFriend.UserId, FriendListLayout.ADD_EXISTS_FRIEND);
@@ -2440,7 +2673,7 @@ namespace WinFrmTalk
 
                                    if (!string.Equals(local.RemarkName, jsonFriend.RemarkName))
                                    {
-                                       // ÆäËûÉè±¸¸üĞÂÁËºÃÓÑ±¸×¢
+                                       // å…¶ä»–è®¾å¤‡æ›´æ–°äº†å¥½å‹å¤‡æ³¨
                                        local.RemarkName = jsonFriend.RemarkName;
                                        local.UpdateRemarkName();
                                        Messenger.Default.Send(local, MessageActions.UPDATE_FRIEND_REMARKS);
@@ -2448,10 +2681,10 @@ namespace WinFrmTalk
 
 
                                    local.UpdateFriendState(jsonFriend.Status);
-                                   // ±¾µØ´æÔÚ£¬¸üĞÂ×´Ì¬
-                                   if (jsonFriend.Status == Friend.STATUS_FRIEND || jsonFriend.Status == 4)//ÊÇºÃÓÑ¹ØÏµ
+                                   // æœ¬åœ°å­˜åœ¨ï¼Œæ›´æ–°çŠ¶æ€
+                                   if (jsonFriend.Status == Friend.STATUS_FRIEND || jsonFriend.Status == 4)//æ˜¯å¥½å‹å…³ç³»
                                    {
-                                       // ĞŞ¸Ä ¹«ÖÚÖÃ¶¥ºó³öÏÖÔÚºÃÓÑÁĞ±í2020Äê2ÔÂ28ÈÕ12:14:53
+                                       // ä¿®æ”¹ å…¬ä¼—ç½®é¡¶åå‡ºç°åœ¨å¥½å‹åˆ—è¡¨2020å¹´2æœˆ28æ—¥12:14:53
                                        if (jsonFriend.UserType < 2)
                                        {
                                            Messenger.Default.Send(local.UserId, FriendListLayout.ADD_EXISTS_FRIEND);
@@ -2459,23 +2692,23 @@ namespace WinFrmTalk
 
                                    }
 
-                                   if (jsonFriend.Status == Friend.STATUS_UNKNOW)//·ÇºÃÓÑ¹ØÏµ
+                                   if (jsonFriend.Status == Friend.STATUS_UNKNOW)//éå¥½å‹å…³ç³»
                                    {
                                        Messenger.Default.Send(local, MessageActions.DELETE_FRIEND);
                                    }
 
-                                   if (jsonFriend.Status == Friend.STATUS_18 || jsonFriend.Status == Friend.STATUS_23)//ºÚÃûµ¥¹ØÏµ
+                                   if (jsonFriend.Status == Friend.STATUS_18 || jsonFriend.Status == Friend.STATUS_23)//é»‘åå•å…³ç³»
                                    {
                                        Messenger.Default.Send(local, MessageActions.DELETE_FRIEND);
                                    }
 
 
-                                   if (jsonFriend.Status == Friend.STATUS_UNKNOW || jsonFriend.Status == Friend.STATUS_UNKNOW)//ÊÇºÃÓÑ¹ØÏµ
+                                   if (jsonFriend.Status == Friend.STATUS_UNKNOW || jsonFriend.Status == Friend.STATUS_UNKNOW)//æ˜¯å¥½å‹å…³ç³»
                                    {
                                        Messenger.Default.Send(local, MessageActions.ADD_BLACKLIST);
                                    }
 
-                                   // Ë¢ĞÂ¹«Ë½Ô¿×´Ì¬
+                                   // åˆ·æ–°å…¬ç§é’¥çŠ¶æ€
                                    if (!string.Equals(local.RsaPublicKey, jsonFriend.RsaPublicKey))
                                    {
                                        local.UpdateRsaPublicKey(jsonFriend.RsaPublicKey);
@@ -2487,42 +2720,42 @@ namespace WinFrmTalk
                                    }
 
 
-                                   // ¸üĞÂÏûÏ¢±£´æÌìÊı
+                                   // æ›´æ–°æ¶ˆæ¯ä¿å­˜å¤©æ•°
                                    LocalDataUtils.SetStringData(local.UserId + "chatRecordTimeOut" + Applicate.MyAccount.userId, attention.chatRecordTimeOut.ToString());
 
-                                   // Ë¢ĞÂÔÄºó¼´·Ù×´Ì¬
+                                   // åˆ·æ–°é˜…åå³ç„šçŠ¶æ€
                                    if (local.IsOpenReadDel != attention.isOpenSnapchat)
                                    {
                                        local.IsOpenReadDel = attention.isOpenSnapchat;
                                        local.UpdateReadDel();
-                                       Messenger.Default.Send(local, MessageActions.UPDATE_FRIEND_READDEL);//Ë¢ĞÂÁĞ±í
+                                       Messenger.Default.Send(local, MessageActions.UPDATE_FRIEND_READDEL);//åˆ·æ–°åˆ—è¡¨
                                    }
 
-                                   // Ë¢ĞÂÃâ´òÈÅ×´Ì¬
+                                   // åˆ·æ–°å…æ‰“æ‰°çŠ¶æ€
                                    if (attention.offlineNoPushMsg != local.Nodisturb)
                                    {
                                        local.Nodisturb = attention.offlineNoPushMsg;
                                        local.UpdateNodisturb();
-                                       Messenger.Default.Send(local, MessageActions.UPDATE_FRIEND_DISTURB);//Ë¢ĞÂÁĞ±í
+                                       Messenger.Default.Send(local, MessageActions.UPDATE_FRIEND_DISTURB);//åˆ·æ–°åˆ—è¡¨
                                    }
 
 
-                                   // Ë¢ĞÂÖÃ¶¥×´Ì¬
+                                   // åˆ·æ–°ç½®é¡¶çŠ¶æ€
                                    if (attention.openTopChatTime > 0 && local.TopTime > 0)
                                    {
-                                       // ±¾µØºÍ·şÎñÆ÷×´Ì¬Ò»ÖÂ ²»ÒªË¢ĞÂ
+                                       // æœ¬åœ°å’ŒæœåŠ¡å™¨çŠ¶æ€ä¸€è‡´ ä¸è¦åˆ·æ–°
                                        return;
                                    }
 
                                    if (attention.openTopChatTime == 0 && local.TopTime == 0)
                                    {
-                                       // ±¾µØºÍ·şÎñÆ÷×´Ì¬Ò»ÖÂ ²»ÒªË¢ĞÂ
+                                       // æœ¬åœ°å’ŒæœåŠ¡å™¨çŠ¶æ€ä¸€è‡´ ä¸è¦åˆ·æ–°
                                        return;
                                    }
 
 
-                                   Console.WriteLine("¸üĞÂÖÃ¶¥×´Ì¬ " + attention.openTopChatTime);
-                                   // ¸üĞÂÖÃ¶¥×´Ì¬
+                                   Console.WriteLine("æ›´æ–°ç½®é¡¶çŠ¶æ€ " + attention.openTopChatTime);
+                                   // æ›´æ–°ç½®é¡¶çŠ¶æ€
                                    local.TopTime = attention.openTopChatTime;
                                    local.UpdateTopTime(local.TopTime);
                                    Messenger.Default.Send(local, MessageActions.UPDATE_FRIEND_TOP);
@@ -2530,14 +2763,14 @@ namespace WinFrmTalk
                            }
                            else
                            {
-                               // ·şÎñÆ÷²»´æÔÚ¹ØÏµ É¾³ı±¾µØÊı¾İ
+                               // æœåŠ¡å™¨ä¸å­˜åœ¨å…³ç³» åˆ é™¤æœ¬åœ°æ•°æ®
                                Friend local = new Friend() { UserId = userId }.GetFdByUserId();
                                if (local != null)
                                {
                                    if (local.Status == 2)
                                    {
                                        local.UpdateFriendState(Friend.STATUS_UNKNOW);
-                                       // Í¨Öª½çÃæË¢ĞÂ
+                                       // é€šçŸ¥ç•Œé¢åˆ·æ–°
                                        Messenger.Default.Send(local, MessageActions.DELETE_FRIEND);
                                    }
                                    else
@@ -2551,12 +2784,12 @@ namespace WinFrmTalk
 
         }
 
-        //¸üĞÂÈº×éµÄĞÅÏ¢
+        //æ›´æ–°ç¾¤ç»„çš„ä¿¡æ¯
         public void HandleGroupUpdate(string roomId)
         {
-            Console.WriteLine("¶àµãµÇÂ¼Í¬²½--->¸üĞÂÈº×éµÄĞÅÏ¢");
+            Console.WriteLine("å¤šç‚¹ç™»å½•åŒæ­¥--->æ›´æ–°ç¾¤ç»„çš„ä¿¡æ¯");
 
-            HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/getRoom") //»ñÈ¡ÈºÏêÇé
+            HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "room/getRoom") //è·å–ç¾¤è¯¦æƒ…
                     .AddParams("access_token", Applicate.Access_Token)
                     .AddParams("roomId", roomId)
                     .NoErrorTip()
@@ -2565,18 +2798,18 @@ namespace WinFrmTalk
                         if (success)
                         {
                             Friend friend = DecodeFriend(result);
-                            // ÎÒÔÚ´ËÈºµÄ×´Ì¬
+                            // æˆ‘åœ¨æ­¤ç¾¤çš„çŠ¶æ€
                             string roomByme = UIUtils.DecodeString(result, "member"); ;
                             if (UIUtils.IsNull(roomByme))
                             {
-                                // ±»Ìß³öÈº×é
+                                // è¢«è¸¢å‡ºç¾¤ç»„
                                 if (friend != null)
                                 {
-                                    // xmppÍË³öÈº×é
+                                    // xmppé€€å‡ºç¾¤ç»„
                                     ExitRoom(friend.UserId);
-                                    // ´ÓÅóÓÑ±íÖĞÉ¾³ı
+                                    // ä»æœ‹å‹è¡¨ä¸­åˆ é™¤
                                     friend.DeleteByUserId();
-                                    // Í¨Öª½çÃæ¸üĞÂ
+                                    // é€šçŸ¥ç•Œé¢æ›´æ–°
                                     MessageObject msg = new MessageObject()
                                     { type = kWCMessageType.RoomExit, FromId = friend.UserId, ToId = Applicate.MyAccount.userId };
                                     Messenger.Default.Send(msg, MessageActions.XMPP_UPDATE_ROOM_DELETE);
@@ -2585,58 +2818,58 @@ namespace WinFrmTalk
                             else
                             {
                                 if (friend.ExistsFriend())
-                                {   // ¸üĞÂ
-                                    // »ñÈ¡±¾µØ×´Ì¬
+                                {   // æ›´æ–°
+                                    // è·å–æœ¬åœ°çŠ¶æ€
                                     Friend local = friend.GetFdByUserId();
                                     Member member = JsonConvert.DeserializeObject<Member>(roomByme);
 
-                                    // ¸üĞÂÃÜÔ¿
+                                    // æ›´æ–°å¯†é’¥
                                     if (!UIUtils.IsNull(member.chatKeyGroup))
                                     {
-                                        // ½âÃÜ³ö ÃÜÔ¿G
+                                        // è§£å¯†å‡º å¯†é’¥G
                                         string key = RSA.DecryptFromBase64Pk1(member.chatKeyGroup, Applicate.MyAccount.rsaPrivateKey);
-                                        // ¼ÓÃÜ³É chatkeygroup
+                                        // åŠ å¯†æˆ chatkeygroup
                                         string chatKey = SecureChatUtil.EncryptChatKey(friend.UserId, key, Applicate.API_KEY);
                                         friend.UpdateChatKeyGroup(chatKey);
                                     }
 
-                                    // ¸üĞÂÏûÏ¢Ãâ´òÈÅ
+                                    // æ›´æ–°æ¶ˆæ¯å…æ‰“æ‰°
                                     if (local.Nodisturb != member.offlineNoPushMsg)
                                     {
                                         local.Nodisturb = member.offlineNoPushMsg;
                                         local.UpdateNodisturb();
-                                        Messenger.Default.Send(local, MessageActions.UPDATE_FRIEND_DISTURB);//Ë¢ĞÂÁĞ±í
+                                        Messenger.Default.Send(local, MessageActions.UPDATE_FRIEND_DISTURB);//åˆ·æ–°åˆ—è¡¨
                                     }
 
-                                    // ¸üĞÂÖÃ¶¥×´Ì¬
+                                    // æ›´æ–°ç½®é¡¶çŠ¶æ€
                                     if (member.openTopChatTime > 0 && local.TopTime > 0)
                                     {
-                                        // ±¾µØºÍ·şÎñÆ÷×´Ì¬Ò»ÖÂ ²»ÒªË¢ĞÂ
+                                        // æœ¬åœ°å’ŒæœåŠ¡å™¨çŠ¶æ€ä¸€è‡´ ä¸è¦åˆ·æ–°
                                         return;
                                     }
 
                                     if (member.openTopChatTime == 0 && local.TopTime == 0)
                                     {
-                                        // ±¾µØºÍ·şÎñÆ÷×´Ì¬Ò»ÖÂ ²»ÒªË¢ĞÂ
+                                        // æœ¬åœ°å’ŒæœåŠ¡å™¨çŠ¶æ€ä¸€è‡´ ä¸è¦åˆ·æ–°
                                         return;
                                     }
 
-                                    // ¸üĞÂÖÃ¶¥×´Ì¬
+                                    // æ›´æ–°ç½®é¡¶çŠ¶æ€
                                     local.TopTime = member.openTopChatTime;
                                     local.UpdateTopTime(local.TopTime);
                                     Messenger.Default.Send(local, MessageActions.UPDATE_FRIEND_TOP);
                                 }
                                 else
                                 {
-                                    // ´´½¨
+                                    // åˆ›å»º
                                     Member member = JsonConvert.DeserializeObject<Member>(roomByme);
 
-                                    // ¸üĞÂÃÜÔ¿
+                                    // æ›´æ–°å¯†é’¥
                                     if (!UIUtils.IsNull(member.chatKeyGroup))
                                     {
-                                        // ½âÃÜ³ö ÃÜÔ¿G
+                                        // è§£å¯†å‡º å¯†é’¥G
                                         string key = RSA.DecryptFromBase64Pk1(member.chatKeyGroup, Applicate.MyAccount.rsaPrivateKey);
-                                        // ¼ÓÃÜ³É chatkeygroup
+                                        // åŠ å¯†æˆ chatkeygroup
                                         string chatKey = SecureChatUtil.EncryptChatKey(friend.UserId, key, Applicate.API_KEY);
                                         friend.ChatKeyGroup = chatKey;
                                         friend.IsSecretGroup = 1;
@@ -2646,21 +2879,21 @@ namespace WinFrmTalk
                                     friend.InsertAuto();
                                     long seconds = TimeUtils.CurrentTime() - friend.CreateTime;
                                     JoinRoom(friend.UserId, seconds);
-                                    Messenger.Default.Send(friend, MessageActions.ROOM_UPDATE_INVITE);//Ë¢ĞÂÁĞ±í
+                                    Messenger.Default.Send(friend, MessageActions.ROOM_UPDATE_INVITE);//åˆ·æ–°åˆ—è¡¨
                                 }
                             }
                         }
                         else
                         {
-                            // ¸ÃÈº×é±»½âÉ¢ÁË
+                            // è¯¥ç¾¤ç»„è¢«è§£æ•£äº†
                             Friend friend = new Friend().GetFriendByRoomId(roomId);
                             if (friend != null)
                             {
-                                // xmppÍË³öÈº×é
+                                // xmppé€€å‡ºç¾¤ç»„
                                 ExitRoom(friend.UserId);
-                                // ´ÓÅóÓÑ±íÖĞÉ¾³ı
+                                // ä»æœ‹å‹è¡¨ä¸­åˆ é™¤
                                 friend.DeleteByUserId();
-                                // Í¨Öª½çÃæ¸üĞÂ
+                                // é€šçŸ¥ç•Œé¢æ›´æ–°
                                 MessageObject msg = new MessageObject() { FromId = friend.UserId, ToId = mLoginUserId, type = kWCMessageType.RoomExit };
                                 Messenger.Default.Send(msg, MessageActions.XMPP_UPDATE_ROOM_DELETE);
                             }
@@ -2670,7 +2903,7 @@ namespace WinFrmTalk
 
 
         /// <summary>
-        /// Èº×éĞÅÏ¢½Ó¿ÚÊı¾İ ×ª³É friend 
+        /// ç¾¤ç»„ä¿¡æ¯æ¥å£æ•°æ® è½¬æˆ friend 
         /// </summary>
         /// <param name="result"></param>
         private Friend DecodeFriend(Dictionary<string, object> keyValues)
@@ -2678,24 +2911,24 @@ namespace WinFrmTalk
 
             Friend firend = new Friend();
 
-            //ÊÇ·ñÏÔÊ¾ÈºÒÑ¶Á
+            //æ˜¯å¦æ˜¾ç¤ºç¾¤å·²è¯»
             firend.ShowRead = UIUtils.DecodeInt(keyValues, "showRead");
-            // ÏÔÊ¾Èº³ÉÔ±
+            // æ˜¾ç¤ºç¾¤æˆå‘˜
             firend.ShowMember = UIUtils.DecodeInt(keyValues, "showMember");
-            // ÔÊĞíÆÕÍ¨Èº³ÉÔ±Ë½ÁÄ
+            // å…è®¸æ™®é€šç¾¤æˆå‘˜ç§èŠ
             firend.AllowSendCard = UIUtils.DecodeInt(keyValues, "allowSendCard");
-            //ÔÊĞíÆÕÍ¨Èº³ÉÔ±ÑûÇëºÃÓÑ
+            //å…è®¸æ™®é€šç¾¤æˆå‘˜é‚€è¯·å¥½å‹
             firend.AllowInviteFriend = UIUtils.DecodeInt(keyValues, "allowInviteFriend");
-            //ÔÊĞíÆÕÍ¨Èº³ÉÔ±ÉÏ´«ÎÄ¼ş
+            //å…è®¸æ™®é€šç¾¤æˆå‘˜ä¸Šä¼ æ–‡ä»¶
             firend.AllowUploadFile = UIUtils.DecodeInt(keyValues, "allowUploadFile");
-            //ÔÊĞíÆÕÍ¨Èº³ÉÔ±ÕÙ¿ª»áÒé
+            //å…è®¸æ™®é€šç¾¤æˆå‘˜å¬å¼€ä¼šè®®
             firend.AllowConference = UIUtils.DecodeInt(keyValues, "allowConference");
-            //ÔÊĞíÆÕÍ¨Èº³ÉÔ±·¢Æğ½²¿Î
+            //å…è®¸æ™®é€šç¾¤æˆå‘˜å‘èµ·è®²è¯¾
             firend.AllowSpeakCourse = UIUtils.DecodeInt(keyValues, "allowSpeakCourse");
-            //ÊÇ·ñ¿ªÆôÈºÖ÷ÑéÖ¤
+            //æ˜¯å¦å¼€å¯ç¾¤ä¸»éªŒè¯
             firend.IsNeedVerify = UIUtils.DecodeInt(keyValues, "isNeedVerify");
 
-            //"name": "·É·É",
+            //"name": "é£é£",
             //"desc": "1",
             //"subject": "",
 
@@ -2715,25 +2948,25 @@ namespace WinFrmTalk
             firend.CreateTime = UIUtils.DecodeInt(keyValues, "createTime");
             firend.IsGroup = 1;
 
-            // »ñÈ¡½ûÑÔ×´Ì¬
+            // è·å–ç¦è¨€çŠ¶æ€
             long talkTime = UIUtils.DecodeLong(keyValues, "talkTime");
             firend.AllBannedTalk = talkTime > 0 ? 1 : 0;
 
-            // ÉèÖÃÈºÁÄÏûÏ¢¹ıÆÚÊ±¼ä
+            // è®¾ç½®ç¾¤èŠæ¶ˆæ¯è¿‡æœŸæ—¶é—´
             string outtime = UIUtils.DecodeString(keyValues, "chatRecordTimeOut");
             LocalDataUtils.SetStringData(firend.UserId + "chatRecordTimeOut" + Applicate.MyAccount.userId, outtime);
 
             return firend;
-            //"allowHostUpdate": 1,  // ÊÇ·ñÔÊĞíÈºÖ÷ĞŞ¸ÄÈºÊôĞÔ
-            //"chatRecordTimeOut":      ÏûÏ¢±£´æÌìÊı
-            //"createTime": 1554106810, ´´½¨Ê±¼ä
-            //"isAttritionNotice": 1,Èº×é¼õÔ±Í¨Öª
-            //"isLook": 1, // ÊÇ·ñ¹«¿ªÈº×é
-            //"modifyTime": 1554116921, // ×îºóÒ»´Î·¢ÑÔÊ±¼ä
-            //"talkTime": 0, // ½ûÑÔÊ±¼ä
+            //"allowHostUpdate": 1,  // æ˜¯å¦å…è®¸ç¾¤ä¸»ä¿®æ”¹ç¾¤å±æ€§
+            //"chatRecordTimeOut":      æ¶ˆæ¯ä¿å­˜å¤©æ•°
+            //"createTime": 1554106810, åˆ›å»ºæ—¶é—´
+            //"isAttritionNotice": 1,ç¾¤ç»„å‡å‘˜é€šçŸ¥
+            //"isLook": 1, // æ˜¯å¦å…¬å¼€ç¾¤ç»„
+            //"modifyTime": 1554116921, // æœ€åä¸€æ¬¡å‘è¨€æ—¶é—´
+            //"talkTime": 0, // ç¦è¨€æ—¶é—´
 
-            //"videoMeetingNo": "355228" // Èº»áÒéµØÖ·
-            //"call": "305228",// Èº»áÒéµØÖ·
+            //"videoMeetingNo": "355228" // ç¾¤ä¼šè®®åœ°å€
+            //"call": "305228",// ç¾¤ä¼šè®®åœ°å€
 
             //"areaId": 440307,
             //"category": 0,
@@ -2743,16 +2976,17 @@ namespace WinFrmTalk
             //"latitude": 22.608988,
             //"longitude": 114.066209,
 
-            //"s": 1,// Èº×é×´Ì¬ -1 Ëø¶¨ 1 Õı³£
+            //"s": 1,// ç¾¤ç»„çŠ¶æ€ -1 é”å®š 1 æ­£å¸¸
         }
 
 
         /// <summary>
-        ///ÏÂÔØ×î½üÁÄÌìÁĞ±í£¬±ØĞëÒªÏÂÔØÍêËùÓĞºÃÓÑºó²ÅÄÜµ÷ÓÃ
+        ///ä¸‹è½½æœ€è¿‘èŠå¤©åˆ—è¡¨ï¼Œå¿…é¡»è¦ä¸‹è½½å®Œæ‰€æœ‰å¥½å‹åæ‰èƒ½è°ƒç”¨
         /// </summary>
         public void DownChatList()
         {
-            // »ñÈ¡×îºóÀëÏßÊ±¼ä
+            // è·å–æœ€åç¦»çº¿æ—¶é—´
+            // è·å–æœ€åç¦»çº¿æ—¶é—´
             string quitTime = LocalDataUtils.GetStringData(Applicate.QUIT_TIME);
             if (UIUtils.IsNull(quitTime))
             {
@@ -2760,7 +2994,7 @@ namespace WinFrmTalk
             }
             else
             {
-                // Æ«ÒÆÒ»µãÊ±¼ä²î£¬·ÀÖ¹Í¬Ò»ÃëµÄÊ±¼ä
+                // åç§»ä¸€ç‚¹æ—¶é—´å·®ï¼Œé˜²æ­¢åŒä¸€ç§’çš„æ—¶é—´
                 quitTime = (Convert.ToDouble(quitTime) * 1000 - 5000).ToString();
             }
 
@@ -2781,22 +3015,23 @@ namespace WinFrmTalk
                              long tiem = TimeUtils.CurrentTimeMillis();
 
                              UpdateChatListData(list);
+                SyncUnreadAndRoam(list);
                              Console.WriteLine("down chat list compte........");
 
-                             // ÅúÁ¿À­È¡ÈºÁÄÀëÏßÏûÏ¢
+                             // æ‰¹é‡æ‹‰å–ç¾¤èŠç¦»çº¿æ¶ˆæ¯
                              BatchJoinMucChat();
                          });
                      }
                      else
                      {
-                         // Í¨Öª×î½üÏûÏ¢ÁĞ±íË¢ĞÂ
+                         // é€šçŸ¥æœ€è¿‘æ¶ˆæ¯åˆ—è¡¨åˆ·æ–°
                          Messenger.Default.Send("0", MessageActions.DOWN_CHATLIST_COMPT);
                      }
                  });
         }
 
         /// <summary>
-        /// ÅúÁ¿À­È¡ÈºÁÄÀëÏßÏûÏ¢
+        /// æ‰¹é‡æ‹‰å–ç¾¤èŠç¦»çº¿æ¶ˆæ¯
         /// </summary>
         private void BatchJoinMucChat()
         {
@@ -2812,7 +3047,7 @@ namespace WinFrmTalk
             head.to = "service";
             head.messageId = Guid.NewGuid().ToString("N");
 
-            // »ñÈ¡Ê±¼ä×îºóÉÏÏßÊ±¼ä
+            // è·å–æ—¶é—´æœ€åä¸Šçº¿æ—¶é—´
             long tmp = 0;
             long lasttime = 0;
 
@@ -2826,7 +3061,7 @@ namespace WinFrmTalk
 
                 if (lasttime != 0)
                 {
-                    // Èç¹û±¾µØÏûÏ¢²»Îª¿Õ£¬ÔòÈ¡±¾µØ×îºóÒ»Ìõ£¬ÕâÑù»á±ÈÈ«¾ÖµÄ¸ü×¼È·
+                    // å¦‚æœæœ¬åœ°æ¶ˆæ¯ä¸ä¸ºç©ºï¼Œåˆ™å–æœ¬åœ°æœ€åä¸€æ¡ï¼Œè¿™æ ·ä¼šæ¯”å…¨å±€çš„æ›´å‡†ç¡®
                     tmp = lasttime - 30000;
                 }
                 else
@@ -2841,7 +3076,7 @@ namespace WinFrmTalk
             batch.messageHead = head;
             mSocketCore.SendMessage(batch, Command.COMMAND_BATCH_JOIN_GROUP_REQ);
 
-            Console.WriteLine("ÅúÁ¿À­È¡ÈºÁÄÀëÏßÏûÏ¢");
+            Console.WriteLine("æ‰¹é‡æ‹‰å–ç¾¤èŠç¦»çº¿æ¶ˆæ¯");
         }
 
 
@@ -2858,8 +3093,8 @@ namespace WinFrmTalk
 
         #endregion
 
-        #region ===================ChatMessage×ª»»³ÉMessageObject======================
-        // ChatMessage×ª»»³ÉMessageObject
+        #region ===================ChatMessageè½¬æ¢æˆMessageObject======================
+        // ChatMessageè½¬æ¢æˆMessageObject
         public MessageObject ToMessageObject(ChatMessage message)
         {
 
@@ -2870,7 +3105,7 @@ namespace WinFrmTalk
             chat.toUserName = message.toUserName;
             chat.timeSend = message.timeSend / 1000.0;
 
-            //touserid Îª¿Õ¾ÍÊÇ×Ô¼º
+            //touserid ä¸ºç©ºå°±æ˜¯è‡ªå·±
             if (UIUtils.IsNull(chat.toUserId) || "pc".Equals(chat.toUserId))
             {
                 chat.toUserId = Applicate.MyAccount.userId;
@@ -2893,7 +3128,7 @@ namespace WinFrmTalk
 
             chat.type = (kWCMessageType)message.type;
             chat.isEncrypt = message.encryptType;
-            // ¼æÈİÀÏ°æ±¾
+            // å…¼å®¹è€ç‰ˆæœ¬
             if (message.encryptType == 0 && message.isEncrypt)
             {
                 chat.isEncrypt = 1;
@@ -2911,7 +3146,7 @@ namespace WinFrmTalk
 
             MessageHead head = message.messageHead;
 
-            // ·ÇÈºÁÄÈ«²¿µ±³Éµ¥ÁÄ´¦Àí
+            // éç¾¤èŠå…¨éƒ¨å½“æˆå•èŠå¤„ç†
             if (head.chatType == 2)
             {
                 chat.isGroup = 1;
@@ -2934,7 +3169,7 @@ namespace WinFrmTalk
 
             chat.messageId = head.messageId;
 
-            // ÎÒµÄÉè±¸µÄÏûÏ¢
+            // æˆ‘çš„è®¾å¤‡çš„æ¶ˆæ¯
             if (message.fromUserId.Equals(message.toUserId) && message.fromUserId.Equals(mLoginUserId))
             {
                 string device = SplitDevice(head.from);
@@ -2947,7 +3182,7 @@ namespace WinFrmTalk
                     chat.fromUserId = chat.FromId;
                 }
 
-                // ĞŞ¸ÄìøµÀ#9482
+                // ä¿®æ”¹ç¦…é“#9482
                 if (!UIUtils.IsNull(toId) && !"pc".Equals(toId))
                 {
                     return null;
@@ -2976,8 +3211,8 @@ namespace WinFrmTalk
             return "";
         }
 
-        #region ===================MessageObject×ª»»³ÉChatMessage======================
-        // MessageObject×ª»»³ÉChatMessage
+        #region ===================MessageObjectè½¬æ¢æˆChatMessage======================
+        // MessageObjectè½¬æ¢æˆChatMessage
         private ChatMessage ToChatMessage(MessageObject message)
         {
 
@@ -3000,7 +3235,7 @@ namespace WinFrmTalk
             chat.type = Convert.ToInt32(message.type);
 
 
-            // ¼ÓÃÜ
+            // åŠ å¯†
             chat.encryptType = message.isEncrypt;
             chat.signature = message.signature;
             chat.isEncrypt = message.isEncrypt == 1;
@@ -3015,12 +3250,12 @@ namespace WinFrmTalk
 
             MessageHead head = new MessageHead();
             head.messageId = message.messageId;
-            head.chatType = message.isGroup + 1; // µ¥ÁÄ1£¬ ÈºÁÄ2
+            head.chatType = message.isGroup + 1; // å•èŠ1ï¼Œ ç¾¤èŠ2
             head.from = message.FromId + "/" + ShiKuManager.Resource;
 
             if (message.fromUserId.Equals(message.toUserId))
             {
-                // ·¢ËÍ¸øÎÒµÄÉè±¸µÄÏûÏ¢
+                // å‘é€ç»™æˆ‘çš„è®¾å¤‡çš„æ¶ˆæ¯
                 head.to = message.FromId + "/" + message.toUserName;
                 chat.toUserName = message.fromUserName;
             }

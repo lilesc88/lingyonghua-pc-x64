@@ -16,7 +16,7 @@ namespace WinFrmTalk
     {
         #region 固定配置变量
        
-       	public const string APP_CONFIG = "http://207.56.20.218:8094/config";
+       	public const string APP_CONFIG = "https://imlingyonghua.top/config";
 
         // 自动解析域名 : 测试环境false  正式环境true
         public const bool AutoResolveDomain = true;
@@ -231,7 +231,8 @@ namespace WinFrmTalk
         /// <param name="item"></param>
         public static void InitAccountData(UserInfo user, string phone, string pwd, bool formLogin)
         {
-            Applicate.Access_Token = user.access_token; //设置APIToken
+            Applicate.Access_Token = user.access_token;
+                try { WinFrmTalk.MsgChangeSync.Start(); } catch { } //设置APIToken
             Applicate.IsAccountVerified = true; //记录为已登录
             Applicate.HTTP_KEY = user.httpKey;
             Applicate.MyAccount = new DataOfUserDetial()
@@ -397,8 +398,10 @@ namespace WinFrmTalk
             }
 
             // 切换了服务器地址也要更新数据
-            string lasturl = "http://118.89.73.191:9094/config";
-            //string lasturl = LocalDataUtils.GetStringData("last_login_service");
+            // 2026-11-21：移除写死的旧服务器 http://118.89.73.191:9094/config（该机已下线）。
+            // 原写法导致 lasturl 恒为旧地址、与当前服务器永不相等 → 每次启动都清本地库。
+            // 改回按「上次登录的服务器地址」判断（该键由 FrmLogin.cs 登录成功时写入）。
+            string lasturl = LocalDataUtils.GetStringData("last_login_service");
             if (!string.Equals(lasturl, UIUtils.GetServer()))
    
             {

@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+ï»¿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -11,29 +11,29 @@ using System.Threading.Tasks;
 namespace WinFrmTalk
 {
     /// <summary>
-    /// ×¢²áĞÅÏ¢ÌîĞ´Ò³
+    /// æ³¨å†Œä¿¡æ¯å¡«å†™é¡µ
     /// </summary>
     public partial class FrmRegisterInfo : FrmBase
     {
-        // Í·ÏñµØÖ·
+        // å¤´åƒåœ°å€
         private string avatarPath;
 
-        //µÈ´ı·û
+        //ç­‰å¾…ç¬¦
         private LodingUtils loding;
 
-        // ÊÖ»úºÅÂë/ÓÃ»§Ãû
+        // æ‰‹æœºå·ç /ç”¨æˆ·å
         private string phone;
 
-        // ÃÜÂë
+        // å¯†ç 
         private string password;
 
-        // ÑûÇëÂë
+        // é‚€è¯·ç 
         private string inviteCode;
 
-        // ¶ÌĞÅÑéÖ¤Âë
+        // çŸ­ä¿¡éªŒè¯ç 
         private string randCode;
 
-        // ÇøºÅ
+        // åŒºå·
         private string areaCode;
 
         public Friend Registerfriend;
@@ -64,7 +64,7 @@ namespace WinFrmTalk
             InitializeComponent();
             
             LoadLanguageText();
-            //ÊÇ·ñ¿ªÆôÎ»ÖÃ·şÎñ
+            //æ˜¯å¦å¼€å¯ä½ç½®æœåŠ¡
             if (Applicate.URLDATA.data.isOpenPositionService == 1)
             {
                 lblAccountIM.Location = lblLivePlace.Location;
@@ -72,17 +72,17 @@ namespace WinFrmTalk
                 lblLivePlace.Visible = false;
                 txtRegion.Visible = false;
             }
-            //¼ÓÔØiconÍ¼±ê
-            this.Icon = (Icon)Properties.Resources.Icon.Clone();//¼ÓÔØiconÍ¼±ê£¨¶ÀÁ¢¸±±¾£¬±ÜÃâ¹²Ïí¾ä±ú±»ÊÍ·Åµ¼ÖÂÉÁÍË£©
+            //åŠ è½½iconå›¾æ ‡
+            this.Icon = (Icon)Properties.Resources.Icon.Clone();//åŠ è½½iconå›¾æ ‡ï¼ˆç‹¬ç«‹å‰¯æœ¬ï¼Œé¿å…å…±äº«å¥æŸ„è¢«é‡Šæ”¾å¯¼è‡´é—ªé€€ï¼‰
             this.FormClosing += new FormClosingEventHandler(this.FrmRegisterInfo_FormClosing);
            
 
-            //ÕËºÅ×¢²áÄ¬ÈÏÖµ
-            //txtSex.Text = "ÄĞ";
+            //è´¦å·æ³¨å†Œé»˜è®¤å€¼
+            //txtSex.Text = "ç”·";
             cmbSex.SelectedIndex = 0;
-            txtRegion.Text = "¹ã¶«Ê¡ÉîÛÚÊĞ";
+            txtRegion.Text = "å¹¿ä¸œçœæ·±åœ³å¸‚";
             txtRegion.Tag = "440000|440300";
-            // ×î´óÉúÈÕÑ¡Ôñ
+            // æœ€å¤§ç”Ÿæ—¥é€‰æ‹©
             dtpBirthday.MaxDate = DateTime.Now;
         }
 
@@ -91,7 +91,7 @@ namespace WinFrmTalk
 
             Task.Factory.StartNew(() =>
             {
-                ////¼ÓÔØÊ¡ÊĞ¼¶²Ëµ¥
+                ////åŠ è½½çœå¸‚çº§èœå•
                 Areas areas = new Areas();
                 areas.parent_id = 1;
                 areas.type = 2;
@@ -102,7 +102,7 @@ namespace WinFrmTalk
                     tool.Tag = a.id;
                     tool.Text = a.name;
                 
-                    //¼ÓÔØ×Ó¼¶²Ëµ¥
+                    //åŠ è½½å­çº§èœå•
                     Areas areas2 = new Areas();
                     areas2.parent_id = a.id;
                     areas2.type = 3;
@@ -127,7 +127,7 @@ namespace WinFrmTalk
 
         }
 
-        // ÉèÖÃ½çÃæĞŞ¸ÄĞÅÏ¢ĞèÒªÖØĞÂÇëÇóÊı¾İ
+        // è®¾ç½®ç•Œé¢ä¿®æ”¹ä¿¡æ¯éœ€è¦é‡æ–°è¯·æ±‚æ•°æ®
         public void LoadShow()
         {
             this.Show();
@@ -141,10 +141,10 @@ namespace WinFrmTalk
                     {
                         Friend friend = JsonConvert.DeserializeObject<Friend>(JsonConvert.SerializeObject(data));
                         Registerfriend = friend;
-                        ImageLoader.Instance.DisplayAvatar(Applicate.MyAccount.userId, picHead, false); //¼ÓÔØÍ·Ïñ
+                        ImageLoader.Instance.DisplayAvatar(Applicate.MyAccount.userId, picHead, false); //åŠ è½½å¤´åƒ
                         string Region = String.Empty;
                         txtNickname.Text = friend.NickName;
-                        //txtSex.Text = friend.Sex == 1 ? "ÄĞ" : "Å®";
+                        //txtSex.Text = friend.Sex == 1 ? "ç”·" : "å¥³";
                         cmbSex.SelectedIndex = friend.Sex == 1 ? 0 : 1;
 
                         if (friend.Birthday != 0)
@@ -165,36 +165,36 @@ namespace WinFrmTalk
                             txtAccount.Enabled = false;
                         }
 
-                        txtAccount.Text = UIUtils.DecodeString(data, "account"); //Í¨Ñ¶ºÅ
+                        txtAccount.Text = UIUtils.DecodeString(data, "account"); //é€šè®¯å·
                     }
                 });
         }
 
-        // ×¢²á½çÃæ´«µİ¹ıÀ´µÄÊı¾İ
+        // æ³¨å†Œç•Œé¢ä¼ é€’è¿‡æ¥çš„æ•°æ®
         public void InitData(string phone, string pwd, string areaCode, string rcode, string inviteCode)
         {
-            // ÊÖ»úºÅÂë/ÓÃ»§Ãû
+            // æ‰‹æœºå·ç /ç”¨æˆ·å
             this.phone = phone;
-            // ÃÜÂë
+            // å¯†ç 
             this.password = pwd;
-            // ÑûÇëÂë
+            // é‚€è¯·ç 
             this.inviteCode = inviteCode;
-            // ¶ÌĞÅÑéÖ¤Âë
+            // çŸ­ä¿¡éªŒè¯ç 
             this.randCode = rcode;
-            // ÇøºÅ
+            // åŒºå·
             this.areaCode = areaCode;
         }
 
         /// <summary>
-        /// ´ò¿ªÑ¡ÔñÍ·Ïñ
+        /// æ‰“å¼€é€‰æ‹©å¤´åƒ
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>        
         private void PicHead_Click(object sender, EventArgs e)
         {
             FileDialog fileDialog = new OpenFileDialog();
-            fileDialog.Filter = "ËùÓĞÍ¼ÏñÎÄ¼ş|*.bmp;*.pcx;*.png;*.jpg;*.gif;*.jpeg";
-            fileDialog.Title = "´ò¿ªÍ¼ÏñÎÄ¼ş";
+            fileDialog.Filter = "æ‰€æœ‰å›¾åƒæ–‡ä»¶|*.bmp;*.pcx;*.png;*.jpg;*.gif;*.jpeg";
+            fileDialog.Title = "æ‰“å¼€å›¾åƒæ–‡ä»¶";
 
             if (fileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -208,7 +208,7 @@ namespace WinFrmTalk
                     outUrl = UploadAvatarProcess(selectUrl);
                 }
 
-                // ¼ÓÔØÑ¡ÔñµÄÍ·Ïñ
+                // åŠ è½½é€‰æ‹©çš„å¤´åƒ
                 ImageLoader.Instance.Load(outUrl).Background().Avatar().Into(picHead);
                 this.avatarPath = outUrl;
             }
@@ -228,9 +228,9 @@ namespace WinFrmTalk
         }
 
 
-        #region ĞÔ±ğÊäÈë¿òµÄ´¦Àí
+        #region æ€§åˆ«è¾“å…¥æ¡†çš„å¤„ç†
         /// <summary>
-        /// µ¯³öĞÔ±ğÑ¡Ôñ¿ò
+        /// å¼¹å‡ºæ€§åˆ«é€‰æ‹©æ¡†
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -240,7 +240,7 @@ namespace WinFrmTalk
         }
 
         /// <summary>
-        /// ĞÔ±ğ½ûÖ¹ÊäÈë´¦Àí
+        /// æ€§åˆ«ç¦æ­¢è¾“å…¥å¤„ç†
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -250,18 +250,18 @@ namespace WinFrmTalk
         }
 
         /// <summary>
-        /// ¸³Öµ¸öÎÄ±¾¿ò
+        /// èµ‹å€¼ä¸ªæ–‡æœ¬æ¡†
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void Man_Click(object sender, EventArgs e)
         {
-            //txtSex.Text = "ÄĞ";
+            //txtSex.Text = "ç”·";
             //txtSex.Select(txtSex.Text.Length, 0);
         }
 
         /// <summary>
-        /// ¸³ÖµÎÄ±¾¿ò
+        /// èµ‹å€¼æ–‡æœ¬æ¡†
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -273,10 +273,10 @@ namespace WinFrmTalk
 
         #endregion
 
-        #region Î»ÖÃĞÅÏ¢µÄ´¦Àí
+        #region ä½ç½®ä¿¡æ¯çš„å¤„ç†
 
         /// <summary>
-        /// ´ò¿ª²Ëµ¥Î»ÖÃ
+        /// æ‰“å¼€èœå•ä½ç½®
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -285,7 +285,7 @@ namespace WinFrmTalk
             cmsRegion.Show(this, 0, 0);
         }
 
-        /// <summary>        /// ½ûÖ¹ÊäÈë
+        /// <summary>        /// ç¦æ­¢è¾“å…¥
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -296,7 +296,7 @@ namespace WinFrmTalk
 
 
         /// <summary>
-        /// µã»÷ÊĞ¼¶²Ëµ¥ÊÂ¼ş
+        /// ç‚¹å‡»å¸‚çº§èœå•äº‹ä»¶
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -310,59 +310,59 @@ namespace WinFrmTalk
         }
         #endregion
 
-        // ÏÔÊ¾¼ÓÔØ¿ò
+        // æ˜¾ç¤ºåŠ è½½æ¡†
         private void ShowLodingDialog(Control control)
         {
             loding = new LodingUtils();
             loding.parent = control;
-            loding.Title = "¼ÓÔØÖĞ";
+            loding.Title = "åŠ è½½ä¸­";
             loding.start();
         }
 
         /// <summary>
-        /// ×¢²áÓëĞŞ¸ÄºÃÓÑ×ÊÁÏ
+        /// æ³¨å†Œä¸ä¿®æ”¹å¥½å‹èµ„æ–™
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void BtnRegister_Click(object sender, EventArgs e)
         {
             string Nickname = txtNickname.Text.TrimStart().Trim();
-            //string Sex = txtSex.Text.Trim() == "ÄĞ" ? "1" : "0";
-            string Sex = cmbSex.SelectedItem.ToString() == "ÄĞ" ? "1" : "0";
+            //string Sex = txtSex.Text.Trim() == "ç”·" ? "1" : "0";
+            string Sex = cmbSex.SelectedItem.ToString() == "ç”·" ? "1" : "0";
             string Birthday = Helpers.DatetimeToStamp(dtpBirthday.Value).ToString();
             string Region = txtRegion.Tag.ToString();
 
             if (UIUtils.IsNull(Nickname))
             {
-                ShowTip("êÇ³Æ²»ÄÜÎª¿Õ");
+                ShowTip("æ˜µç§°ä¸èƒ½ä¸ºç©º");
                 return;
             }
 
             if (UIUtils.IsNull(Sex))
             {
-                ShowTip("ĞÔ±ğ²»ÄÜÎª¿Õ");
+                ShowTip("æ€§åˆ«ä¸èƒ½ä¸ºç©º");
                 return;
             }
 
             if (UIUtils.IsNull(Birthday))
             {
-                ShowTip("ÉúÈÕ²»ÄÜÎª¿Õ");
+                ShowTip("ç”Ÿæ—¥ä¸èƒ½ä¸ºç©º");
                 return;
             }
 
             if (UIUtils.IsNull(Region))
             {
-                ShowTip("¾Ó×¡µØ²»ÄÜÎª¿Õ");
+                ShowTip("å±…ä½åœ°ä¸èƒ½ä¸ºç©º");
                 return;
             }
 
             if (UIUtils.IsNull(avatarPath) && Registerfriend == null)
             {
-                ShowTip("Í·Ïñ²»ÄÜÎª¿Õ");
+                ShowTip("å¤´åƒä¸èƒ½ä¸ºç©º");
                 return;
             }
 
-            string CountryID = "1";//¹ú¼ÒID
+            string CountryID = "1";//å›½å®¶ID
             string ProvinceID = Region.Split('|')[0];
             string cityID = Region.Split('|')[1];
 
@@ -374,19 +374,19 @@ namespace WinFrmTalk
                 }
 
                 reigesting = true;
-                // È¥×¢²á
+                // å»æ³¨å†Œ
                 RequestHttpRegist(Nickname, Sex, Birthday, CountryID, ProvinceID, cityID);
             }
             else
             {
-                // È¥ĞŞ¸Ä×ÊÁÏ
+                // å»ä¿®æ”¹èµ„æ–™
                 RequestUpdateInfo(Nickname, Sex, Birthday, CountryID, ProvinceID, cityID);
             }
         }
 
         private bool reigesting = false;
 
-        #region ĞŞ¸ÄÓÃ»§×ÊÁÏ
+        #region ä¿®æ”¹ç”¨æˆ·èµ„æ–™
         private void RequestUpdateInfo(string nickname, string sex, string birthday, string countryID, string provinceID, string cityID)
         {
             ShowLodingDialog(this);
@@ -419,11 +419,11 @@ namespace WinFrmTalk
 
                                     ImageLoader.Instance.RefreshAvatar(Applicate.MyAccount.userId);
                                     loding.stop();
-                                    Applicate.GetWindow<FrmSet>().ShowTip("ĞŞ¸Ä³É¹¦");
+                                    Applicate.GetWindow<FrmSet>().ShowTip("ä¿®æ”¹æˆåŠŸ");
 
 
                                     HttpUtils.Instance.PopView(this);
-                                    Messenger.Default.Send(Applicate.MyAccount.userId, MessageActions.UPDATE_HEAD);//·¢ËÍË¢ĞÂÍ·ÏñÍ¨Öª
+                                    Messenger.Default.Send(Applicate.MyAccount.userId, MessageActions.UPDATE_HEAD);//å‘é€åˆ·æ–°å¤´åƒé€šçŸ¥
                                     LogUtils.Log(data.ToString());
 
                                     this.Close();
@@ -442,8 +442,8 @@ namespace WinFrmTalk
                                     //        picHead.BackgroundImage = Image.FromFile(path);
                                     //        picHead.BackgroundImageLayout = ImageLayout.Stretch;
                                     //        loding.stop();
-                                    //        Applicate.GetWindow<FrmSet>().ShowTip("ĞŞ¸Ä³É¹¦");
-                                    //        Messenger.Default.Send(Applicate.MyAccount.userId, MessageActions.UPDATE_HEAD);//·¢ËÍË¢ĞÂÍ·ÏñÍ¨Öª
+                                    //        Applicate.GetWindow<FrmSet>().ShowTip("ä¿®æ”¹æˆåŠŸ");
+                                    //        Messenger.Default.Send(Applicate.MyAccount.userId, MessageActions.UPDATE_HEAD);//å‘é€åˆ·æ–°å¤´åƒé€šçŸ¥
                                     //        LogUtils.Log(data.ToString());
 
                                     //        this.Close();
@@ -458,18 +458,18 @@ namespace WinFrmTalk
                     }
                     else
                     {
-                        //ĞŞ¸ÄnickName
+                        //ä¿®æ”¹nickName
                         Applicate.MyAccount.nickname = Convert.ToString(data["nickname"]);
 
                         this.Close();
-                        Applicate.GetWindow<FrmSet>().ShowTip("ĞŞ¸Ä³É¹¦");
+                        Applicate.GetWindow<FrmSet>().ShowTip("ä¿®æ”¹æˆåŠŸ");
                         LogUtils.Log(data.ToString());
                     }
                 }
                 else
                 {
                     this.Close();
-                    Applicate.GetWindow<FrmSet>().ShowTip("ĞŞ¸ÄÊ§°Ü");
+                    Applicate.GetWindow<FrmSet>().ShowTip("ä¿®æ”¹å¤±è´¥");
                 }
 
             });
@@ -477,7 +477,7 @@ namespace WinFrmTalk
 
         #endregion
 
-        #region ÇëÇó×¢²áÕËºÅ
+        #region è¯·æ±‚æ³¨å†Œè´¦å·
         private void RequestHttpRegist(string nickname, string sex, string birthday, string countryID, string provinceID, string cityID)
         {
             ShowLodingDialog(this);
@@ -508,7 +508,7 @@ namespace WinFrmTalk
 
             if (UIUtils.IsNull(randCode))
             {
-                // Ìø¹ıÑéÖ¤´«Èë0
+                // è·³è¿‡éªŒè¯ä¼ å…¥0
                 pairs.Add("isSmsRegister", "0");
             }
             else
@@ -534,13 +534,13 @@ namespace WinFrmTalk
             pairs.Add("cityId", cityID);
             //pairs.Add("areaId", String.valueOf(mTempData.getAreaId()));
 
-            // ¸½¼ÓĞÅÏ¢
+            // é™„åŠ ä¿¡æ¯
             //pairs.Add("apiVersion", DeviceInfoUtil.getVersionCode(mContext) + "");
             //pairs.Add("model", DeviceInfoUtil.getModel());
             //pairs.Add("osVersion", DeviceInfoUtil.getOsVersion());
             pairs.Add("serial", UIUtils.Getpcid());
 
-            // µØÖ·ĞÅÏ¢
+            // åœ°å€ä¿¡æ¯
             //double latitude = MyApplication.getInstance().getBdLocationHelper().getLatitude();
             //double longitude = MyApplication.getInstance().getBdLocationHelper().getLongitude();
             //String location = MyApplication.getInstance().getBdLocationHelper().getAddress();
@@ -552,13 +552,13 @@ namespace WinFrmTalk
             string salt = TimeUtils.CurrentTimeMillis().ToString();
             byte[] code = MD5.Encrypt(Applicate.API_KEY ?? "");
 
-            // ×éºÏÑé²Î
+            // ç»„åˆéªŒå‚
             string mac = MAC.EncodeBase64((Applicate.API_KEY + Parameter.JoinValues(pairs) + salt), code);
             pairs.Add("mac", mac);
             string content = JsonConvert.SerializeObject(pairs);
             string data1 = AES.EncryptBase64(content, code);
 
-            //×¢²á
+            //æ³¨å†Œ
             HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "user/register/v1")
                 .AddParams("data", data1)
                 .AddParams("salt", salt)
@@ -582,7 +582,7 @@ namespace WinFrmTalk
                         result.areaCode = this.areaCode;
 
                         Applicate.MyAccount = result;
-                        //¸³ÖµÈ«¾Ö±äÁ¿
+                        //èµ‹å€¼å…¨å±€å˜é‡
                         if (!UIUtils.IsNull(this.avatarPath))
                         {
                             UploadEngine.Instance.From(avatarPath).UploadAvatar(result.userId,
@@ -639,7 +639,7 @@ namespace WinFrmTalk
         private void txtNickname_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (txtNickname.Text.Length <= 0)
-            { //¿Õ¸ñ²»ÄÜÔÚµÚÒ»Î»
+            { //ç©ºæ ¼ä¸èƒ½åœ¨ç¬¬ä¸€ä½
                 if ((int)e.KeyChar == 32)
                 {
                     e.Handled = true;

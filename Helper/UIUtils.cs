@@ -415,6 +415,11 @@ public class UIUtils
         }
 
         string appconfig = ConfigurationManager.AppSettings["local_app_config_url"];
+        // 2026-11-19 迁移：旧的 207.56.20.218 / 154.221.0.14 已下线，自动纠正到现网域名
+        if (!string.IsNullOrEmpty(appconfig) && (appconfig.Contains("207.56.20.218") || appconfig.Contains("154.221.0.14")))
+        {
+            return Applicate.APP_CONFIG;
+        }
         if (!string.IsNullOrEmpty(appconfig))
         {
             return appconfig;

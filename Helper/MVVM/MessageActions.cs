@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using WinFrmTalk.Model;
 
 public class MessageActions
@@ -7,164 +7,164 @@ public class MessageActions
     public delegate void DelegateFriend(Friend msg);
     public delegate void DelegateString(string msg);
 
-    #region ÏûÏ¢×´Ì¬Ïà¹Ø
+    #region æ¶ˆæ¯çŠ¶æ€ç›¸å…³
     /// <summary>
-    /// ÒÑ¶ÁÏûÏ¢·¢ËÍ³É¹¦£¨ÒÑ¶Á·¢ËÍ·½£©¸üĞÂÊı¾İ¿âÔ­ÏûÏ¢ÒÑ¶Á±êÖ¾Î»£¬¸üĞÂÎ´¶ÁºìµãUI ²ÎÊı  messageObject
+    /// å·²è¯»æ¶ˆæ¯å‘é€æˆåŠŸï¼ˆå·²è¯»å‘é€æ–¹ï¼‰æ›´æ–°æ•°æ®åº“åŸæ¶ˆæ¯å·²è¯»æ ‡å¿—ä½ï¼Œæ›´æ–°æœªè¯»çº¢ç‚¹UI å‚æ•°  messageObject
     /// </summary>
     public const string XMPP_UPDATE_SEND_READ = "update_send_read";
 
     /// <summary>
-    /// ÊÕµ½¶Ô·½ÒÑ¶ÁÏûÏ¢ £¨ÒÑ¶Á½ÓÊÕ·½£©¸üĞÂUIÒÑ¶Á±êÖ¾  ²ÎÊı  messageObject
+    /// æ”¶åˆ°å¯¹æ–¹å·²è¯»æ¶ˆæ¯ ï¼ˆå·²è¯»æ¥æ”¶æ–¹ï¼‰æ›´æ–°UIå·²è¯»æ ‡å¿—  å‚æ•°  messageObject
     /// </summary>
     public const string XMPP_UPDATE_RECEIVED_READ = "update_received_read";
     /// <summary>
-    /// ¿ÚÁîºì°ü
+    /// å£ä»¤çº¢åŒ…
     /// </summary>
     public const string RED_UPDATE_COMMAND = "red_update_command";
     public const string RED_OPEN_COMMAND = "red_open_command";
     /// <summary>
-    /// ¸üĞÂUIÏûÏ¢·¢ËÍÊ§°Ü±êÖ¾ ÏûÏ¢ÒÑ·¢ËÍÊ§°Ü ²ÎÊı messageObject
+    /// æ›´æ–°UIæ¶ˆæ¯å‘é€å¤±è´¥æ ‡å¿— æ¶ˆæ¯å·²å‘é€å¤±è´¥ å‚æ•° messageObject
     /// </summary>
     public const string XMPP_UPDATE_SEND_FAILED = "update_message_failed";
 
     /// <summary>
-    /// ¸üĞÂUIËÍ´ï±êÖ¾ ÏûÏ¢ÒÑ·¢ËÍ³É¹¦ ²ÎÊı messageObject
+    /// æ›´æ–°UIé€è¾¾æ ‡å¿— æ¶ˆæ¯å·²å‘é€æˆåŠŸ å‚æ•° messageObject
     /// </summary>
     public const string XMPP_UPDATE_SEND_SUCCESS = "update_message_success";
     #endregion
 
-    #region ÏûÏ¢Ïà¹Ø
+    #region æ¶ˆæ¯ç›¸å…³
     /// <summary>
-    /// ¸üĞÂUI ÊÕµ½Ò»ÌõĞÂµÄÆÕÍ¨ÏûÏ¢ ²ÎÊı messageObject
+    /// æ›´æ–°UI æ”¶åˆ°ä¸€æ¡æ–°çš„æ™®é€šæ¶ˆæ¯ å‚æ•° messageObject
     /// </summary>
     public const string XMPP_UPDATE_NORMAL_MESSAGE = "update_normal_message";
 
     /// <summary>
-    /// ¸üĞÂUI ÊÕµ½Ò»ÌõÏûÏ¢³·»Ø messageObject
+    /// æ›´æ–°UI æ”¶åˆ°ä¸€æ¡æ¶ˆæ¯æ’¤å› messageObject
     /// </summary>
     public const string XMPP_UPDATE_RECALL_MESSAGE = "update_recall_message";
 
     /// <summary>
-    /// ¸üĞÂUI ÊÕµ½ÁËÒ»ÌõºÃÓÑÑéÖ¤ÏûÏ¢ messageObject
+    /// æ›´æ–°UI æ”¶åˆ°äº†ä¸€æ¡å¥½å‹éªŒè¯æ¶ˆæ¯ messageObject
     /// </summary>
     public const string XMPP_UPDATE_VERIFY_MESSAGE = "update_verify_message";
 
     /// <summary>
-    /// ¸üĞÂUI ÊÕµ½ÁËÒ»ÌõºÃÓÑÑéÖ¤»ØÖ´ messageObject
+    /// æ›´æ–°UI æ”¶åˆ°äº†ä¸€æ¡å¥½å‹éªŒè¯å›æ‰§ messageObject
     /// </summary>
     public const string XMPP_UPDATE_VERIFY_RECEPIT = nameof(XMPP_UPDATE_VERIFY_RECEPIT);
 
     /// <summary>
-    /// ¸üĞÂUI ÊÕµ½ÁËÒ»¸öÈº×é¿ØÖÆÏûÏ¢ messageObject
+    /// æ›´æ–°UI æ”¶åˆ°äº†ä¸€ä¸ªç¾¤ç»„æ§åˆ¶æ¶ˆæ¯ messageObject
     /// </summary>
     public const string XMPP_UPDATE_ROOM_CHANGE_MESSAGE = "update_room_message";
 
     /// <summary>
-    /// ¸üĞÂUI ÊÕµ½ÁËÒ»¸öÒôÊÓÆµĞ­ÒéÏûÏ¢ messageObject
+    /// æ›´æ–°UI æ”¶åˆ°äº†ä¸€ä¸ªéŸ³è§†é¢‘åè®®æ¶ˆæ¯ messageObject
     /// </summary>
     public const string XMPP_UPDATE_MEETING_MESSAGE = "update_meeting_message";
 
     /// <summary>
-    /// ¸üĞÂUI ÊÕµ½ÁËÒ»¸öÒôÊÓÆµĞ­ÒéÏûÏ¢»ØÖ´ messageObject
+    /// æ›´æ–°UI æ”¶åˆ°äº†ä¸€ä¸ªéŸ³è§†é¢‘åè®®æ¶ˆæ¯å›æ‰§ messageObject
     /// </summary>
     public const string XMPP_UPDATE_MEETING_RECEIPT = "update_meeting_receipt";
     /// <summary>
-    /// ¸üĞÂUI ÊÕµ½ÁËÒ»¸ö¿Í·şĞ­ÒéÏûÏ¢messageObject
+    /// æ›´æ–°UI æ”¶åˆ°äº†ä¸€ä¸ªå®¢æœåè®®æ¶ˆæ¯messageObject
     /// </summary>
     public const string XMPP_UPDATE_CUSTOMERSERVICE = "update_customerservice";
 
     /// <summary>
-    /// ¸üĞÂUI ÊÕµ½ÁËÒ»¸ö¿Í·şĞ­ÒéÏûÏ¢messageObject
+    /// æ›´æ–°UI æ”¶åˆ°äº†ä¸€ä¸ªå®¢æœåè®®æ¶ˆæ¯messageObject
     /// </summary>
     public const string XMPP_REFRESH_MESSAGE = "refresh_message_content";
 
     /// <summary>
-    /// ¸üĞÂUI Èº×éÃÜÔ¿¶ªÊ§×´Ì¬¸üĞÂ
+    /// æ›´æ–°UI ç¾¤ç»„å¯†é’¥ä¸¢å¤±çŠ¶æ€æ›´æ–°
     /// </summary>
     public const string UPDATE_CHATKEY_STATE = "refresh_chatkey_state";
 
     /// <summary>
-    /// ºóÌ¨Ëø¶¨Èº×é
+    /// åå°é”å®šç¾¤ç»„
     /// </summary>
     public const string UPDATE_SERVICE_LOCK = "refresh_service_lock";
 
 
     #endregion
 
-    #region Èº×éÏà¹Ø
+    #region ç¾¤ç»„ç›¸å…³
     /// <summary>
-    /// ¸üĞÂUI ÎÒÍË³öÁËÄ³Ò»¸öÈº×é(Ö÷¶¯Àë¿ª)messageObject
+    /// æ›´æ–°UI æˆ‘é€€å‡ºäº†æŸä¸€ä¸ªç¾¤ç»„(ä¸»åŠ¨ç¦»å¼€)messageObject
     /// </summary>
     public const string XMPP_UPDATE_ROOM_DELETE = "update_room_del";
 
 
     /// <summary>
-    /// ¸üĞÂUI Xmpp×´Ì¬±ä¸ü ²ÎÊıstate£¨xmppÁ¬½Ó£¬¶Ï¿ª£¬±»¼·ÏÂÏßµÈ£©
+    /// æ›´æ–°UI XmppçŠ¶æ€å˜æ›´ å‚æ•°stateï¼ˆxmppè¿æ¥ï¼Œæ–­å¼€ï¼Œè¢«æŒ¤ä¸‹çº¿ç­‰ï¼‰
     /// </summary>
     public const string XMPP_UPDATE_STATE = "update_xmpp_state";
 
     /// <summary>
-    /// ¸üĞÂUI ÎÒÍË³öÁËÄ³Ò»¸öÈº×é(Ö÷¶¯Àë¿ª)messageObject
+    /// æ›´æ–°UI æˆ‘é€€å‡ºäº†æŸä¸€ä¸ªç¾¤ç»„(ä¸»åŠ¨ç¦»å¼€)messageObject
     /// </summary>
     public const string Room_UPDATE_ROOM_DELETE = "liuhuan_del_room_";
 
     /// <summary>
-    /// Ìí¼ÓºÃÓÑ
+    /// æ·»åŠ å¥½å‹
     /// </summary>
     public const string Room_UPDATE_ROOM_ADD = "liuhuan_add_room_";
     /// <summary>
-    /// É¾³ıÈº¹«¸æ
+    /// åˆ é™¤ç¾¤å…¬å‘Š
     /// </summary>
     public const string Room_Deleate_ROOM_TIPS = "liuhuan_deleate_roomTips";
     /// <summary>
-    /// ½ûÑÔ       ÎÒ±»¹ÜÀíÔ±½ûÑÔÁË    ÈºÖ÷¿ªÆôÁËÈ«²¿½ûÑÔ ²ÎÊı MessageObject
+    /// ç¦è¨€       æˆ‘è¢«ç®¡ç†å‘˜ç¦è¨€äº†    ç¾¤ä¸»å¼€å¯äº†å…¨éƒ¨ç¦è¨€ å‚æ•° MessageObject
     /// </summary>
     public const string ROOM_UPDATE_BANNED_TALK = "ROOM_BANNED_TALK";
 
 
     /// <summary>
-    /// ÑûÇë£¬ÎÒ±»ÑûÇëµ½Ò»¸öĞÂµÄÈº£¬Ë¢ĞÂÁĞ±í ²ÎÊımeessageObject
+    /// é‚€è¯·ï¼Œæˆ‘è¢«é‚€è¯·åˆ°ä¸€ä¸ªæ–°çš„ç¾¤ï¼Œåˆ·æ–°åˆ—è¡¨ å‚æ•°meessageObject
     /// </summary>
     public const string ROOM_UPDATE_INVITE = "ROOM_UPDATE_INVITE";
 
 
     /// <summary>
-    /// ÓëÎÒÏà¹ØµÄ@Èº³ÉÔ±ÏûÏ¢  ²ÎÊıFriend
+    /// ä¸æˆ‘ç›¸å…³çš„@ç¾¤æˆå‘˜æ¶ˆæ¯  å‚æ•°Friend
     /// </summary>
     public const string ROOM_UPDATE_AT_ME = "ROOM_UPDATE_AT_ME";
 
     /// <summary>
-    /// ¶àµãµÇÂ¼Í¬²½ÎÒµÄ±êÇ©
+    /// å¤šç‚¹ç™»å½•åŒæ­¥æˆ‘çš„æ ‡ç­¾
     /// </summary>
     public const string UPDATE_DEVICE_LABLE = "update_friend_lable_deivce";
 
     #endregion
 
-    #region ºÃÓÑÏà¹Ø
+    #region å¥½å‹ç›¸å…³
     /// <summary>
-    /// ¸üĞÂºÃÓÑ±¸×¢
+    /// æ›´æ–°å¥½å‹å¤‡æ³¨
     /// </summary>
     public const string UPDATE_FRIEND_REMARKS = "update_friend_remarks";
     /// <summary>
-    /// ¸üĞÂºÃÓÑ±¸×¢
+    /// æ›´æ–°å¥½å‹å¤‡æ³¨
     /// </summary>
     public const string UPDATE_FRIEND_REMARKSPHONE = "update_friend_remarkphone";
     /// <summary>
-    /// É¾³ıºÃÓÑ
+    /// åˆ é™¤å¥½å‹
     /// </summary>
     public const string DELETE_FRIEND = "delete_friend";
     /// <summary>
-    /// ¼ÓÈëºÚÃûµ¥
+    /// åŠ å…¥é»‘åå•
     /// </summary>
     public const string ADD_BLACKLIST = "add_blacklist";
 
     /// <summary>
-    /// Çå³ıÒ»¸öÅóÓÑµÄÁÄÌì¼ÇÂ¼ ²ÎÊı string: userid
+    /// æ¸…é™¤ä¸€ä¸ªæœ‹å‹çš„èŠå¤©è®°å½• å‚æ•° string: userid
     /// </summary>
     public const string CLEAR_FRIEND_MSGS = "clear_friend_msgs";
 
     /// <summary>
-    /// ¸üĞÂÒ»¸öÅóÓÑµÄ×îºóÒ»ÌõÁÄÌì¼ÇÂ¼ ²ÎÊı Friend
+    /// æ›´æ–°ä¸€ä¸ªæœ‹å‹çš„æœ€åä¸€æ¡èŠå¤©è®°å½• å‚æ•° Friend
     /// </summary>
     public const string UPDATE_FRIEND_LAST_CONTENT = "update_friend_last_content";
 
@@ -176,68 +176,68 @@ public class MessageActions
 
 
 
-    #region ÁĞ±íÏà¹Ø
+    #region åˆ—è¡¨ç›¸å…³
 
     /// <summary>
-    /// ÏÔÊ¾Ò»ÌõÏûÏ¢(Õë¶ÔÓÚÏûÏ¢ÁĞ±í)
+    /// æ˜¾ç¤ºä¸€æ¡æ¶ˆæ¯(é’ˆå¯¹äºæ¶ˆæ¯åˆ—è¡¨)
     /// </summary>
     public const string XMPP_SHOW_SINGLE_MESSAGE = "show_single_message";
 
     /// <summary>
-    /// ÊÕµ½ÅúÁ¿ÏûÏ¢£¬Ò»´ÎĞÔË¢ĞÂ(Õë¶ÔÓÚÏûÏ¢ÁĞ±í)
+    /// æ”¶åˆ°æ‰¹é‡æ¶ˆæ¯ï¼Œä¸€æ¬¡æ€§åˆ·æ–°(é’ˆå¯¹äºæ¶ˆæ¯åˆ—è¡¨)
     /// </summary>
     public const string XMPP_SHOW_ALL_MESSAGE = "show_all_message";
 
     /// <summary>
-    /// ¸üĞÂÅóÓÑÏûÏ¢ÖÃ¶¥
+    /// æ›´æ–°æœ‹å‹æ¶ˆæ¯ç½®é¡¶
     /// </summary>
     public const string UPDATE_FRIEND_TOP = "friend_message_top";
 
     /// <summary>
-    /// ¸üĞÂÅóÓÑÏûÏ¢Ãâ´òÈÅ
+    /// æ›´æ–°æœ‹å‹æ¶ˆæ¯å…æ‰“æ‰°
     /// </summary>
     public const string UPDATE_FRIEND_DISTURB = "friend_message_disturb";
 
     /// <summary>
-    /// ¸üĞÂÅóÓÑÏûÏ¢ÔÄºó¼´·Ù
+    /// æ›´æ–°æœ‹å‹æ¶ˆæ¯é˜…åå³ç„š
     /// </summary>
     public const string UPDATE_FRIEND_READDEL = "friend_message_readdel";
     /// <summary>
-    /// ×î½üÏûÏ¢ÁĞ±íÏÂÔØÍê³É
+    /// æœ€è¿‘æ¶ˆæ¯åˆ—è¡¨ä¸‹è½½å®Œæˆ
     /// </summary>
     public const string DOWN_CHATLIST_COMPT = "down_chats_compte";
 
     /// <summary>
-    /// Çå³ıºÃÓÑÁÄÌì¼ÇÂ¼-Ë¢ĞÂÁĞ±í
+    /// æ¸…é™¤å¥½å‹èŠå¤©è®°å½•-åˆ·æ–°åˆ—è¡¨
     /// </summary>
     public const string UPDATE_CHATLIST_CLEAR_FRIEND = "update_chatlist_clear_friend";
 
     #endregion
 
 
-    #region ¶àµãµÇÂ¼
+    #region å¤šç‚¹ç™»å½•
     /// <summary>
-    /// ¶àµãµÇÂ¼ÉÏÏßÀëÏßÏûÏ¢
+    /// å¤šç‚¹ç™»å½•ä¸Šçº¿ç¦»çº¿æ¶ˆæ¯
     /// </summary>
     public const string UPDATE_DEVICE_STATE = "update_device_state";
     internal const string FILE_DOWN_COMPT = "FILE_DOWN_COMPT";
 
     #endregion
 
-    #region Ë¢ĞÂÍ·Ïñ
+    #region åˆ·æ–°å¤´åƒ
     public const string UPDATE_HEAD = "update_head";
     #endregion
 
-    #region Ë¢ĞÂÅäÖÃ
+    #region åˆ·æ–°é…ç½®
     public const string UPDATE_CONFIG = "update_config";
     public const string SHOW_LOGINFORM = "show_login_form";
     public const string UPDATE_COLLECT_LIST = "update_collect_list";
-    public const string UPDATE_COURSE_LIST = "update_course_list";  // ¸üĞÂÎÒµÄ½²¿Î
+    public const string UPDATE_COURSE_LIST = "update_course_list";  // æ›´æ–°æˆ‘çš„è®²è¯¾
     public const string UPDATE_LABLE_LIST = "update_lable_list";// 
-    public const string RESTART_APP = "restart_app";// ÖØÆô³ÌĞò
-    public const string CLOSE_NOTIFY_INCO = "close_notifyinco";// ¹Ø±ÕÈÎÎñÀ¶Í¼±ê
-    public const string OPEN_WAIT_DELAY_COMPTE = "open_wait_delay_compte";//¹Ø±ÕÁÄÌìÖĞµÄÎÄ×Ö²é¿´´°¿Ú(±»É¾³ıÊ±)
-    public const string UPDATE_FRIEND_DRAFT = "update_friend_draft";//¹Ø±ÕÊÕ²ØÖĞµÄÎÄ×Ö²é¿´´°¿Ú£¨±»É¾³ıÊ±£©
+    public const string RESTART_APP = "restart_app";// é‡å¯ç¨‹åº
+    public const string CLOSE_NOTIFY_INCO = "close_notifyinco";// å…³é—­ä»»åŠ¡è“å›¾æ ‡
+    public const string OPEN_WAIT_DELAY_COMPTE = "open_wait_delay_compte";//å…³é—­èŠå¤©ä¸­çš„æ–‡å­—æŸ¥çœ‹çª—å£(è¢«åˆ é™¤æ—¶)
+    public const string UPDATE_FRIEND_DRAFT = "update_friend_draft";//å…³é—­æ”¶è—ä¸­çš„æ–‡å­—æŸ¥çœ‹çª—å£ï¼ˆè¢«åˆ é™¤æ—¶ï¼‰
     public const int DRAFT_TYPE = 0x11358;
 
     #endregion

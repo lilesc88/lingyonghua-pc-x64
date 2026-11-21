@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -29,11 +29,11 @@ namespace WinFrmTalk.View
 {
     public partial class FrmHistoryChat : FrmBase
     {
-        #region È«¾Ö±äÁ¿
-        //Ñ¡ÖĞµÄlabel¿Ø¼ş
+        #region å…¨å±€å˜é‡
+        //é€‰ä¸­çš„labelæ§ä»¶
         public Label is_check;
         public static Friend friends;
-        //ËùÓĞÏûÏ¢
+        //æ‰€æœ‰æ¶ˆæ¯
         public static List<MessageObject> listData;
 
         private bool isOpenForm = false;
@@ -62,12 +62,12 @@ namespace WinFrmTalk.View
 
         private void FrmHistoryChat_Load(object sender, EventArgs e)
         {
-            this.Icon = (Icon)Properties.Resources.Icon.Clone();//¼ÓÔØiconÍ¼±ê£¨¶ÀÁ¢¸±±¾£¬±ÜÃâ¹²Ïí¾ä±ú±»ÊÍ·Åµ¼ÖÂÉÁÍË£©//¼ÓÔØiconÍ¼±ê
-            this.Text = LanguageXmlUtils.GetValue("frmHistoryChat_title", "ÀúÊ·¼ÇÂ¼");
+            this.Icon = (Icon)Properties.Resources.Icon.Clone();//åŠ è½½iconå›¾æ ‡ï¼ˆç‹¬ç«‹å‰¯æœ¬ï¼Œé¿å…å…±äº«å¥æŸ„è¢«é‡Šæ”¾å¯¼è‡´é—ªé€€ï¼‰//åŠ è½½iconå›¾æ ‡
+            this.Text = LanguageXmlUtils.GetValue("frmHistoryChat_title", "å†å²è®°å½•");
         }
 
 
-        #region ´°Ìå¼ÓÔØ
+        #region çª—ä½“åŠ è½½
         public FrmHistoryChat()
         {
 
@@ -87,14 +87,14 @@ namespace WinFrmTalk.View
             {
                 lblNext.Visible = false;
             }
-            SearchMessage.tips = LanguageXmlUtils.GetValue("search_history_msgs", "ËÑË÷ÁÄÌì¼ÇÂ¼");
+            SearchMessage.tips = LanguageXmlUtils.GetValue("search_history_msgs", "æœç´¢èŠå¤©è®°å½•");
             SearchMessage.SearchEvent += HistorySearch;
             SearchMessage.ChangeUnselectColor(Color.FromArgb(230, 229, 229));
         }
 
         int listPager = 0;
 
-        //ÏòÉÏ¹ö¶¯
+        //å‘ä¸Šæ»šåŠ¨
         private void OnHeaderRefresh()
         {
             if (listPager > 0)
@@ -111,7 +111,7 @@ namespace WinFrmTalk.View
             }
         }
 
-        //ÏòÏÂ¹ö¶¯
+        //å‘ä¸‹æ»šåŠ¨
         private void OnFooterRefresh()
         {
             if (isScrollBar)
@@ -154,9 +154,9 @@ namespace WinFrmTalk.View
 
         #endregion
 
-        #region Êı¾İÑéÖ¤
+        #region æ•°æ®éªŒè¯
         /// <summary>
-        /// Í·Ïñ
+        /// å¤´åƒ
         /// </summary>
         /// <param name="url"></param>
         /// <param name="incoImage"></param>
@@ -171,7 +171,7 @@ namespace WinFrmTalk.View
             {
                 type = FileUtils.GetFileTypeByNanme(url);
             }
-            //»ñÈ¡µ±Ç°ÎÄ¼şÑ¡ÔñµÄÍ·Ïñ
+            //è·å–å½“å‰æ–‡ä»¶é€‰æ‹©çš„å¤´åƒ
 
             //Í¼Æ¬
             if (type == 1)
@@ -188,7 +188,7 @@ namespace WinFrmTalk.View
             }
             else if (type == 3)
             {
-                //ÊÓÆµ
+                //è§†é¢‘
                 incoImage.Image = Resources.ic_muc_flie_type_v;
 
             }
@@ -240,12 +240,12 @@ namespace WinFrmTalk.View
                 incoImage.Image = Resources.ic_muc_flie_type_a;
 
             }
-            else if (type == 12)//ºì°ü
+            else if (type == 12)//çº¢åŒ…
             {
                 incoImage.Image = Resources.ic_historyredpacket;
 
             }
-            else if (type == 13)//×ªÕË
+            else if (type == 13)//è½¬è´¦
             {
                 incoImage.Image = Resources.ic_historytransfer;
 
@@ -256,7 +256,7 @@ namespace WinFrmTalk.View
             }
         }
         /// <summary>
-        /// ÎÄ¼şÏÂÔØ
+        /// æ–‡ä»¶ä¸‹è½½
         /// </summary>
         /// <param name="toFilePath"></param>
         /// <param name="fileUrl"></param>
@@ -266,11 +266,11 @@ namespace WinFrmTalk.View
             {
                 if (!string.IsNullOrEmpty(path))
                 {
-                    // ÏÂÔØ³É¹¦
-                    LogUtils.Log("ÏÂÔØ³É¹¦£¡" + path);
+                    // ä¸‹è½½æˆåŠŸ
+                    LogUtils.Log("ä¸‹è½½æˆåŠŸï¼" + path);
                     if (!isOpen)
                     {
-                        //´ò¿ª´ËÎÄ¼ş
+                        //æ‰“å¼€æ­¤æ–‡ä»¶
                         System.Diagnostics.Process.Start(path);
                     }
                 }
@@ -278,32 +278,32 @@ namespace WinFrmTalk.View
         }
         #endregion
 
-        #region  ¿Ø¼şµã»÷ÊÂ¼ş
+        #region  æ§ä»¶ç‚¹å‡»äº‹ä»¶
         private void lblAll_Click(object sender, EventArgs e)
         {
-            //Çå³şÔ­ÓĞÊı¾İ
+            //æ¸…æ¥šåŸæœ‰æ•°æ®
             xListView.ClearList();
             var views = new List<Control>();
 
-            var text = UIUtils.IsNull(SearchMessage.txt_Search.Text) ? LanguageXmlUtils.GetValue("history_all", "È«²¿") : LanguageXmlUtils.GetValue("search", "ËÑË÷");
+            var text = UIUtils.IsNull(SearchMessage.txt_Search.Text) ? LanguageXmlUtils.GetValue("history_all", "å…¨éƒ¨") : LanguageXmlUtils.GetValue("search", "æœç´¢");
             lblAll.Text = text;
 
-            #region ×ÖÌåÑÕÉ«
+            #region å­—ä½“é¢œè‰²
             Label label = (Label)sender;
             if (is_check != null && is_check != label)
             {
-                //µã»÷µ±Ç°
+                //ç‚¹å‡»å½“å‰
                 Font f = new Font(Applicate.SetFont, 12);
                 label.ForeColor = ColorTranslator.FromHtml("#1AAD19");
                 label.Font = f;
-                //µã»÷ÆäËü°´Å¥
+                //ç‚¹å‡»å…¶å®ƒæŒ‰é’®
                 Font f2 = new Font(Applicate.SetFont, 12);
                 is_check.ForeColor = Color.Black;
                 is_check.Font = f2;
                 is_check = label;
             }
             #endregion
-            #region È«²¿
+            #region å…¨éƒ¨
             if ((Label)sender == lblAll)
             {
                 LodingUtils loding = new LodingUtils();
@@ -312,17 +312,17 @@ namespace WinFrmTalk.View
                 loding.start();
                 xListView.Visible = true;
                 flpTable.Visible = false;
-                //ÅĞ¶ÏÊÇ·ñÔÚ¼ÓÔØ
+                //åˆ¤æ–­æ˜¯å¦åœ¨åŠ è½½
                 mAdapter.isclickFileButton = false;
                 mAdapter.FrmHistoryChat = this;
                 mAdapter.BindFriendData(listData);
                 xListView.SetAdapter(mAdapter);
-                //ÖØĞÂ²éÑ¯
+                //é‡æ–°æŸ¥è¯¢
                 HistorySearch(SearchMessage.txt_Search.Text);
                 loding.stop();
             }
             #endregion
-            #region ÎÄ¼ş
+            #region æ–‡ä»¶
             if ((Label)sender == lblFile)
             {
                 xListView.Visible = true;
@@ -342,11 +342,11 @@ namespace WinFrmTalk.View
             if ((Label)sender == lblImage)
             {
                 type = 3;
-                //Çå³ı
+                //æ¸…é™¤
                 ImageIngomation();
             }
             #endregion
-            #region ÊÓÆµ
+            #region è§†é¢‘
             if ((Label)sender == lblVideo)
             {
                 type = 4;
@@ -356,11 +356,11 @@ namespace WinFrmTalk.View
         }
         #endregion
 
-        #region ¼ÓÔØ·ÖÀàÊı¾İ
-        //ÊÓÆµ
+        #region åŠ è½½åˆ†ç±»æ•°æ®
+        //è§†é¢‘
         private void VdioShow()
         {
-            //Çå³ı
+            //æ¸…é™¤
             flpTable.Controls.Clear();
             foreach (var item in listData)
             {
@@ -376,7 +376,7 @@ namespace WinFrmTalk.View
 
                     ThubImageLoader.Instance.LoadImage(item.content, pictureBoxVideo);
 
-                    //°ó¶¨µ±Ç°Ë÷Òı
+                    //ç»‘å®šå½“å‰ç´¢å¼•
                     pictureBoxVideo.Tag = item;
                     pictureBoxVideo.MouseClick += new MouseEventHandler(Vido_clike);
                     flpTable.Controls.Add(pictureBoxVideo);
@@ -406,7 +406,7 @@ namespace WinFrmTalk.View
                     });
                     //pictureBoxImage.SizeMode = PictureBoxSizeMode.StretchImage;
                     pictureBoxImage.Dock = DockStyle.None;
-                    //°ó¶¨µ±Ç°Ë÷Òı
+                    //ç»‘å®šå½“å‰ç´¢å¼•
                     pictureBoxImage.Name = item.messageId;
                     pictureBoxImage.Tag = item;
                     pictureBoxImage.MouseClick += new MouseEventHandler(MouseClie);
@@ -416,10 +416,10 @@ namespace WinFrmTalk.View
                 }
             }
         }
-        //ÎÄ¼ş
+        //æ–‡ä»¶
         public ChatItem FileInfonmation(MessageObject message)
         {
-            //ÊµÀı»¯¿Ø¼ş
+            //å®ä¾‹åŒ–æ§ä»¶
             chatFile = new ChatItem();
             chatFile.Time = TimeUtils.ChatLastTime(message.timeSend);
             UserFileLeft panel_file = new UserFileLeft();
@@ -450,7 +450,7 @@ namespace WinFrmTalk.View
                         path = message.content;
                         fileName = FileUtils.GetFileName(message.content);
                         string filePath = Applicate.LocalConfigData.RoomFileFolderPath + fileName;
-                        //ÏÂÔØ
+                        //ä¸‹è½½
                         FrmHistoryChat.DownFile(filePath, path);
                     }
                 };
@@ -465,7 +465,7 @@ namespace WinFrmTalk.View
                                 path = message.content;
                                 fileName = FileUtils.GetFileName(message.content);
                                 string filePath = Applicate.LocalConfigData.RoomFileFolderPath + fileName;
-                                //ÏÂÔØ
+                                //ä¸‹è½½
                                 FrmHistoryChat.DownFile(filePath, path);
                             }
                         };
@@ -477,8 +477,8 @@ namespace WinFrmTalk.View
         }
         #endregion
 
-        #region  Êı¾İ¼ÓÔØ
-        // ÏÔÊ¾Êı¾İ
+        #region  æ•°æ®åŠ è½½
+        // æ˜¾ç¤ºæ•°æ®
         public void ShowFriendMsg(Friend friend)
         {
             if (!isOpenForm)
@@ -492,7 +492,7 @@ namespace WinFrmTalk.View
                     is_check.ForeColor = Color.Black;
                 }
                 lblAll.ForeColor = ColorTranslator.FromHtml("#1AAD19");
-                lblAll.Text = LanguageXmlUtils.GetValue("history_all", "È«²¿");
+                lblAll.Text = LanguageXmlUtils.GetValue("history_all", "å…¨éƒ¨");
                 is_check = lblAll;
                 xListView.Visible = true;
                 flpTable.Visible = false;
@@ -522,7 +522,7 @@ namespace WinFrmTalk.View
                 return;
             }
         }
-        //Êı¾İ°ó¶¨
+        //æ•°æ®ç»‘å®š
         private void BindData(List<MessageObject> list)
         {
             mAdapter.FrmHistoryChat = this;
@@ -530,10 +530,10 @@ namespace WinFrmTalk.View
             xListView.SetAdapter(mAdapter);
         }
 
-        //ÏÔÊ¾½²¿ÎÊı¾İ
+        //æ˜¾ç¤ºè®²è¯¾æ•°æ®
         public void ShowMessageList(List<MessageObject> datas, string title)
         {
-            //êÇ³Æ
+            //æ˜µç§°
             LodingUtils loding = new LodingUtils();
             loding.parent = xListView;
             loding.size = xListView.Size;
@@ -556,16 +556,16 @@ namespace WinFrmTalk.View
         {
             using (RichTextBoxEx richTextBox = new RichTextBoxEx())
             {
-                //Õı³£ÏûÏ¢
+                //æ­£å¸¸æ¶ˆæ¯
                 richTextBox.Size = new Size(maxWidth, 20);
                 richTextBox.Text = msg.content;
                 richTextBox.Font = new Font(Applicate.SetFont, 10F);
-                richTextBox.MinimumSize = new Size(0, 25);  //×îĞ¡¸ß¶È25
+                richTextBox.MinimumSize = new Size(0, 25);  //æœ€å°é«˜åº¦25
                 richTextBox.ReadOnly = true;
                 richTextBox.ScrollBars = RichTextBoxScrollBars.None;
                 richTextBox.WordWrap = true;
                 float max_width = 0;
-                //Í¨¹ı×ÔÊÊÓ¦¸ß¶È¼ÆËã
+                //é€šè¿‡è‡ªé€‚åº”é«˜åº¦è®¡ç®—
                 richTextBox.ContentsResized += new ContentsResizedEventHandler((sender, e) =>
                 {
                     if (string.IsNullOrEmpty(richTextBox.Text))
@@ -574,14 +574,14 @@ namespace WinFrmTalk.View
                     string str_rtf = richTextBox.Rtf;
                     if (msg.BubbleWidth < maxWidth)
                     {
-                        //·Ö¸îÃ¿Ò»ĞĞ
+                        //åˆ†å‰²æ¯ä¸€è¡Œ
                         string[] str_row = richTextBox.Text.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
                         foreach (string item in str_row)
                         {
                             int item_width = (int)EQControlManager.GetStringTheSize(item, richTextBox.Font).Width;
                             if (item_width > max_width)
                                 max_width = item_width;
-                            //µ½´ïÁË×î´ó¿í¶È
+                            //åˆ°è¾¾äº†æœ€å¤§å®½åº¦
                             if (max_width >= maxWidth)
                             {
                                 max_width = maxWidth;
@@ -590,7 +590,7 @@ namespace WinFrmTalk.View
                         }
                         if (max_width < 1)
                             return;
-                        //Èç¹ûÎÄ×Ö¿í¶È²»×ã260
+                        //å¦‚æœæ–‡å­—å®½åº¦ä¸è¶³260
                         if (max_width < maxWidth)
                             msg.BubbleWidth = (int)max_width + 5;
                         else
@@ -601,26 +601,26 @@ namespace WinFrmTalk.View
                     richTextBox.Size = new Size(msg.BubbleWidth + 2, msg.BubbleHeight);
                     richTextBox.Rtf = str_rtf;
                 });
-                int EM_GETLINECOUNT = 0x00BA;//»ñÈ¡×ÜĞĞÊıµÄÏûÏ¢ºÅ 
+                int EM_GETLINECOUNT = 0x00BA;//è·å–æ€»è¡Œæ•°çš„æ¶ˆæ¯å· 
                 SendMessage(richTextBox.Handle, EM_GETLINECOUNT, IntPtr.Zero, "");
             }
         }
         #endregion
 
-        #region °ó¶¨ÓÒ¼ü²Ëµ¥
-        // °ó¶¨ÓÒ¼ü²Ëµ¥
+        #region ç»‘å®šå³é”®èœå•
+        // ç»‘å®šå³é”®èœå•
         public void BindMenuItemList(Control item, MessageObject message)
         {
-            var copyitem = new MenuItem(LanguageXmlUtils.GetValue("copy", "¸´ÖÆ"), (sen, eve) =>
+            var copyitem = new MenuItem(LanguageXmlUtils.GetValue("copy", "å¤åˆ¶"), (sen, eve) =>
             {
                 CopyData(message);
-                HttpUtils.Instance.ShowTip("¸´ÖÆ³É¹¦");
+                HttpUtils.Instance.ShowTip("å¤åˆ¶æˆåŠŸ");
             });
-            var sendcard = new MenuItem(LanguageXmlUtils.GetValue("forward", "×ª·¢"), (sen, eve) =>
+            var sendcard = new MenuItem(LanguageXmlUtils.GetValue("forward", "è½¬å‘"), (sen, eve) =>
             {
                 ForwardMessage(message);
             });
-            var colleitem = new MenuItem(LanguageXmlUtils.GetValue("collect", "ÊÕ²Ø"), (sen, eve) =>
+            var colleitem = new MenuItem(LanguageXmlUtils.GetValue("collect", "æ”¶è—"), (sen, eve) =>
             {
 
                 CollectUtils.CollectMessage(message);
@@ -629,10 +629,10 @@ namespace WinFrmTalk.View
             cm.MenuItems.Add(copyitem);
             cm.MenuItems.Add(sendcard);
             cm.MenuItems.Add(colleitem);
-            item.ContextMenu = cm;//ÉèÖÃÓÒ¼ü²Ëµ¥
-            item.MouseDown += ClickSelectItem;//ÉèÖÃÊÂ¼ş
+            item.ContextMenu = cm;//è®¾ç½®å³é”®èœå•
+            item.MouseDown += ClickSelectItem;//è®¾ç½®äº‹ä»¶
         }
-        //¸´ÖÆÊı¾İ
+        //å¤åˆ¶æ•°æ®
         private void CopyData(MessageObject msg)
         {
             #region liuhuan
@@ -645,13 +645,13 @@ namespace WinFrmTalk.View
             //        Clipboard.SetText(message.content);
             //        return;
             //    }
-            //    //¸ø¼ôÇĞ°åÉèÖÃ¶ÔÏó
+            //    //ç»™å‰ªåˆ‡æ¿è®¾ç½®å¯¹è±¡
             //    Clipboard.SetText(message.content);
             //}
             //if (message.type == kWCMessageType.Image)
             //{
             //    Clipboard.Clear();
-            //    //¸ø¼ôÇĞ°åÉèÖÃÍ¼Æ¬¶ÔÏó
+            //    //ç»™å‰ªåˆ‡æ¿è®¾ç½®å›¾ç‰‡å¯¹è±¡
             //    Clipboard.SetImage(pictureBoxImage.Image);
             //}
             //if (message.type == kWCMessageType.File || message.type == kWCMessageType.Video)
@@ -718,9 +718,9 @@ namespace WinFrmTalk.View
                     }
                     break;
                 case kWCMessageType.Text:
-                    //Çå¿Õ¼ôÇĞ°å£¬·ÀÖ¹ÀïÃæÖ®Ç°ÓĞÄÚÈİ
+                    //æ¸…ç©ºå‰ªåˆ‡æ¿ï¼Œé˜²æ­¢é‡Œé¢ä¹‹å‰æœ‰å†…å®¹
                     Clipboard.Clear();
-                    //¸ø¼ôÇĞ°åÉèÖÃÍ¼Æ¬¶ÔÏó
+                    //ç»™å‰ªåˆ‡æ¿è®¾ç½®å›¾ç‰‡å¯¹è±¡
                     string content = "";
                     if (string.IsNullOrEmpty(richText.SelectedRtf))
                     {
@@ -746,22 +746,22 @@ namespace WinFrmTalk.View
                     Clipboard.SetText(content);
                     break;
                 case kWCMessageType.Reply:
-                    //Çå¿Õ¼ôÇĞ°å£¬·ÀÖ¹ÀïÃæÖ®Ç°ÓĞÄÚÈİ
+                    //æ¸…ç©ºå‰ªåˆ‡æ¿ï¼Œé˜²æ­¢é‡Œé¢ä¹‹å‰æœ‰å†…å®¹
                     Clipboard.Clear();
-                    //¸ø¼ôÇĞ°åÉèÖÃÍ¼Æ¬¶ÔÏó
+                    //ç»™å‰ªåˆ‡æ¿è®¾ç½®å›¾ç‰‡å¯¹è±¡
                     //RichTextBox richTextBox = crl_content as RichTextBox;
                     //string content = richTextBox.Tag.ToString();
                     Clipboard.SetText(msg.content);
                     break;
                 case kWCMessageType.File:
-                    //ÏÈÅĞ¶Ï±¾µØÊÇ·ñ´æÔÚ£¨×Ô¼º·¢µÄÏûÏ¢£©
+                    //å…ˆåˆ¤æ–­æœ¬åœ°æ˜¯å¦å­˜åœ¨ï¼ˆè‡ªå·±å‘çš„æ¶ˆæ¯ï¼‰
                     string localPath = msg.fileName;
                     if (!File.Exists(localPath))
                     {
                         localPath = Applicate.LocalConfigData.FileFolderPath + FileUtils.GetFileName(msg.fileName);
                         if (!File.Exists(localPath))
                             //DownloadFile(msg, localPath, true);
-                            HttpUtils.Instance.ShowTip("ÎÄ¼ş²»´æÔÚ£¬ÎŞ·¨¸´ÖÆ£¡");
+                            HttpUtils.Instance.ShowTip("æ–‡ä»¶ä¸å­˜åœ¨ï¼Œæ— æ³•å¤åˆ¶ï¼");
                     }
                     else
                     {
@@ -779,7 +779,7 @@ namespace WinFrmTalk.View
                         videoPath = Applicate.LocalConfigData.VideoFolderPath + FileUtils.GetFileName(msg.content);
                         if (!File.Exists(videoPath))
                         {
-                            HttpUtils.Instance.ShowTip("ÊÓÆµÎÄ¼ş²»´æÔÚ£¬ÎŞ·¨¸´ÖÆ£¡");
+                            HttpUtils.Instance.ShowTip("è§†é¢‘æ–‡ä»¶ä¸å­˜åœ¨ï¼Œæ— æ³•å¤åˆ¶ï¼");
                         }
                     }
                     StringCollection strcoll = new StringCollection();
@@ -794,7 +794,7 @@ namespace WinFrmTalk.View
         }
         #endregion
 
-        #region ×ª·¢ÏûÏ¢
+        #region è½¬å‘æ¶ˆæ¯
         private void ForwardMessage(MessageObject message)
         {
 
@@ -803,7 +803,7 @@ namespace WinFrmTalk.View
             {
                 frm.Show();
                 frm.BringToFront();
-                Applicate.GetWindow<FrmMain>().ShowTipBox("µ±Ç°ÒÑÓĞºÃÓÑÑ¡ÔñÆ÷ÕıÔÚÊ¹ÓÃ£¬Çë¹Ø±ÕºóÔÙ³¢ÊÔ");
+                Applicate.GetWindow<FrmMain>().ShowTipBox("å½“å‰å·²æœ‰å¥½å‹é€‰æ‹©å™¨æ­£åœ¨ä½¿ç”¨ï¼Œè¯·å…³é—­åå†å°è¯•");
                 return;
             }
 
@@ -820,13 +820,13 @@ namespace WinFrmTalk.View
                         continue;
                     }
 
-                    // µ÷ÓÃ xmpp ×ª·¢ÏûÏ¢
+                    // è°ƒç”¨ xmpp è½¬å‘æ¶ˆæ¯
                     MessageObject msg = ShiKuManager.SendForwardMessage(friend.Value, message);
 
-                    //Èç¹û×ª·¢¶ÔÏó°üÀ¨µ±Ç°ÁÄÌì¶ÔÏó£¬¸øUIÌí¼ÓÏûÏ¢ÆøÅİ
+                    //å¦‚æœè½¬å‘å¯¹è±¡åŒ…æ‹¬å½“å‰èŠå¤©å¯¹è±¡ï¼Œç»™UIæ·»åŠ æ¶ˆæ¯æ°”æ³¡
                     if (Applicate.IsChatFriend(friend.Value.UserId))
                     {
-                        //Ìí¼ÓÏûÏ¢ÆøÅİÍ¨Öª
+                        //æ·»åŠ æ¶ˆæ¯æ°”æ³¡é€šçŸ¥
                         Messenger.Default.Send(msg, token: MessageActions.XMPP_UPDATE_NORMAL_MESSAGE);
                     }
                 }
@@ -836,15 +836,15 @@ namespace WinFrmTalk.View
         #endregion
 
 
-        #region Ñ¡ÖĞ¶ÔÓ¦Ïî
+        #region é€‰ä¸­å¯¹åº”é¡¹
         private void ClickSelectItem(object sender, EventArgs e)
         {
             Control item = sender as Control;
             MessageObject message = item.Tag as MessageObject;
-            //¸øÈ«¾Ö±äÁ¿¸³Öµ
+            //ç»™å…¨å±€å˜é‡èµ‹å€¼
             if (message.type == kWCMessageType.Image)
             {
-                //¸øÈ«¾Ö±äÁ¿¸³Öµ
+                //ç»™å…¨å±€å˜é‡èµ‹å€¼
                 pictureBoxImage = sender as PictureBox;
 
             }
@@ -869,15 +869,15 @@ namespace WinFrmTalk.View
         }
         #endregion
 
-        #region Í¼Æ¬µã»÷ÊÂ¼ş
+        #region å›¾ç‰‡ç‚¹å‡»äº‹ä»¶
         /// <summary>
-        /// ´ò¿ªÍ¼Æ¬²é¿´Æ÷
+        /// æ‰“å¼€å›¾ç‰‡æŸ¥çœ‹å™¨
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         public void MouseClie(object sender, MouseEventArgs e)
         {
-            //»ñÈ¡µ±Ç°µÄÍ¼Æ¬
+            //è·å–å½“å‰çš„å›¾ç‰‡
             PictureBox picture = (PictureBox)sender;
             if (e.Button == MouseButtons.Left)
             {
@@ -893,11 +893,11 @@ namespace WinFrmTalk.View
                     return;
                 }
 
-                //»ñÈ¡TagÖµ
+                //è·å–Tagå€¼
                 string messageid = (string)picture.Name;
-                //Çå³ı
+                //æ¸…é™¤
                 List<MessageObject> listmessage = ShowMsgImageList(friends.UserId);
-                //Ë÷Òı
+                //ç´¢å¼•
                 int index = 0;
                 for (int i = 0; i < listmessage.Count; i++)
                 {
@@ -913,7 +913,7 @@ namespace WinFrmTalk.View
             }
 
         }
-        //ÊÓÆµ²¥·Å
+        //è§†é¢‘æ’­æ”¾
         public static void Vido_clike(object sender, MouseEventArgs e)
         {
             PictureBox picture = (PictureBox)sender;
@@ -926,18 +926,18 @@ namespace WinFrmTalk.View
         }
         #endregion
 
-        #region Êı¾İ¿â²éÑ¯
-        //¼ÓÔØËùÓĞ
+        #region æ•°æ®åº“æŸ¥è¯¢
+        //åŠ è½½æ‰€æœ‰
         public static List<MessageObject> ShowMsgList(string toUserid)
         {
-            //·ÖÒ³¼ÓÔØÊı¾İ
+            //åˆ†é¡µåŠ è½½æ•°æ®
             List<MessageObject> messages = MessageObjectDao.Instance.GetHistoryMessagesAll(toUserid,  1);
             return messages;
         }
-        //ÎÄ¼ş
+        //æ–‡ä»¶
         public static List<MessageObject> ShowMsgFileList(string toUserid)
         {
-            //·ÖÒ³¼ÓÔØÊı¾İ
+            //åˆ†é¡µåŠ è½½æ•°æ®
             List<MessageObject> messages = MessageObjectDao.Instance.GetHistoryMessagesByType(toUserid, kWCMessageType.File, 1);
             return messages;
 
@@ -945,26 +945,26 @@ namespace WinFrmTalk.View
         //Í¼Æ¬
         public static List<MessageObject> ShowMsgImageList(string toUserid)
         {
-            //·ÖÒ³¼ÓÔØÊı¾İ
+            //åˆ†é¡µåŠ è½½æ•°æ®
             List<MessageObject> messages = MessageObjectDao.Instance.GetHistoryMessagesByType(toUserid, kWCMessageType.Image, 1);
             return messages;
         }
 
         #endregion
 
-        #region ÌáÈ¡³¬Á´½ÓÓëemaijo±íÇé
+        #region æå–è¶…é“¾æ¥ä¸emaijoè¡¨æƒ…
         public static void Calc_PanelWidth(Control control)
         {
             if (!(control is RichTextBoxEx richContent))
                 return;
 
-            //ÁÙÊ±½¨Á¢Ò»¸öÈİÆ÷×°ÈëÄÚÈİ
+            //ä¸´æ—¶å»ºç«‹ä¸€ä¸ªå®¹å™¨è£…å…¥å†…å®¹
             RichTextBoxEx canv_Rich = control as RichTextBoxEx;
-            //ÏÈÈ¡È«²¿TextµÄÖµ
+            //å…ˆå–å…¨éƒ¨Textçš„å€¼
             canv_Rich.Text = richContent.Text;
-            //°Ñcode×ªÎªemoji
+            //æŠŠcodeè½¬ä¸ºemoji
             canv_Rich.Rtf = GetLink(canv_Rich.Text);
-            canv_Rich.Font = new Font(Applicate.SetFont, 10);//ÓÃÀ´ÉèÖÃ×ÖÌåµÄ£¬Ò»¶¨²»ÄÜÉÙ£¬²»È»»á±ä³ÉÄ¬ÈÏµÄËÎÌåÁË
+            canv_Rich.Font = new Font(Applicate.SetFont, 10);//ç”¨æ¥è®¾ç½®å­—ä½“çš„ï¼Œä¸€å®šä¸èƒ½å°‘ï¼Œä¸ç„¶ä¼šå˜æˆé»˜è®¤çš„å®‹ä½“äº†
             richContent.Rtf = canv_Rich.Rtf;
         }
         public static string GetLink(string msgText)
@@ -981,9 +981,9 @@ namespace WinFrmTalk.View
                 richTextBox.InsertLink(match.Value);
             }
 
-            //ÕıÔò±í´ïÊ½
+            //æ­£åˆ™è¡¨è¾¾å¼
 
-            //emajio±íÇé
+            //emajioè¡¨æƒ…
             msg = Regex.Matches(richTextBox.Text, @"\[[a-z_-]*\]", RegexOptions.IgnoreCase | RegexOptions.Singleline);
             emoji_count = msg.Count;
             int index = 0;
@@ -993,7 +993,7 @@ namespace WinFrmTalk.View
                 newStr[index] = item.Groups[0].Value;
                 index++;
             }
-            //Ñ­»·Ìæ»»codeÎª±íÇéÍ¼Æ¬
+            //å¾ªç¯æ›¿æ¢codeä¸ºè¡¨æƒ…å›¾ç‰‡
             for (int i = 0; i < newStr.Length; i++)
             {
                 //bool isMin = friends.userId == Applicate.MyAccount.userId;
@@ -1006,11 +1006,11 @@ namespace WinFrmTalk.View
         }
         #endregion
 
-        #region ²éÑ¯ÏûÏ¢¼ÇÂ¼
+        #region æŸ¥è¯¢æ¶ˆæ¯è®°å½•
 
         public void HistorySearch(string content)
         {
-            lblAll.Text = LanguageXmlUtils.GetValue("history_all", "È«²¿");
+            lblAll.Text = LanguageXmlUtils.GetValue("history_all", "å…¨éƒ¨");
             SelectedType(lblAll);
             is_check = lblAll;
             flpTable.Controls.Clear();
@@ -1054,7 +1054,7 @@ namespace WinFrmTalk.View
 
                 BindData(newListData);
 
-                lblAll.Text = LanguageXmlUtils.GetValue("search", "ËÑË÷");
+                lblAll.Text = LanguageXmlUtils.GetValue("search", "æœç´¢");
                 SelectedType(lblAll);
                 is_check = lblAll;
             }
@@ -1063,7 +1063,7 @@ namespace WinFrmTalk.View
                 mAdapter.isclickFileButton = false;
                 BindData(listData);
 
-                lblAll.Text = LanguageXmlUtils.GetValue("history_all", "È«²¿");
+                lblAll.Text = LanguageXmlUtils.GetValue("history_all", "å…¨éƒ¨");
                 SelectedType(lblAll);
                 is_check = lblAll;
             }
@@ -1076,13 +1076,13 @@ namespace WinFrmTalk.View
                 is_check.ForeColor = Color.Black;
             }
 
-            //µã»÷µ±Ç°
+            //ç‚¹å‡»å½“å‰
             label.ForeColor = ColorTranslator.FromHtml("#1AAD19");
         }
 
-        #region µ¼³öexcel ÎÄ¼şºÍ txt ÎÄ¼ş
+        #region å¯¼å‡ºexcel æ–‡ä»¶å’Œ txt æ–‡ä»¶
         /// <summary>
-        /// »ñÈ¡ÎÄ¼şÂ·¾¶
+        /// è·å–æ–‡ä»¶è·¯å¾„
         /// </summary>
         /// <returns></returns>
 
@@ -1090,7 +1090,7 @@ namespace WinFrmTalk.View
         {
             string personImgPath = "";
             FolderBrowserDialog dialog = new FolderBrowserDialog();
-            dialog.Description = LanguageXmlUtils.GetValue("choose_file_path", "ÇëÑ¡ÔñÎÄ¼şÂ·¾¶");
+            dialog.Description = LanguageXmlUtils.GetValue("choose_file_path", "è¯·é€‰æ‹©æ–‡ä»¶è·¯å¾„");
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
@@ -1102,7 +1102,7 @@ namespace WinFrmTalk.View
         }
 
         /// <summary>
-        /// »ñÈ¡Óë¸ÃºÃÓÑµÄËùÓĞÁÄÌì¼ÇÂ¼£¨²»·ÖÒ³)
+        /// è·å–ä¸è¯¥å¥½å‹çš„æ‰€æœ‰èŠå¤©è®°å½•ï¼ˆä¸åˆ†é¡µ)
         /// </summary>
         /// <param name="toUserid"></param>
         /// <returns></returns>
@@ -1129,7 +1129,7 @@ namespace WinFrmTalk.View
             CmsChat.Show(lblNext, 0, lblNext.Height);
         }
         /// <summary>
-        /// µ¼³öexcelÎÄ¼ş
+        /// å¯¼å‡ºexcelæ–‡ä»¶
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -1140,7 +1140,7 @@ namespace WinFrmTalk.View
             MenuItemInputEls.Enabled = false;
             string personImgPath = "";
             FolderBrowserDialog dialog = new FolderBrowserDialog();
-            dialog.Description = LanguageXmlUtils.GetValue("choose_file_path", "ÇëÑ¡ÔñÎÄ¼şÂ·¾¶");
+            dialog.Description = LanguageXmlUtils.GetValue("choose_file_path", "è¯·é€‰æ‹©æ–‡ä»¶è·¯å¾„");
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
@@ -1162,11 +1162,11 @@ namespace WinFrmTalk.View
 
                 MenuItemInputEls.Enabled = true;
                 HttpUtils.Instance.PopView(frmSchedule);
-                ShowTip("µ¼³ö³É¹¦");
+                ShowTip("å¯¼å‡ºæˆåŠŸ");
             };
         }
         /// <summary>
-        ///  µ¼³ötxtÎÄ¼ş
+        ///  å¯¼å‡ºtxtæ–‡ä»¶
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -1177,7 +1177,7 @@ namespace WinFrmTalk.View
             this.MenuIteminputTxt.Enabled = false;
             string personImgPath = "";
             FolderBrowserDialog dialog = new FolderBrowserDialog();
-            dialog.Description = LanguageXmlUtils.GetValue("choose_file_path", "ÇëÑ¡ÔñÎÄ¼şÂ·¾¶");
+            dialog.Description = LanguageXmlUtils.GetValue("choose_file_path", "è¯·é€‰æ‹©æ–‡ä»¶è·¯å¾„");
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
@@ -1196,7 +1196,7 @@ namespace WinFrmTalk.View
             {
                 MenuIteminputTxt.Enabled = true;
                 HttpUtils.Instance.PopView(frmSchedule);
-                ShowTip("µ¼³ö³É¹¦");
+                ShowTip("å¯¼å‡ºæˆåŠŸ");
             };
         }
 

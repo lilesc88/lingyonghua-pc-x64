@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using WinFrmTalk.Dictionarys;
@@ -17,12 +17,12 @@ namespace WinFrmTalk.Controls.LayouotControl
 
         #region PublicMember
         /// <summary>
-        /// Ö÷´°¿Ú¶ÔÏó
+        /// ä¸»çª—å£å¯¹è±¡
         /// </summary>
         public FrmMain MainForm { get; set; }
 
         /// <summary>
-        /// ÅĞ¶ÏÏÔÊ¾µÄÒ³
+        /// åˆ¤æ–­æ˜¾ç¤ºçš„é¡µ
         /// </summary>
         public MainTabIndex SelectedIndex
         {
@@ -57,7 +57,7 @@ namespace WinFrmTalk.Controls.LayouotControl
                             return;
                         }
 
-                        if (FriendInfo.Friend.UserId == "10001")//ºÃÓÑÑéÖ¤
+                        if (FriendInfo.Friend.UserId == "10001")//å¥½å‹éªŒè¯
                         {
                             userOfficialAccount.Visible = false;
                             UserVerifyPage.Visible = true;
@@ -66,7 +66,7 @@ namespace WinFrmTalk.Controls.LayouotControl
 
 
                         }
-                        else if (FriendInfo.Friend.UserId == "9999")//ºÚÃûµ¥
+                        else if (FriendInfo.Friend.UserId == "9999")//é»‘åå•
                         {
                             userOfficialAccount.Visible = false;
                             BlockPage.Visible = true;
@@ -74,14 +74,14 @@ namespace WinFrmTalk.Controls.LayouotControl
                             FriendInfo.Visible = false;
 
                         }
-                        else if (FriendInfo.Friend.UserId == Friend.ID_PUBLIC_LIST)//¹«ÖÚºÅ
+                        else if (FriendInfo.Friend.UserId == Friend.ID_PUBLIC_LIST)//å…¬ä¼—å·
                         {
                             userOfficialAccount.Visible = true;
                             BlockPage.Visible = false;
                             UserVerifyPage.Visible = false;
                             FriendInfo.Visible = false;
                         }
-                        else//ºÃÓÑ
+                        else//å¥½å‹
                         {
                             userOfficialAccount.Visible = false;
                             FriendInfo.Visible = true;
@@ -120,7 +120,7 @@ namespace WinFrmTalk.Controls.LayouotControl
                         FriendInfo.Visible = false;
                         sendMsgPanel.Visible = false;
                         UserVerifyPage.Visible = false;
-                        BlockPage.LoadData();//ÏÔÊ¾ºÚÃûµ¥
+                        BlockPage.LoadData();//æ˜¾ç¤ºé»‘åå•
                         BlockPage.Visible = true;
                         userOfficialAccount.Visible = false;
                         break;
@@ -159,13 +159,13 @@ namespace WinFrmTalk.Controls.LayouotControl
         }
         #endregion
 
-        #region ¼ÓÔØÊÂ¼ş
+        #region åŠ è½½äº‹ä»¶
         private void MainPageLayout_Load(object sender, System.EventArgs e)
         {
             sendMsgPanel.Visible = true;
-            sendMsgPanel.SetChooseFriend(new Friend());     //±ÜÃâÃ»ÓĞÑ¡ÔñÁÄÌì¶ÔÏóÊ±£¬È´ÊÕµ½Í¨Öªµ¼ÖÂ·¢Éú´íÎó
+            sendMsgPanel.SetChooseFriend(new Friend());     //é¿å…æ²¡æœ‰é€‰æ‹©èŠå¤©å¯¹è±¡æ—¶ï¼Œå´æ”¶åˆ°é€šçŸ¥å¯¼è‡´å‘ç”Ÿé”™è¯¯
             sendMsgPanel.Visible = false;
-            this.FriendInfo.SendAction = SendFriendMessage;//ÉèÖÃºÃÓÑ·¢ËÍ°´Å¥¶¯×÷
+            this.FriendInfo.SendAction = SendFriendMessage;//è®¾ç½®å¥½å‹å‘é€æŒ‰é’®åŠ¨ä½œ
             this.groupInfo.SendAction = SendGroupMessage;//
             RegisterMessenger();
         }
@@ -176,7 +176,7 @@ namespace WinFrmTalk.Controls.LayouotControl
 
             Messenger.Default.Register<MessageObject>(this, MessageActions.XMPP_UPDATE_ROOM_DELETE, XmppDeleteGroup);
 
-            // ¼àÌıºÚÃûµ¥
+            // ç›‘å¬é»‘åå•
             Messenger.Default.Register<Friend>(this, MessageActions.ADD_BLACKLIST, OnBlackListUpdate);
         }
 
@@ -184,12 +184,12 @@ namespace WinFrmTalk.Controls.LayouotControl
         {
             if (groupInfo.GroupInfo != null && groupInfo.GroupInfo.UserId == msg.ChatJid)
             {
-                groupInfo.GroupInfo = new Friend();//ÖØÖÃÓÒ²àÈº×éÏêÇéÃæ°å
+                groupInfo.GroupInfo = new Friend();//é‡ç½®å³ä¾§ç¾¤ç»„è¯¦æƒ…é¢æ¿
             }
 
             if (IsChatFriend(msg.ChatJid))
             {
-                //ÖØÖÃÓÒ²àÏûÏ¢ÆøÅİÒ³Ãæ
+                //é‡ç½®å³ä¾§æ¶ˆæ¯æ°”æ³¡é¡µé¢
                 sendMsgPanel.SetChooseFriend(null);
                 sendMsgPanel.Visible = false;
             }
@@ -210,7 +210,7 @@ namespace WinFrmTalk.Controls.LayouotControl
             MainForm.SendMessageToFriend(group.Clone());
         }
 
-        #region ·¢ËÍÏûÏ¢
+        #region å‘é€æ¶ˆæ¯
         private void SendFriendMessage(Friend friend)
         {
             var user = friend.GetByUserId();
@@ -218,9 +218,9 @@ namespace WinFrmTalk.Controls.LayouotControl
         }
         #endregion
 
-        #region ÉèÖÃÁÄÌì¶ÔÏó
+        #region è®¾ç½®èŠå¤©å¯¹è±¡
         /// <summary>
-        /// ÉèÖÃÁÄÌì¶ÔÏó
+        /// è®¾ç½®èŠå¤©å¯¹è±¡
         /// </summary>
         /// <param name="friend"></param>
         /// 
@@ -244,9 +244,9 @@ namespace WinFrmTalk.Controls.LayouotControl
         }
         #endregion
 
-        #region ÉèÖÃÏÔÊ¾ºÃÓÑ
+        #region è®¾ç½®æ˜¾ç¤ºå¥½å‹
         /// <summary>
-        /// ÉèÖÃÏÔÊ¾ºÃÓÑ(ĞèÏÈÏÔÊ¾±¾µØÊı¾İÔÙ´Ó½Ó¿Ú»ñÈ¡²¢Ë¢ĞÂÊı¾İ)
+        /// è®¾ç½®æ˜¾ç¤ºå¥½å‹(éœ€å…ˆæ˜¾ç¤ºæœ¬åœ°æ•°æ®å†ä»æ¥å£è·å–å¹¶åˆ·æ–°æ•°æ®)
         /// </summary>
         /// <param name="friend"></param>
         public void SelectFriend(Friend friend)
@@ -263,7 +263,7 @@ namespace WinFrmTalk.Controls.LayouotControl
 
             FriendInfo.DisplayFriend(friend);
 
-            if (FriendInfo.Friend.UserId == Friend.ID_NEW_FRIEND)//ºÃÓÑÑéÖ¤
+            if (FriendInfo.Friend.UserId == Friend.ID_NEW_FRIEND)//å¥½å‹éªŒè¯
             {
                 userOfficialAccount.Visible = false;
                 FriendInfo.Visible = false;
@@ -271,21 +271,21 @@ namespace WinFrmTalk.Controls.LayouotControl
                 UserVerifyPage.Visible = true;
                 UserVerifyPage.LoadData();
             }
-            else if (FriendInfo.Friend.UserId == Friend.ID_BAN_LIST)//ºÚÃûµ¥
+            else if (FriendInfo.Friend.UserId == Friend.ID_BAN_LIST)//é»‘åå•
             {
                 userOfficialAccount.Visible = false;
                 FriendInfo.Visible = false;
                 BlockPage.Visible = true;
                 UserVerifyPage.Visible = false;
             }
-            else if (FriendInfo.Friend.UserId == Friend.ID_PUBLIC_LIST)//¹«ÖÚºÅÁĞ±í
+            else if (FriendInfo.Friend.UserId == Friend.ID_PUBLIC_LIST)//å…¬ä¼—å·åˆ—è¡¨
             {
                 FriendInfo.Visible = false;
                 BlockPage.Visible = false;
                 UserVerifyPage.Visible = false;
                 userOfficialAccount.Visible = true;
             }
-            else//ºÃÓÑ
+            else//å¥½å‹
             {
                 userOfficialAccount.Visible = false;
                 FriendInfo.Visible = true;
@@ -296,9 +296,9 @@ namespace WinFrmTalk.Controls.LayouotControl
         #endregion
 
 
-        #region ÉèÖÃÏÔÊ¾ÁÄÌì
+        #region è®¾ç½®æ˜¾ç¤ºèŠå¤©
         /// <summary>
-        /// ÉèÖÃÏÔÊ¾ºÃÓÑ(ĞèÏÈÏÔÊ¾±¾µØÊı¾İÔÙ´Ó½Ó¿Ú»ñÈ¡²¢Ë¢ĞÂÊı¾İ)
+        /// è®¾ç½®æ˜¾ç¤ºå¥½å‹(éœ€å…ˆæ˜¾ç¤ºæœ¬åœ°æ•°æ®å†ä»æ¥å£è·å–å¹¶åˆ·æ–°æ•°æ®)
         /// </summary>
         /// <param name="friend"></param>
         public void SelectChat(Friend friend)
@@ -317,11 +317,11 @@ namespace WinFrmTalk.Controls.LayouotControl
         #endregion
 
 
-        #region ÏÔÊ¾ÈºÏêÇé
+        #region æ˜¾ç¤ºç¾¤è¯¦æƒ…
         /// <summary>
-        /// ÏÔÊ¾ÈºÏêÇé
+        /// æ˜¾ç¤ºç¾¤è¯¦æƒ…
         /// </summary>
-        /// <param name="item">ÈºÏêÇé</param>
+        /// <param name="item">ç¾¤è¯¦æƒ…</param>
         public void SelectGroup(Friend item)
         {
             groupInfo.DisplayGroup(item);
@@ -338,7 +338,7 @@ namespace WinFrmTalk.Controls.LayouotControl
 
         #endregion
 
-        // ÅĞ¶ÏÖ÷´°¿ÚÓÒ²àÊÇ·ñÓĞÁÄÌì¶ÔÏó
+        // åˆ¤æ–­ä¸»çª—å£å³ä¾§æ˜¯å¦æœ‰èŠå¤©å¯¹è±¡
         public bool IsNullChatFriend()
         {
 
@@ -369,7 +369,7 @@ namespace WinFrmTalk.Controls.LayouotControl
                 }
             }
 
-            // ±éÀúËùÓĞ¶ÀÁ¢´°¿Ú
+            // éå†æ‰€æœ‰ç‹¬ç«‹çª—å£
             foreach (var tmpform in Application.OpenForms)
             {
                 if (tmpform is FrmNewTable)
@@ -386,7 +386,7 @@ namespace WinFrmTalk.Controls.LayouotControl
             return false;
         }
 
-        // ÅĞ¶ÏÖ÷´°¿ÚÓÒ²àÁÄÌì¶ÔÏóÊÇ·ñÊÇ userid
+        // åˆ¤æ–­ä¸»çª—å£å³ä¾§èŠå¤©å¯¹è±¡æ˜¯å¦æ˜¯ userid
         public bool IsChatFriend(string userid)
         {
             if (!IsNullChatFriend() && sendMsgPanel.ChooseTarget.UserId.Equals(userid))
@@ -397,7 +397,7 @@ namespace WinFrmTalk.Controls.LayouotControl
             return false;
         }
 
-        // ÊÇ·ñÏÔÊ¾µ±Ç°ÅóÓÑĞÅÏ¢Ãæ°å
+        // æ˜¯å¦æ˜¾ç¤ºå½“å‰æœ‹å‹ä¿¡æ¯é¢æ¿
         public bool IsCurrtFirend(string userId)
         {
 
@@ -412,7 +412,7 @@ namespace WinFrmTalk.Controls.LayouotControl
             return false;
         }
 
-        // ÊÇ·ñÏÔÊ¾µ±Ç°Èº×éĞÅÏ¢Ãæ°å
+        // æ˜¯å¦æ˜¾ç¤ºå½“å‰ç¾¤ç»„ä¿¡æ¯é¢æ¿
         public bool IsCurrtGroup(string roomJid)
         {
 
@@ -445,15 +445,15 @@ namespace WinFrmTalk.Controls.LayouotControl
                         return;
                     }
                     var userid = FriendInfo.Friend.UserId;
-                    if (Friend.ID_NEW_FRIEND.Equals(userid))//ºÃÓÑÑéÖ¤
+                    if (Friend.ID_NEW_FRIEND.Equals(userid))//å¥½å‹éªŒè¯
                     {
                         UserVerifyPage.Refresh();
                     }
-                    else if (Friend.ID_BAN_LIST.Equals(userid))//ºÚÃûµ¥
+                    else if (Friend.ID_BAN_LIST.Equals(userid))//é»‘åå•
                     {
                         BlockPage.Refresh();
                     }
-                    else//ºÃÓÑ
+                    else//å¥½å‹
                     {
                         FriendInfo.Refresh();
                     }

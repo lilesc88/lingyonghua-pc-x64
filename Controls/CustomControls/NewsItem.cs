@@ -59,6 +59,9 @@ namespace WinFrmTalk.Controls.CustomControls
                 // 刷新@我
                 RefreshAtMeTip();
 
+                // 2026-11-18 fix: also refresh unread badge when data binds
+                RefreshUnreadNum();
+
 
                 // 不再去刷新头像和未读
             }
@@ -174,11 +177,96 @@ namespace WinFrmTalk.Controls.CustomControls
         }
 
 
-        // 刷新未读角标
         public void RefreshUnreadNum()
         {
             mCurrtUnreadNum = FriendData.MsgNum;
             mRedPoint.UnreadCount = mCurrtUnreadNum;
+            mRedPoint.Visible = (mCurrtUnreadNum <= 0) && FriendData.Nodisturb == 1;
+
+            // 2026-11-18: badge is painted by the item itself (OnPaint).
+            // Child-control approach failed to show on some Win11/125% DPI machines.
+            try { this.Invalidate(); } catch { }
+            LogRedDot();
+        }
+
+        // --- unread badge drawing ---
+        private int BadgeWidth(Graphics g, string txt, Font f)
+        {
+            SizeF sz = g.MeasureString(txt, f);
+            int w = (int)Math.Ceiling(sz.Width) + 8;
+            return w < 18 ? 18 : w;
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            if (mCurrtUnreadNum <= 0) return;
+            try
+            {
+                Graphics g = e.Graphics;
+                g.SmoothingMode = SmoothingMode.AntiAlias;
+                string txt = mCurrtUnreadNum > 99 ? "99+" : mCurrtUnreadNum.ToString();
+                using (Font f = new Font("宋体", 8f, FontStyle.Regular))
+                {
+                    int w = BadgeWidth(g, txt, f);
+                    int h = 18;
+                    int x = this.Width - w - 8;
+                    int y = this.Height - h - 8;
+                    if (x < 0) x = 0;
+                    if (y < 0) y = 0;
+                    using (System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath())
+                    {
+                        int r = h / 2;
+                        path.AddArc(x, y, h, h, 90, 180);
+                        path.AddArc(x + w - h, y, h, h, 270, 180);
+                        path.CloseFigure();
+                        using (SolidBrush b = new SolidBrush(Color.FromArgb(244, 67, 54)))
+                        {
+                            g.FillPath(b, path);
+                        }
+                    }
+                    using (SolidBrush tb = new SolidBrush(Color.White))
+                    using (StringFormat sf = new StringFormat())
+                    {
+                        sf.Alignment = StringAlignment.Center;
+                        sf.LineAlignment = StringAlignment.Center;
+                        g.DrawString(txt, f, tb, new RectangleF(x, y, w, h), sf);
+                    }
+                }
+            }
+            catch { }
+        }
+
+        private void LogRedDot()
+        {
+            try
+            {
+                string dir = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "WinFrmTalk");
+                System.IO.Directory.CreateDirectory(dir);
+                string file = System.IO.Path.Combine(dir, "reddot.log");
+                var fi = new System.IO.FileInfo(file);
+                if (fi.Exists && fi.Length > 2 * 1024 * 1024) fi.Delete();
+                float dpi = 96f;
+                try { using (var g = this.CreateGraphics()) { dpi = g.DpiX; } } catch { }
+                string[] names = this.GetType().Name.Split((char)0);
+                string line = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+                    + " uid=" + FriendData.UserId
+                    + " msgNum=" + mCurrtUnreadNum
+                    + " paint=" + (mCurrtUnreadNum > 0 ? "yes" : "no")
+                    + " item=" + this.Width + "x" + this.Height
+                    + " dpi=" + dpi
+                    + " visible=" + this.Visible
+                    + " parentVisible=" + (this.Parent != null && this.Parent.Visible)
+                    + Environment.NewLine;
+                System.IO.File.AppendAllText(file, line);
+            }
+            catch { }
+        }
+
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            base.OnSizeChanged(e);
+            try { this.Invalidate(); } catch { }
         }
 
         // 刷新置顶和选中

@@ -294,6 +294,15 @@ namespace WinFrmTalk.Controls.CustomControls
             msgRecord = new DownMsgRecord(this);    //实例化漫游接口
             //绑定列表添加控件的方法
             xListView.panel1.ControlAdded += Panel1_ControlAdded;
+            // 2026-11-20 定时刷新对方IP（切换/自动恢复会话都能触发）
+            try
+            {
+                peerIpTimer = new System.Windows.Forms.Timer();
+                peerIpTimer.Interval = 4000;
+                peerIpTimer.Tick += (s1, e1) => { try { RefreshPeerIpByTarget(); } catch { } };
+                peerIpTimer.Start();
+            }
+            catch { }
 
             xListView.FooterRefresh += () =>
             {
@@ -984,6 +993,8 @@ namespace WinFrmTalk.Controls.CustomControls
                 isCanTrigger_NameChanged = true;
                 //修改标题
                 labName.Text = EQControlManager.StrAddEllipsis(friend.GetRemarkName(), labName.Font, 240);
+                // 2026-11-20 标题栏显示对方登录IP
+                LoadPeerIpInfo(friend.IsGroup == 1 ? null : friend.UserId);
 
                 // 刷新会话按钮UI
                 ChangeTalksBtnUI(string.Empty);
@@ -1423,7 +1434,7 @@ namespace WinFrmTalk.Controls.CustomControls
                     msg.BubbleWidth = 0; msg.BubbleHeight = 0;
                     msgTabAdapter.TargetMsgData.UpdateMsg(msg);
                     int index = msgTabAdapter.msgList.FindIndex(m => m.messageId == msg.messageId);
-                    xListView.RefreshItem(index);
+                    if (index >= 0) xListView.RefreshItem(index);
                     RollBottom_HaveEmpty();
                 }
                 catch (Exception ex) { LogHelper.log.Error("-------------替换为remind类型气泡出错，方法（ReplaceMsgToRemind）: \r\n" + ex.Message); }
@@ -2863,6 +2874,9 @@ namespace WinFrmTalk.Controls.CustomControls
             MessageObject msg = GetMsgBySelectCrl();
             if (msg == null)
                 return;
+            // 2026-11-19 需求：删除需二次确认（双向删除）
+            if (MessageBox.Show("删除后对方也将看不到这条消息，确定删除？", "删除确认", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK)
+                return;
             //获取最后一条消息
             MessageObject lastMsg = msgTabAdapter.TargetMsgData.GetLastIndexMsg();
             //从界面中移除
@@ -2919,7 +2933,7 @@ namespace WinFrmTalk.Controls.CustomControls
                         //避免重复右键菜单，先更新UI
                         msgTabAdapter.TargetMsgData.UpdateMsg(msg);
                         int index = msgTabAdapter.msgList.FindIndex(m => m.messageId == msg.messageId);
-                        xListView.RefreshItem(index);
+                        if (index >= 0) xListView.RefreshItem(index);
                     }));
                 }
 
@@ -2950,8 +2964,179 @@ namespace WinFrmTalk.Controls.CustomControls
             RollBottom_HaveEmpty();
         }
 
+        #region 编辑消息（2026-11-19）
+        private ToolStripMenuItem menuItem_Edit;
+
+        private void EnsureEditMenuItem()
+        {
+            if (menuItem_Edit != null) return;
+            menuItem_Edit = new ToolStripMenuItem();
+            menuItem_Edit.Name = "menuItem_Edit";
+            menuItem_Edit.Text = "编辑";
+            menuItem_Edit.Size = new System.Drawing.Size(154, 22);
+            menuItem_Edit.Visible = false;
+            menuItem_Edit.Click += MenuItem_Edit_Click;
+            int idx = cmsMsgMenu.Items.IndexOfKey("menuItem_Delete");
+            if (idx >= 0)
+                cmsMsgMenu.Items.Insert(idx, menuItem_Edit);
+            else
+                cmsMsgMenu.Items.Add(menuItem_Edit);
+        }
+
+        private EQRichTextBoxControl FindInlineEditControl(Control root)
+        {
+            if (root is EQRichTextBoxControl rich) return rich;
+            foreach (Control child in root.Controls)
+            {
+                EQRichTextBoxControl found = FindInlineEditControl(child);
+                if (found != null) return found;
+            }
+            return null;
+        }
+
+        private void MenuItem_Edit_Click(object sender, EventArgs e)
+        {
+            if (selectControl == null || selectControl.Name.IndexOf("talk_panel_") < 0) return;
+            MessageObject msg = GetMsgBySelectCrl();
+            if (msg == null) return;
+            if (msg.type != kWCMessageType.Text || msg.isReadDel == 1)
+            {
+                HttpUtils.Instance.ShowTip("该消息不支持编辑");
+                return;
+            }
+            EQRichTextBoxControl rich = FindInlineEditControl(selectControl);
+            if (rich == null)
+            {
+                HttpUtils.Instance.ShowTip("该消息不支持编辑");
+                return;
+            }
+            rich.BeginInlineEdit((newText) =>
+            {
+                if (UIUtils.IsNull(newText))
+                {
+                    HttpUtils.Instance.ShowTip("内容不能为空");
+                    return;
+                }
+                if (newText == msg.content) return;
+                string oldContent = msg.content;
+                bool wasRead = msg.isRead == 1;
+                try { var dbSnap = msg.GetMessageObject(); if (dbSnap != null && dbSnap.isRead == 1) wasRead = true; } catch { }
+                EditDebugLog("commit id=" + msg.messageId + " isRead=" + msg.isRead + " from=" + msg.fromUserId + " new=" + newText);
+                // 2026-11-19 先落地本机显示并立即通知其他端，不依赖 HTTP 回调
+                try
+                {
+                    msg.content = newText;
+                    msg.UpdateMessageContent();
+                    msg.BubbleWidth = 0;
+                    msg.BubbleHeight = 0;
+                }
+                catch (Exception ex) { EditDebugLog("save-error " + ex.Message); }
+                try { rich.ApplyEditedContent(newText); } catch (Exception ex) { EditDebugLog("apply-error " + ex.Message); }
+                try
+                {
+                    int idx0 = msgTabAdapter.msgList.FindIndex(m => m.messageId == msg.messageId);
+                    if (idx0 >= 0 && IsHandleCreated) Invoke(new Action(() => xListView.RefreshItem(idx0)));
+                }
+                catch (Exception ex) { EditDebugLog("refresh-error " + ex.Message); }
+                // 2026-11-19 编辑不得改变已读状态：保留编辑前状态并重绘
+                try
+                {
+                    // 2026-11-20 keep it read once it was read: never downgrade, and persist to db
+                    if (wasRead && msg.isRead != 1)
+                    {
+                        msg.isRead = 1;
+                        try { msg.UpdateIsRead(msg.messageId); } catch { }
+                        Messenger.Default.Send(msg, MessageActions.XMPP_UPDATE_RECEIVED_READ);
+                        EditDebugLog("readstate-kept-read");
+                    }
+                }
+                catch (Exception ex) { EditDebugLog("readstate-error " + ex.Message); }
+                try
+                {
+                    Friend fd0 = msg.GetFriend();
+                    fd0.UpdateLastContent(newText, msg.timeSend);
+                    Messenger.Default.Send(fd0, token: MessageActions.UPDATE_FRIEND_LAST_CONTENT);
+                }
+                catch (Exception ex) { EditDebugLog("lastcontent-error " + ex.Message); }
+                // 2026-11-19 编辑前向服务端确认该消息的真实已读状态（本机内存可能因回执丢失而过期）
+                try
+                {
+                    HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "tigase/getMessage")
+                        .AddParams("access_token", Applicate.Access_Token)
+                        .AddParams("type", msg.isGroup == 0 ? "1" : "2")
+                        .AddParams("messageId", msg.messageId)
+                        .AddParams("roomJid", msg.toUserId)
+                        .Build().ExecuteJson<Newtonsoft.Json.Linq.JObject>((ok, o) =>
+                        {
+                            try
+                            {
+                                if (!ok || o == null) return;
+                                var data = o["data"];
+                                if (data == null) return;
+                                var ir = data["isRead"];
+                                int v = 0;
+                                if (ir != null) int.TryParse(ir.ToString(), out v);
+                                EditDebugLog("server-readstate v=" + v);
+                                if (v == 1)
+                                {
+                                    msg.isRead = 1;
+                                    try { msg.UpdateIsRead(msg.messageId); } catch { }
+                                    Messenger.Default.Send(msg, MessageActions.XMPP_UPDATE_RECEIVED_READ);
+                                }
+                            }
+                            catch { }
+                        });
+                }
+                catch (Exception ex) { EditDebugLog("readstate-query-error " + ex.Message); }
+                try { ShiKuManager.SendEditMessage(msg.GetFriend(), msg, newText); EditDebugLog("send203-ok id=" + msg.messageId); }
+                catch (Exception ex) { EditDebugLog("send203-error " + ex.Message); }
+                HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "tigase/updateMsg")
+                    .AddParams("access_token", Applicate.Access_Token)
+                    .AddParams("type", msg.isGroup == 0 ? "1" : "2")
+                    .AddParams("messageId", msg.messageId)
+                    .AddParams("content", newText)
+                    .AddParams("roomJid", msg.toUserId)
+                    .Build().ExecuteJson<object>((success, obj) =>
+                    {
+                        if (!success)
+                        {
+                            EditDebugLog("server-fail id=" + msg.messageId);
+                            // 2026-11-20: enqueue retry so the edit eventually persists server-side
+                            MsgChangeRetry.EnqueueEdit(msg.messageId, newText, msg.isGroup, msg.toUserId);
+                            HttpUtils.Instance.ShowTip("编辑失败，请稍后重试");
+                            return;
+                        }
+                        EditDebugLog("server-ok id=" + msg.messageId);
+                    });
+            });
+        }
+
+        // 2026-11-19 编辑流程诊断日志（%LOCALAPPDATA%\WinFrmTalk\edit_debug.log）
+        private static void EditDebugLog(string text)
+        {
+            try
+            {
+                string dir = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "WinFrmTalk");
+                if (!System.IO.Directory.Exists(dir)) System.IO.Directory.CreateDirectory(dir);
+                System.IO.File.AppendAllText(System.IO.Path.Combine(dir, "edit_debug.log"),
+                    DateTime.Now.ToString("HH:mm:ss.fff") + " " + text + Environment.NewLine);
+            }
+            catch { }
+        }
+        #endregion
+
         private void RecallMsg(MessageObject msg, bool isSendRecall = false)
         {
+            // 2026-11-19 收到消息变更通知：删除类直接移除气泡
+            if (msg.type == kWCMessageType.EditMessage)
+            {
+                if (msg.GetFriend().UserId == ChooseTarget.UserId)
+                {
+                    Invoke(new Action(() => RemoveMsgOfPanel(msg.messageId)));
+                }
+                return;
+            }
+
             //该消息是否为当前聊天对象
             if (msg.GetFriend().UserId != ChooseTarget.UserId)
                 return;
@@ -2964,7 +3149,7 @@ namespace WinFrmTalk.Controls.CustomControls
                     msgTabAdapter.TargetMsgData.UpdateMsg(msg);
                     //var s = msgTabAdapter.msgList[rowIndex];
                     int index = msgTabAdapter.msgList.FindIndex(m => m.messageId == msg.messageId);
-                    xListView.RefreshItem(index);
+                    if (index >= 0) xListView.RefreshItem(index);
                     RollBottom_HaveEmpty();
                 }));
                 return;
@@ -2979,7 +3164,7 @@ namespace WinFrmTalk.Controls.CustomControls
                     msgTabAdapter.TargetMsgData.UpdateMsg(msg);
                     //var s = msgTabAdapter.msgList[rowIndex];
                     int index = msgTabAdapter.msgList.FindIndex(m => m.messageId == msg.messageId);
-                    xListView.RefreshItem(index);
+                    if (index >= 0) xListView.RefreshItem(index);
                     RollBottom_HaveEmpty();
                 }));
             }
@@ -3535,9 +3720,15 @@ namespace WinFrmTalk.Controls.CustomControls
                 //设置右键菜单的可见度
                 if (msg != null)
                     new KWTypeMenuStripDictionary().SettingMenuStripVisible(ref cmsMsgMenu, msg.type, isOneself, msg.isReadDel == 1);
-                //如果自己为群主或管理员，则可以撤回所有信息(红包和转账不能被撤回)
-                if (ChooseTarget.IsGroup == 1 && JudgeIsAdmin(Applicate.MyAccount.userId) && msg.type != kWCMessageType.RedPacket && msg.type != kWCMessageType.TRANSFER)
-                    cmsMsgMenu.Items["menuItem_Recall"].Visible = true;
+                // 2026-11-19 需求：去除撤回功能；自己的文本消息可编辑
+                EnsureEditMenuItem();
+                if (cmsMsgMenu.Items.ContainsKey("menuItem_Recall"))
+                    cmsMsgMenu.Items["menuItem_Recall"].Visible = false;
+                if (msg != null)
+                {
+                    bool canEdit = isOneself && msg.type == kWCMessageType.Text && msg.isReadDel == 0 && msg.isSend != 2;
+                    menuItem_Edit.Visible = canEdit;
+                }
                 //除了阅后即焚，所有自己的消息都可以进行录制（只能往后录制）
                 if (msg.fromUserId == Applicate.MyAccount.userId && msg.isReadDel == 0)
                 {
@@ -4212,6 +4403,158 @@ namespace WinFrmTalk.Controls.CustomControls
                     });
             }
         }
+        #endregion
+
+        #region 2026-11-20 对方登录IP（标题栏显示）
+        private static readonly System.Collections.Generic.Dictionary<string, System.Collections.Generic.KeyValuePair<string, DateTime>> peerIpCache
+            = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.KeyValuePair<string, DateTime>>();
+
+        private static readonly object peerIpLock = new object();
+
+        private System.Windows.Forms.Timer peerIpTimer;
+
+        private void RefreshPeerIpByTarget()
+        {
+            try
+            {
+                if (ChooseTarget == null)
+                {
+                    HidePeerIpInfo();
+                    return;
+                }
+                if (ChooseTarget.IsGroup == 1)
+                {
+                    HidePeerIpInfo();
+                    return;
+                }
+                if (lab_ip != null && lab_ip.Visible && !string.IsNullOrEmpty(lab_ip.Text))
+                {
+                    return;
+                }
+                LoadPeerIpInfo(ChooseTarget.UserId);
+            }
+            catch { }
+        }
+
+        private void LoadPeerIpInfo(string userId)
+        {
+            try
+            {
+                if (lab_ip == null || panTitle == null)
+                {
+                    return;
+                }
+                if (string.IsNullOrEmpty(userId) || ChooseTarget == null || ChooseTarget.IsGroup == 1)
+                {
+                    HidePeerIpInfo();
+                    return;
+                }
+                lock (peerIpLock)
+                {
+                    if (peerIpCache.ContainsKey(userId))
+                    {
+                        var cached = peerIpCache[userId];
+                        if ((DateTime.Now - cached.Value).TotalMinutes < 5)
+                        {
+                            ApplyPeerIpText(cached.Key, cached.Key.IndexOf("在线") >= 0);
+                            return;
+                        }
+                    }
+                }
+                HidePeerIpInfo();
+                string requestUserId = userId;
+                HttpUtils.Instance.Get().Url(Applicate.URLDATA.data.apiUrl + "user/ipInfo")
+                    .AddParams("access_token", Applicate.Access_Token)
+                    .AddParams("userId", requestUserId)
+                    .Build().ExecuteJson<Newtonsoft.Json.Linq.JObject>((ok, o) =>
+                    {
+                        try
+                        {
+                            if (lab_ip == null) return;
+                            if (ChooseTarget == null || ChooseTarget.UserId != requestUserId) return;
+                            if (!ok || o == null) { HidePeerIpInfo(); return; }
+                            // ExecuteJson 已剥掉外层信封，直接返回 data 节点；兼容两种结构
+                            Newtonsoft.Json.Linq.JToken data = o["data"];
+                            if (data == null || data.Type == Newtonsoft.Json.Linq.JTokenType.Null) { data = o; }
+                            string ip = data == null || data["ip"] == null ? "" : data["ip"].ToString();
+                            string area = data == null || data["area"] == null ? "" : data["area"].ToString();
+                            string online = data == null || data["online"] == null ? "0" : data["online"].ToString();
+                            if (string.IsNullOrEmpty(ip)) { HidePeerIpInfo(); return; }
+                            string text = "IP：" + ip + (string.IsNullOrEmpty(area) ? "" : "｜" + area) + "｜" + (online == "1" ? "在线" : "离线");
+                            ApplyPeerIpText(text, online == "1");
+                            EditDebugLog("ipinfo-ok ip=" + ip + " area=" + area + " online=" + online + " visible=" + lab_ip.Visible + " x=" + lab_ip.Left + " top=" + lab_ip.Top + " w=" + lab_ip.Width + " pantitle=" + (lab_ip.Parent == null ? -1 : lab_ip.Parent.Height));
+                            lock (peerIpLock)
+                            {
+                                peerIpCache[requestUserId] = new System.Collections.Generic.KeyValuePair<string, DateTime>(text, DateTime.Now);
+                            }
+                        }
+                        catch (Exception cex) { EditDebugLog("ipinfo-cberr " + cex.Message); }
+                    });
+            }
+            catch (Exception ex)
+            {
+                EditDebugLog("ipinfo-ex " + ex.Message);
+            }
+        }
+
+        private void HidePeerIpInfo()
+        {
+            try
+            {
+                if (lab_ip != null)
+                {
+                    lab_ip.Text = string.Empty;
+                    lab_ip.Visible = false;
+                }
+                if (lab_ipdot != null)
+                {
+                    lab_ipdot.Text = string.Empty;
+                    lab_ipdot.Visible = false;
+                }
+            }
+            catch { }
+        }
+
+        private void ApplyPeerIpText(string text, bool online)
+        {
+            try
+            {
+                if (lab_ip == null || panTitle == null || labName == null)
+                {
+                    return;
+                }
+                if (string.IsNullOrEmpty(text))
+                {
+                    HidePeerIpInfo();
+                    return;
+                }
+                int nameWidth = TextRenderer.MeasureText(labName.Text, labName.Font).Width;
+                if (nameWidth > 240) nameWidth = 240;
+                int startX = labName.Left + nameWidth + 12;
+                if (lab_ipdot != null)
+                {
+                    lab_ipdot.Location = new Point(startX, 11);
+                    lab_ipdot.ForeColor = online ? Color.FromArgb(55, 194, 74) : Color.FromArgb(190, 190, 190);
+                    lab_ipdot.Text = online ? "●" : "○";
+                    lab_ipdot.Visible = true;
+                    lab_ipdot.BringToFront();
+                }
+                int ipX = startX + 12;
+                int maxW = panTitle.Width - ipX - 62;
+                if (maxW < 80)
+                {
+                    HidePeerIpInfo();
+                    return;
+                }
+                lab_ip.Location = new Point(ipX, 8);
+                lab_ip.Size = new Size(maxW, 20);
+                lab_ip.Text = text;
+                lab_ip.Visible = true;
+                lab_ip.BringToFront();
+            }
+            catch { }
+        }
+
         #endregion
 
         #region 请求接口单向清除聊天记录
@@ -5579,6 +5922,22 @@ namespace WinFrmTalk.Controls.CustomControls
 
         private void LabName_TextChanged(object sender, EventArgs e)
         {
+            // 2026-11-20 标题变化（切换会话）时刷新对方 IP 显示
+            try
+            {
+                if (ChooseTarget != null)
+                {
+                    if (ChooseTarget.IsGroup == 1)
+                    {
+                        HidePeerIpInfo();
+                    }
+                    else
+                    {
+                        LoadPeerIpInfo(ChooseTarget.UserId);
+                    }
+                }
+            }
+            catch { }
             if (isCanTrigger_NameChanged)
             {
                 isCanTrigger_NameChanged = false;
@@ -5635,7 +5994,12 @@ namespace WinFrmTalk.Controls.CustomControls
                     msgTabAdapter.NotCanAddMoreMsg();
                 if (msg_list != null && msg_list.Count > 0)
                 {
-                    //批量加载
+                    // 批量加载
+                    // 2026-11-19 fix: remember the message at the viewport top so the list
+                    // does not jump back to the newest message when loading older history
+                    bool isLoadingMore = page_index > 1;
+                    string anchorMsgId = isLoadingMore ? GetTopVisibleMsgId() : null;
+
                     msgTabAdapter.BindData(msg_list);
                     int index = msgTabAdapter.FirstMsgIndex;
                     //xListView.InsertRange(index);
@@ -5648,6 +6012,39 @@ namespace WinFrmTalk.Controls.CustomControls
                         msgTabAdapter.CanAddMoreMsg();
 
                     xListView.SetAdapter(msgTabAdapter);
+
+                    // 2026-11-19 fix: restore scroll anchor after full rebind
+                    if (isLoadingMore && !string.IsNullOrEmpty(anchorMsgId))
+                    {
+                        BeginInvoke(new Action(() =>
+                        {
+                            try
+                            {
+                                int anchorIndex = msgTabAdapter.msgList.FindIndex(m => m.messageId == anchorMsgId);
+                                if (anchorIndex < 0) return; // 锚点消息已不存在时不要跳到底部
+                                if (anchorIndex >= 0) xListView.ShowRangeStart(anchorIndex, 0, true);
+                            }
+                            catch (Exception ex) { LogHelper.log.Error("restore scroll anchor error: " + ex.Message); }
+                        }));
+                    }
+
+
+                    // 2026-08-25 方案A（老张批准）：首次进入会话，消息加载完成后强制重建图片/视频项
+                    // 解决异步下载完成后控件不刷新，图片一直显示“加载中”的问题
+                    if (IsHandleCreated)
+                    {
+                        BeginInvoke(new Action(() =>
+                        {
+                            try
+                            {
+                                xListView.RefreshAll();
+                            }
+                            catch (Exception ex)
+                            {
+                                LogHelper.log.Error("RefreshAll 刷新消息列表异常: " + ex.Message, ex);
+                            }
+                        }));
+                    }
 
                     // 刷新漫游消息到消息列表 #9511
                     if (UIUtils.IsNull(ChooseTarget.Content))
@@ -5683,6 +6080,33 @@ namespace WinFrmTalk.Controls.CustomControls
             //xListView.ResumeLayout();
         }
         #endregion
+
+        // 2026-11-19: id of the message currently at the top of the viewport
+        private string GetTopVisibleMsgId()
+        {
+            try
+            {
+                Control panel = xListView.panel1;
+                if (panel == null) return null;
+                int offset = panel.Location.Y;
+                string bestId = null;
+                int bestTop = int.MaxValue;
+                foreach (Control c in panel.Controls)
+                {
+                    if (!c.Visible) continue;
+                    int top = c.Top + offset;
+                    if (top + c.Height <= 0) continue;
+                    if (c.Top < bestTop)
+                    {
+                        bestTop = c.Top;
+                        if (c.Name != null && c.Name.StartsWith("talk_panel_"))
+                            bestId = c.Name.Substring("talk_panel_".Length);
+                    }
+                }
+                return bestId;
+            }
+            catch { return null; }
+        }
 
         public void LoadMsg()
         {

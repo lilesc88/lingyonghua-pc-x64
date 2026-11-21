@@ -136,9 +136,31 @@ namespace WinFrmTalk
             loding.start();
             ImageLoader.Instance.Load(image_path).Into((img, str) =>
             {
-                ResumeLayout();
-                InitZoomShowImage(img);
-                loding.stop();
+                // 2026-08-25 修复：下载回调运行在后台线程，直接设置 pictureBox1.Image 跨线程不刷新
+                // 导致大图一直显示“加载中”。必须切回 UI 线程再设置。
+                if (IsHandleCreated && InvokeRequired)
+                {
+                    BeginInvoke(new Action(() =>
+                    {
+                        try
+                        {
+                            ResumeLayout();
+                            InitZoomShowImage(img);
+                            loding.stop();
+                        }
+                        catch (Exception ex)
+                        {
+                            LogHelper.log.Error("大图显示异常: " + ex.Message, ex);
+                            try { loding.stop(); } catch (Exception) { }
+                        }
+                    }));
+                }
+                else
+                {
+                    ResumeLayout();
+                    InitZoomShowImage(img);
+                    loding.stop();
+                }
             });
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
         }
@@ -486,6 +508,12 @@ namespace WinFrmTalk
         //聊天窗体图片
         internal void ShowImageList(List<MessageObject> datas, int index, bool isColle = false)
         {
+            // 2026-08-25 修复：防御性校验，避免 datas[index] 索引越界崩溃
+            if (datas == null || datas.Count == 0 || index < 0 || index >= datas.Count)
+            {
+                return;
+            }
+
             this.isColle = isColle;
             pictureBox1.BackgroundImageLayout = ImageLayout.Zoom;
             pictureBox1.SizeMode = PictureBoxSizeMode.AutoSize;

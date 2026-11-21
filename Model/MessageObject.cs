@@ -1441,6 +1441,7 @@ namespace WinFrmTalk.Model
                 var list = DBSetting.SQLiteDBContext.Queryable<MessageObject>().AS(this.TableName).
                     Where(it => it.type != kWCMessageType.IsRead).
                     Where(it => it.type != kWCMessageType.Withdraw).
+                    Where(it => it.type != kWCMessageType.EditMessage).
                     Where(it => it.timeSend >= startTime - 1).
                     OrderBy(it => it.timeSend, OrderByType.Asc).ToPageList(1, 19);
                 return list;
@@ -1498,6 +1499,7 @@ namespace WinFrmTalk.Model
                 var list = DBSetting.SQLiteDBContext.Queryable<MessageObject>().AS(this.TableName).
                     Where(it => it.type != kWCMessageType.IsRead).
                     Where(it => it.type != kWCMessageType.Withdraw).
+                    Where(it => it.type != kWCMessageType.EditMessage).
                     OrderBy(it => it.timeSend, OrderByType.Desc).ToList();
 
                 return list;

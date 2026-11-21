@@ -196,8 +196,7 @@ namespace WinFrmTalk
 
             if (Thread.CurrentThread.IsBackground)
             {
-                var main = new ProcesMainString(RefreshFriendHead);
-                Invoke(main, userId);
+                var main = new ProcesMainString(RefreshFriendHead); if (!IsHandleCreated || IsDisposed) return; try { Invoke(main, userId); } catch (Exception ex) { Console.WriteLine("RefreshFriendHead error: " + ex.Message); }
                 return;
             }
 
@@ -489,6 +488,74 @@ namespace WinFrmTalk
 
             MainForm.ResumeLayout();
             load.stop();
+
+            // 2026-08-31 v23.4 修复：首次登录头像不显示（下载完成但控件未刷新）
+            // 列表绑定后延迟 3 秒刷新一次已创建项的头像（异步下载完成的头像此时能显示）
+            RefreshFriendHeadsDelayed();
+        }
+
+        // 2026-08-31 v23.4 新增：延迟刷新好友列表头像
+        private void RefreshFriendHeadsDelayed()
+        {
+            try
+            {
+                System.Threading.Tasks.Task.Delay(3000).ContinueWith((t) =>
+                {
+                    try
+                    {
+                        if (this.IsDisposed || this.Disposing)
+                        {
+                            return;
+                        }
+                        if (this.InvokeRequired)
+                        {
+                            this.BeginInvoke(new Action(() => RefreshFriendHeadsDelayed()));
+                            return;
+                        }
+                        RefreshVisibleFriendHeads();
+                    }
+                    catch (Exception ex)
+                    {
+                        LogUtils.Log("刷新头像延迟任务异常: " + ex.Message);
+                    }
+                });
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        // 刷新当前已创建的好友项头像
+        private void RefreshVisibleFriendHeads()
+        {
+            try
+            {
+                int count = mAdapter.GetItemCount();
+                for (int i = 0; i < count; i++)
+                {
+                    if (xListView.DataCreated(i))
+                    {
+                        Control ctrl = xListView.GetItemControl(i);
+                        if (ctrl is FriendItem)
+                        {
+                            ((FriendItem)ctrl).LoadHeadImage();
+                        }
+                        else if (ctrl != null)
+                        {
+                            // 带字母分组的项，内部含 FriendItem
+                            var items = ctrl.Controls.Find("FriendItem", true);
+                            if (items.Length > 0 && items[0] is FriendItem)
+                            {
+                                ((FriendItem)items[0]).LoadHeadImage();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogUtils.Log("刷新好友头像异常: " + ex.Message);
+            }
         }
         #endregion
 
